@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="inf-configuration" />
+        <module name="inf-polyfills" />
+        <module name="pln-abstractions" />
+        <module name="pln-core" />
+        <module name="pln-hostcli" />
+        <module name="sio-datamasking" />
+        <module name="sio-primitives" />
+        <module name="sio-proxywrappers" />
+        <module name="sio-relational" />
+        <module name="sio-restful" />
+        <module name="sio-textual" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="inf-configuration" target="1.10" />
+      <module name="inf-polyfills" target="1.10" />
+      <module name="pln-abstractions" target="1.10" />
+      <module name="pln-core" target="1.10" />
+      <module name="pln-hostcli" target="1.10" />
+      <module name="sio-datamasking" target="1.10" />
+      <module name="sio-primitives" target="1.10" />
+      <module name="sio-proxywrappers" target="1.10" />
+      <module name="sio-relational" target="1.10" />
+      <module name="sio-restful" target="1.10" />
+      <module name="sio-textual" target="1.10" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="inf-configuration" options="-Xlint:all" />
+      <module name="inf-polyfills" options="-Xlint:all" />
+      <module name="pln-abstractions" options="-Xlint:all" />
+      <module name="pln-core" options="-Xlint:all" />
+      <module name="pln-hostcli" options="-Xlint:all" />
+      <module name="sio-datamasking" options="-Xlint:all" />
+      <module name="sio-primitives" options="-Xlint:all" />
+      <module name="sio-proxywrappers" options="-Xlint:all" />
+      <module name="sio-relational" options="-Xlint:all" />
+      <module name="sio-restful" options="-Xlint:all" />
+      <module name="sio-textual" options="-Xlint:all" />
+    </option>
+  </component>
+</project>

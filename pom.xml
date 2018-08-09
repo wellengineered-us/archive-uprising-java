@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright ©2017-2018 SyncPrem
+	Distributed under the MIT license: https://opensource.org/licenses/MIT
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.syncprem.uprising</groupId>
+	<artifactId>com.syncprem.uprising.UNIVERSE</artifactId>
+	<version>${revision}</version>
+	<name>SyncPrem Uprising</name>
+	<packaging>pom</packaging>
+
+	<properties>
+		<java.version>1.10</java.version>
+		<jdkLevel>1.10</jdkLevel>
+		<revision>0.1.0-SNAPSHOT</revision>
+	</properties>
+
+	<organization>
+		<name>SyncPrem</name>
+		<url>http://www.syncprem.com/</url>
+	</organization>
+	<url>http://www.syncprem.com/uprising/</url>
+	<description>
+		A micro-scalable streaming data synchronization and syndication framework.
+	</description>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/syncprem/uprising/issues</url>
+	</issueManagement>
+
+	<inceptionYear>2017</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:git:https://github.com/syncprem/uprising.git</connection>
+		<developerConnection>scm:git:git@github.com:syncprem/uprising.git</developerConnection>
+		<url>https://github.com/syncprem/uprising</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>xxx</id>
+			<name>Daniel Bullington</name>
+			<email>daniel.bullington@syncprem.com</email>
+			<organization>SyncPrem</organization>
+			<organizationUrl>http://www.syncprem.com</organizationUrl>
+			<roles>
+				<role>owner</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>src/inf-polyfills</module>
+		<module>src/inf-configuration</module>
+		<module>src/sio-primitives</module>
+		<module>src/sio-proxywrappers</module>
+		<module>src/sio-datamasking</module>
+		<module>src/sio-relational</module>
+		<module>src/sio-restful</module>
+		<module>src/sio-textual</module>
+
+		<module>src/pln-abstractions</module>
+		<module>src/pln-core</module>
+		<module>src/pln-hostcli</module>
+	</modules>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<compilerArgs>
+							<arg>-Xlint:all</arg>
+						</compilerArgs>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.21.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.junit.platform</groupId>
+							<artifactId>junit-platform-surefire-provider</artifactId>
+							<version>1.2.0</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

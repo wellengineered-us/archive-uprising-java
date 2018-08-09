@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/inf-configuration/inf-configuration.iml" filepath="$PROJECT_DIR$/inf-configuration/inf-configuration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/inf-polyfills/inf-polyfills.iml" filepath="$PROJECT_DIR$/inf-polyfills/inf-polyfills.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pln-abstractions/pln-abstractions.iml" filepath="$PROJECT_DIR$/pln-abstractions/pln-abstractions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pln-core/pln-core.iml" filepath="$PROJECT_DIR$/pln-core/pln-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pln-hostcli/pln-hostcli.iml" filepath="$PROJECT_DIR$/pln-hostcli/pln-hostcli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sio-datamasking/sio-datamasking.iml" filepath="$PROJECT_DIR$/sio-datamasking/sio-datamasking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sio-primitives/sio-primitives.iml" filepath="$PROJECT_DIR$/sio-primitives/sio-primitives.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sio-proxywrappers/sio-proxywrappers.iml" filepath="$PROJECT_DIR$/sio-proxywrappers/sio-proxywrappers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sio-relational/sio-relational.iml" filepath="$PROJECT_DIR$/sio-relational/sio-relational.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sio-restful/sio-restful.iml" filepath="$PROJECT_DIR$/sio-restful/sio-restful.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sio-textual/sio-textual.iml" filepath="$PROJECT_DIR$/sio-textual/sio-textual.iml" />
+    </modules>
+  </component>
+</project>

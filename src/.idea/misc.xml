@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/inf-configuration/pom.xml" />
+        <option value="$PROJECT_DIR$/inf-polyfills/pom.xml" />
+        <option value="$PROJECT_DIR$/pln-abstractions/pom.xml" />
+        <option value="$PROJECT_DIR$/pln-core/pom.xml" />
+        <option value="$PROJECT_DIR$/pln-hostcli/pom.xml" />
+        <option value="$PROJECT_DIR$/sio-datamasking/pom.xml" />
+        <option value="$PROJECT_DIR$/sio-primitives/pom.xml" />
+        <option value="$PROJECT_DIR$/sio-proxywrappers/pom.xml" />
+        <option value="$PROJECT_DIR$/sio-relational/pom.xml" />
+        <option value="$PROJECT_DIR$/sio-restful/pom.xml" />
+        <option value="$PROJECT_DIR$/sio-textual/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectKey">
+    <option name="state" value="project://e2804f05-5315-4fc6-a121-c522a6c26470" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_10" default="false" project-jdk-name="10" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

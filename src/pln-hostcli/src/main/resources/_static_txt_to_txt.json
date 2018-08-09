@@ -1,0 +1,38 @@
+/*
+	Copyright ©2017-2018 SyncPrem
+	Distributed under the MIT license: https://opensource.org/licenses/MIT
+*/
+{
+	"Version": "1",
+	"HostClassName": "com.syncprem.uprising.pipeline.core.runtime.SimpleHostImpl",
+	"EnableDispatchLoop": false,
+	"PipelineConfigurations": [
+		{
+			"Enabled": true,
+			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
+			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
+			"SourceConfiguration": {
+				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.LinedTextualSourceConnector",
+				"StageSpecificConfiguration": {
+					"TextualFilePath": "SupplierData.csv",
+					"TextualConfiguration": {
+						"TextualHeaderFieldConfigurations": [
+						]
+					}
+				}
+			},
+			"ProcessorConfigurations": [
+			],
+			"DestinationConfiguration": {
+				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.LinedTextualDestinationConnector",
+				"StageSpecificConfiguration": {
+					"TextualFilePath": "_out_\\sample.txt",
+					"TextualConfiguration": {
+						"TextualHeaderFieldConfigurations": [
+						]
+					}
+				}
+			}
+		}
+	]
+}

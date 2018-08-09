@@ -1,0 +1,10 @@
+<component name="CopyrightManager">
+  <settings>
+    <LanguageOptions name="JAVA">
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+  </settings>
+</component>

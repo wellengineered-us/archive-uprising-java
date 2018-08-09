@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright ©2017-2018 SyncPrem
+	Distributed under the MIT license: https://opensource.org/licenses/MIT
+-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.syncprem.uprising</groupId>
+		<artifactId>com.syncprem.uprising.UNIVERSE</artifactId>
+		<version>${revision}</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>com.syncprem.uprising.sio-primitives</artifactId>
+	<name>SyncPrem Uprising - sio-primitives</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>com.syncprem.uprising.inf-polyfills</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-commons</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-engine</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>1.2.0</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>
