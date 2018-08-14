@@ -108,7 +108,7 @@ public class HostConfiguration extends ComponentConfiguration
 		if (this.getPipelineConfigurations() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Pipeline configurations are required."), Severity.ERROR));
 		else
-			MessageImpl.addRange(messages, this.getPipelineConfigurations().validateAll("PIPELINE"));
+			MessageImpl.addRange(messages, this.getPipelineConfigurations().validateAll("Pipeline"));
 
 		return messages;
 	}

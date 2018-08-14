@@ -61,19 +61,6 @@ public abstract class AbstractStage<TStageSpecificConfiguration extends StageSpe
 		return clazz;
 	}
 
-	@Override
-	public final Validatable getValidatable()
-	{
-		Validatable validatable;
-
-		validatable = this.getStageSpecificValidatable(null);
-
-		if (validatable == null)
-			throw new InvalidOperationException("Did you forget to return a valid validatable from an overridden getStageSpecificValidatable(Object reserved)?");
-
-		return validatable;
-	}
-
 	protected final void assertValidConfiguration()
 	{
 		if (this.getConfiguration() == null)
@@ -134,11 +121,6 @@ public abstract class AbstractStage<TStageSpecificConfiguration extends StageSpe
 	}
 
 	protected abstract Class<? extends TStageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved);
-
-	protected Validatable getStageSpecificValidatable(Object reserved)
-	{
-		return this.getConfiguration();
-	}
 
 	@Override
 	public final void postExecute(Context context, RecordConfiguration configuration) throws SyncPremException

@@ -166,17 +166,17 @@ public class PipelineConfiguration extends ComponentConfiguration
 		if (this.getSourceConfiguration() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Source configuration is required."), Severity.ERROR));
 		else
-			MessageImpl.addRange(messages, this.getSourceConfiguration().validate("Source connector"));
+			MessageImpl.addRange(messages, this.getSourceConfiguration().validate(String.format("%s/%s", context, "Source")));
 
 		if (this.getProcessorConfigurations() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Processor configuration is required."), Severity.ERROR));
 		else
-			MessageImpl.addRange(messages, this.getProcessorConfigurations().validateAll("Processor"));
+			MessageImpl.addRange(messages, this.getProcessorConfigurations().validateAll(String.format("%s/%s", context, "Processor")));
 
 		if (this.getDestinationConfiguration() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Destination configuration is required."), Severity.ERROR));
 		else
-			MessageImpl.addRange(messages, this.getDestinationConfiguration().validate("Destination connector"));
+			MessageImpl.addRange(messages, this.getDestinationConfiguration().validate(String.format("%s/%s", context, "Destination")));
 
 		return messages;
 	}

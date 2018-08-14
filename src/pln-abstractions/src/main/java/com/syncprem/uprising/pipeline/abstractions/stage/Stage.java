@@ -18,8 +18,6 @@ import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 public interface Stage<TStageSpecificConfiguration extends StageSpecificConfiguration>
 		extends Component, Configurable<UntypedStageConfiguration>, Specifiable<TStageSpecificConfiguration>
 {
-	Validatable getValidatable();
-
 	void postExecute(Context context, RecordConfiguration configuration) throws SyncPremException;
 
 	void preExecute(Context context, RecordConfiguration configuration) throws SyncPremException;

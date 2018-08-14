@@ -59,7 +59,7 @@ public abstract class AbstractTextualFileConnectorSpecificConfiguration<
 		messages = new ArrayList<>();
 
 		if (Utils.isNullOrEmptyString(this.getTextualFilePath()))
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s adapter textual file path is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector textual file path is required.", context), Severity.ERROR));
 
 		return messages;
 	}

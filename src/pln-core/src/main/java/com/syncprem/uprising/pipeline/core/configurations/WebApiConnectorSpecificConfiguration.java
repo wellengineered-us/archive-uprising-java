@@ -99,15 +99,15 @@ public class WebApiConnectorSpecificConfiguration extends StageSpecificConfigura
 		messages = new ArrayList<>();
 
 		if (Utils.isNullOrEmptyString(this.getEndpointUri()))
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s adapter endpoint URI is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector endpoint URI is required.", context), Severity.ERROR));
 
 		if (this.getHttpMethod() == null ||
 				this.getHttpMethod() == HttpMethod.UNKNOWN)
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s adapter HTTP verb is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector HTTP verb is required.", context), Severity.ERROR));
 
 		if (this.getHttpScope() == null ||
 				this.getHttpScope() == HttpScope.UNKNOWN)
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s adapter HTTP scope is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector HTTP scope is required.", context), Severity.ERROR));
 
 		if (Utils.isNullOrEmptyString(this.getSerializationStrategyClassName()))
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s driver class name is required.", context), Severity.ERROR));

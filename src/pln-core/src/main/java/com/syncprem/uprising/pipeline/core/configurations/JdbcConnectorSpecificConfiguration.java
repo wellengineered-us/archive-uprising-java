@@ -142,7 +142,7 @@ public class JdbcConnectorSpecificConfiguration extends StageSpecificConfigurati
 		}
 
 		if (Utils.isNullOrEmptyString(this.getConnectionUrl()))
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s adapter JDBC connection string is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector JDBC connection string is required.", context), Severity.ERROR));
 
 		if (this.getPreExecuteCommand() != null)
 			MessageImpl.addRange(messages, this.getPreExecuteCommand().validate("Pre-Execution"));
@@ -150,7 +150,7 @@ public class JdbcConnectorSpecificConfiguration extends StageSpecificConfigurati
 		if (this.getExecuteCommand() != null)
 			MessageImpl.addRange(messages, this.getExecuteCommand().validate("Execution"));
 		else
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s adapter JDBC execute command is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector JDBC execute command is required.", context), Severity.ERROR));
 
 		if (this.getPostExecuteCommand() != null)
 			MessageImpl.addRange(messages, this.getPostExecuteCommand().validate("Post-Execution"));

@@ -107,8 +107,8 @@ public class UntypedStageConfiguration extends ComponentConfiguration
 	public Iterable<Message> validate(Object context)
 	{
 		List<Message> messages;
-		Class<? extends Stage<?>> stageClass;
-		Stage<?> stage;
+		Class<? extends Stage<? extends StageSpecificConfiguration>> stageClass;
+		Stage<? extends StageSpecificConfiguration> stage;
 
 		messages = new ArrayList<>();
 
@@ -131,13 +131,19 @@ public class UntypedStageConfiguration extends ComponentConfiguration
 					messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s stage failed to instantiate type from class name.", context), Severity.ERROR));
 				else
 				{
-					try (Stage<?> _stage = stage) // ???
+					try (Stage<? extends StageSpecificConfiguration> _stage = stage) // ???
 					{
+						Class<? extends StageSpecificConfiguration> specificationClass;
+
 						stage.setConfiguration(this);
 						stage.create();
-						this.applyUntypedStageSpecificConfiguration(stage.getSpecificationClass());
 
-						MessageImpl.addRange(messages, this.validateUntypedStageSpecificConfiguration(context));
+						// "Hey Stage, tell me what your Specification (Stage SpecificConfiguration derived) class is?"
+						specificationClass = stage.getSpecificationClass();
+						this.applyUntypedStageSpecificConfiguration(specificationClass);
+
+						//MessageImpl.addRange(messages, this.validateUntypedStageSpecificConfiguration(context));
+						MessageImpl.addRange(messages, _stage.getSpecification().validate(String.format("%s", context)));
 					}
 					catch (Exception ex)
 					{

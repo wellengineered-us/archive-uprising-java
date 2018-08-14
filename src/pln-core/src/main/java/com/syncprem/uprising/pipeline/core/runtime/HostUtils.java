@@ -32,7 +32,7 @@ public final class HostUtils
 
 		hostConfiguration = Utils.getObjectFromJsonFile(sourceFilePath, HostConfiguration.class);
 
-		messages = hostConfiguration.validate("HOST");
+		messages = hostConfiguration.validate("Host");
 
 		if (messages != null)
 		{
@@ -42,10 +42,7 @@ public final class HostUtils
 				if (message == null)
 					continue;
 
-				System.out.println(String.format("Error[%s] => %s", count, message.getDescription()));
-
-				if (count > 0)
-					System.out.println();
+				System.out.println(String.format("%s[#%s] => %s", message.getSeverity(), (count + 1), message.getDescription()));
 
 				count++;
 			}
