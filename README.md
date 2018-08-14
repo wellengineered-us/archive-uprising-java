@@ -48,8 +48,8 @@ To use an analogy:
 
 ##### Putting the Pieces Together
 
-Uprising is designed to operate at commodity appliance scale (e.g Rasperry Pi) with full fidelity over cloud-native serverless compute containers (e.g. AWS Lambda). 
-Uprising, with its unique architectue, makes it well-suited for on-premises to cloud data synchronization use cases where IT friction is contraindicated (e.g. 'cloud-to-ground' branch office topologies).
+Uprising is designed to operate at commodity appliance scale (e.g. Raspberry Pi) with full fidelity over cloud-native serverless compute containers (e.g. AWS Lambda). 
+Uprising, with its unique architecture, makes it well-suited for on-premises to cloud data synchronization use cases where IT friction is contraindicated (e.g. 'cloud-to-ground' branch office topologies).
 
 ##### What's the Catch?
 
