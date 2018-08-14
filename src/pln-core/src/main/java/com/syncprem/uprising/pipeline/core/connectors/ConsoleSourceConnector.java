@@ -5,10 +5,7 @@
 
 package com.syncprem.uprising.pipeline.core.connectors;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.DelayedProjectionIterator;
-import com.syncprem.uprising.infrastructure.polyfills.LifecycleIterator;
-import com.syncprem.uprising.infrastructure.polyfills.Utils;
+import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
@@ -24,6 +21,9 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.*;
 
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__enter;
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__leave;
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__watching;
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
 public final class ConsoleSourceConnector extends AbstractSourceConnector<StageSpecificConfiguration>
@@ -45,58 +45,122 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 		return textWriter;
 	}
 
-	private static Iterator<Payload> getYieldViaConsole(Schema schema)
+	public LifecycleIterator<Payload> getYieldViaConsole(Schema schema)
 	{
-		List<Payload> payloads;
-		Payload payload;
+		LifecycleIterator<Payload> iterator;
 
-		long recordIndex;
-		String line;
-		String[] fieldValues;
+		UUID __ = __enter();
+
 		Field[] fields;
 
 		if (schema == null)
 			throw new ArgumentNullException("schema");
 
-		payloads = new ArrayList<>();
-		fields = new Field[schema.getFields().size()];
+		failFastOnlyWhen(schema.getFields() == null, "schema.getFields() == null");
+
+		final int fieldCount = schema.getFields().size();
+
+		fields = new Field[fieldCount];
 		schema.getFields().values().toArray(fields);
 
-		recordIndex = 0;
-		while (true)
+		iterator = new AbstractYieldIterator<Payload>()
 		{
-			try
+			private long recordIndex;
+			final long recordInitial = 0L;
+
+			@Override
+			protected void create(boolean creating) throws Exception
 			{
-				line = getTextReader().readLine();
-			}
-			catch (IOException ioex)
-			{
-				line = null;
-			}
-
-			if (Utils.isNullOrEmptyString(line))
-				break;
-
-			fieldValues = line.split("\\|");
-
-			payload = new PayloadImpl();
-
-			for (long fieldIndex = 0; fieldIndex < Math.min(fieldValues.length, fields.length); fieldIndex++)
-			{
-				final Field field = fields[(int) fieldIndex];
-
-				if (field == null)
-					continue;
-
-				payload.put(field.getFieldName(), fieldValues[(int) fieldIndex]);
 			}
 
-			recordIndex++;
+			@Override
+			protected void dispose(boolean disposing) throws Exception
+			{
+			}
 
-			payloads.add(payload);
-		}
+			@Override
+			protected Iterator<Payload> newIterator(int state)
+			{
+				// do nothing
+				return this;
+			}
 
-		return payloads.iterator();
+			@Override
+			protected boolean onTryYield(TryOut<Payload> value) throws Exception
+			{
+				if (value == null)
+					throw new ArgumentNullException("value");
+
+				if (this.recordIndex > -1L)
+				{
+					String line;
+					String[] fieldValues;
+					final Payload payload = new PayloadImpl(fieldCount);
+
+					try
+					{
+						line = getTextReader().readLine();
+					}
+					catch (IOException ioex)
+					{
+						line = null;
+					}
+
+					if (Utils.isNullOrEmptyString(line))
+						return false;
+
+					fieldValues = line.split("\\|");
+
+					for (long fieldIndex = 0; fieldIndex < Math.min(fieldValues.length, fields.length); fieldIndex++)
+					{
+						final Field field = fields[(int) fieldIndex];
+
+						if (field == null)
+							continue;
+
+						payload.put(field.getFieldName(), fieldValues[(int) fieldIndex]);
+					}
+
+					value.setValue(payload);
+					return true;
+				}
+
+				return false;
+			}
+
+			@Override
+			protected void onYieldComplete() throws Exception
+			{
+				this.recordIndex = -1; // }
+			}
+
+			@Override
+			protected void onYieldFault(Exception ex)
+			{
+			}
+
+			@Override
+			protected void onYieldResume() throws Exception
+			{
+			}
+
+			@Override
+			protected void onYieldReturn(Payload value) throws Exception
+			{
+				this.recordIndex++; // for(..., ..., value++)
+			}
+
+			@Override
+			protected void onYieldStart() throws Exception
+			{
+				this.recordIndex = recordInitial; // for(int value = lb; ...
+			}
+		};
+
+		__watching(__, iterator);
+		__leave(__);
+
+		return iterator;
 	}
 
 	@Override

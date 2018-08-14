@@ -27,9 +27,10 @@ public class KeyValueViewImpl implements KeyValueView
 			throw new ArgumentNullException("originalPayload");
 
 		final Map<Boolean, List<Field>> orderedGroups = originalSchema.getFields().values().stream().sorted(Comparator.comparingLong(Field::getFieldIndex)).collect(groupingBy(Field::isFieldKeyComponent));
+		final int fieldCount = originalSchema.getFields().size();
 
-		key = new PayloadImpl();
-		value = new PayloadImpl();
+		key = new PayloadImpl(fieldCount);
+		value = new PayloadImpl(fieldCount);
 		k = new SchemaBuilderImpl();
 		v = new SchemaBuilderImpl();
 

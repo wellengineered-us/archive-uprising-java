@@ -15,13 +15,18 @@ public class PayloadImpl extends LinkedHashMap<String, Object> implements Payloa
 	{
 	}
 
+	public PayloadImpl(int fieldCount)
+	{
+		super(fieldCount);
+	}
+
 	private static final long serialVersionUID = -5365630128856068164L;
 
 	public static PayloadImpl fromPrimitive(Object value)
 	{
 		PayloadImpl payload;
 
-		payload = new PayloadImpl();
+		payload = new PayloadImpl(1);
 		payload.put(Utils.EMPTY_STRING, value);
 
 		return payload;

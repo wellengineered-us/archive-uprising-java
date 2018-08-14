@@ -14,6 +14,9 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"StageSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
 			"ProcessorConfigurations": [
@@ -46,6 +49,9 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"StageSpecificConfiguration": {
+					"MaxRandomRecordCount": 1000,
+					"MaxRandomFieldCount": 100,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
 			"ProcessorConfigurations": [
@@ -78,6 +84,9 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"StageSpecificConfiguration": {
+					"MaxRandomRecordCount": 10,
+					"MaxRandomFieldCount": 100,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
 			"ProcessorConfigurations": [
@@ -110,6 +119,9 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"StageSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 1000,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
 			"ProcessorConfigurations": [
@@ -142,6 +154,9 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"StageSpecificConfiguration": {
+					"MaxRandomRecordCount": 1000000,
+					"MaxRandomFieldCount": 100,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
 			"ProcessorConfigurations": [

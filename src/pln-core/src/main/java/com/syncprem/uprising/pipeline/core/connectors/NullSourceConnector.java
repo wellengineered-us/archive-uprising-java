@@ -5,32 +5,30 @@
 
 package com.syncprem.uprising.pipeline.core.connectors;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.DelayedProjectionIterator;
-import com.syncprem.uprising.infrastructure.polyfills.LifecycleIterator;
-import com.syncprem.uprising.infrastructure.polyfills.Utils;
+import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.AbstractSourceConnector;
+import com.syncprem.uprising.pipeline.core.configurations.NullConnectorSpecificConfiguration;
 import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
+import com.syncprem.uprising.streamingio.textual.TextualStreamingRecord;
 
 import java.util.*;
 
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__enter;
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__leave;
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__watching;
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
-public final class NullSourceConnector extends AbstractSourceConnector<StageSpecificConfiguration>
+public final class NullSourceConnector extends AbstractSourceConnector<NullConnectorSpecificConfiguration>
 {
 	public NullSourceConnector()
 	{
 	}
 
-	private static final int FIELD_COUNT = 5;
-	private static final String FIELD_NAME = "RandomValue_%s";
-	private static final int MAX_RECORDS = 100;
 	private static final Random random = new Random();
 
 	private static Random getRandom()
@@ -38,7 +36,7 @@ public final class NullSourceConnector extends AbstractSourceConnector<StageSpec
 		return random;
 	}
 
-	private static Schema getSchema()
+	private Schema getSchema()
 	{
 		SchemaBuilder schemaBuilder;
 
@@ -46,9 +44,9 @@ public final class NullSourceConnector extends AbstractSourceConnector<StageSpec
 
 		schemaBuilder.addField(Utils.EMPTY_STRING, UUID.class, false, true, null);
 
-		for (long fieldIndex = 0; fieldIndex < FIELD_COUNT; fieldIndex++)
+		for (long fieldIndex = 0; fieldIndex < (long)this.getSpecification().getMaxRandomFieldCount(); fieldIndex++)
 		{
-			final String fieldName = String.format(FIELD_NAME, fieldIndex);
+			final String fieldName = String.format(this.getSpecification().getFieldNameFormat(), fieldIndex);
 
 			schemaBuilder.addField(fieldName, Double.class, false, false, null);
 		}
@@ -56,49 +54,116 @@ public final class NullSourceConnector extends AbstractSourceConnector<StageSpec
 		return schemaBuilder.build();
 	}
 
-	private static Iterator<Payload> getRandomPayloads(Schema schema)
+	public LifecycleIterator<Payload> getRandomPayloads(Schema schema)
 	{
-		Payload payload;
-		Field[] fields;
-		List<Payload> payloads;
+		LifecycleIterator<Payload> iterator;
 
-		long recordCount;
+		UUID __ = __enter();
+
+		Field[] fields;
 
 		if (schema == null)
 			throw new ArgumentNullException("schema");
 
-		fields = new Field[schema.getFields().size()];
+		failFastOnlyWhen(schema.getFields() == null, "schema.getFields() == null");
+
+		final int fieldCount = schema.getFields().size();
+		final long recordCount = getRandom().nextInt((int)(long)this.getSpecification().getMaxRandomRecordCount());
+
+		fields = new Field[fieldCount];
 		schema.getFields().values().toArray(fields);
-		recordCount = getRandom().nextInt(MAX_RECORDS);
 
-		payloads = new ArrayList<>();
-		for (long recordIndex = 0; recordIndex < recordCount; recordIndex++)
+		iterator = new AbstractYieldIterator<Payload>()
 		{
-			payload = new PayloadImpl();
+			private long recordIndex;
+			final long recordInitial = 0L;
 
-			for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++)
+			@Override
+			protected void create(boolean creating) throws Exception
 			{
-				final Field field = fields[fieldIndex];
-
-				if (field == null)
-					continue;
-
-				if (field.isFieldKeyComponent())
-					payload.put(field.getFieldName(), UUID.randomUUID());
-				else
-					payload.put(field.getFieldName(), getRandom().nextDouble());
 			}
 
-			payloads.add(payload);
-		}
+			@Override
+			protected void dispose(boolean disposing) throws Exception
+			{
+			}
 
-		return payloads.iterator();
+			@Override
+			protected Iterator<Payload> newIterator(int state)
+			{
+				// do nothing
+				return this;
+			}
+
+			@Override
+			protected boolean onTryYield(TryOut<Payload> value) throws Exception
+			{
+				if (value == null)
+					throw new ArgumentNullException("value");
+
+				if (this.recordIndex < recordCount)
+				{
+					final Payload payload = new PayloadImpl(fieldCount);
+
+					for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++)
+					{
+						final Field field = fields[fieldIndex];
+
+						if (field == null)
+							continue;
+
+						if (field.isFieldKeyComponent())
+							payload.put(field.getFieldName(), UUID.randomUUID());
+						else
+							payload.put(field.getFieldName(), getRandom().nextDouble());
+					}
+
+					value.setValue(payload);
+					return true;
+				}
+
+				return false;
+			}
+
+			@Override
+			protected void onYieldComplete() throws Exception
+			{
+				this.recordIndex = -1; // }
+			}
+
+			@Override
+			protected void onYieldFault(Exception ex)
+			{
+			}
+
+			@Override
+			protected void onYieldResume() throws Exception
+			{
+			}
+
+			@Override
+			protected void onYieldReturn(Payload value) throws Exception
+			{
+				this.recordIndex++; // for(..., ..., value++)
+			}
+
+			@Override
+			protected void onYieldStart() throws Exception
+			{
+				this.recordIndex = recordInitial; // for(int value = lb; ...
+			}
+		};
+
+		__watching(__, iterator);
+		__leave(__);
+
+		return iterator;
 	}
 
 	@Override
-	protected Class<StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<NullConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
 	{
-		return StageSpecificConfiguration.class;
+		return NullConnectorSpecificConfiguration.class;
 	}
 
 	@Override

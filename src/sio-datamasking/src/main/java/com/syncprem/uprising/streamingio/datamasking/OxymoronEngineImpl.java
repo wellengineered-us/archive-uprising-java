@@ -246,7 +246,7 @@ public class OxymoronEngineImpl extends AbstractLifecycle<Exception, Exception> 
 
 			if (record != null)
 			{
-				obfuscatedPayload = new PayloadImpl();
+				obfuscatedPayload = new PayloadImpl(record.size());
 
 				for (Map.Entry<String, Object> item : record.entrySet())
 				{
