@@ -9,6 +9,8 @@ import com.syncprem.uprising.pipeline.abstractions.AbstractComponent;
 import com.syncprem.uprising.pipeline.abstractions.configuration.HostConfiguration;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
+import java.util.concurrent.FutureTask;
+
 public abstract class AbstractHost extends AbstractComponent implements Host
 {
 	protected AbstractHost()
@@ -43,4 +45,6 @@ public abstract class AbstractHost extends AbstractComponent implements Host
 	}
 
 	protected abstract void runInternal() throws Exception;
+
+	protected abstract void onHostUnload(FutureTask<?> futureTask);
 }

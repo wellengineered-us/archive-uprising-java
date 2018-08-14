@@ -12,10 +12,12 @@ import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfigu
 import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractHost;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Pipeline;
+import com.syncprem.uprising.pipeline.abstractions.runtime.platform.CancellationToken;
+import com.syncprem.uprising.pipeline.core.runtime.platform.AtomicCancellationTokenImpl;
 
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
@@ -25,10 +27,10 @@ public class SimpleHostImpl extends AbstractHost
 	{
 	}
 
-	private final AtomicBoolean cancellationToken = new AtomicBoolean(true);
+	private final CancellationToken cancellationToken = new AtomicCancellationTokenImpl();
 	private final Semaphore mainThreadSemaphore = new Semaphore(1);
 
-	protected final AtomicBoolean getCancellationToken()
+	protected final CancellationToken getCancellationToken()
 	{
 		return this.cancellationToken;
 	}
@@ -65,20 +67,22 @@ public class SimpleHostImpl extends AbstractHost
 		}
 	}
 
-	private void _hcf()
+	private Exception _haltAndCatchFire()
 	{
 		// this method gets called on another thread from main()...
 
 		try
 		{
-			System.out.println("_hcf: enter");
+			System.out.println("_haltAndCatchFire: enter");
 			this.gracefulShutdown(false);
-			System.out.println("_hcf: leave");
+			System.out.println("_haltAndCatchFire: leave");
 		}
 		catch (Exception ex)
 		{
-			Utils.failFastWithException(ex);
+			return Utils.failFastWithException(ex);
 		}
+
+		return null;
 	}
 
 	@Override
@@ -89,11 +93,11 @@ public class SimpleHostImpl extends AbstractHost
 
 		if (creating)
 		{
-			Runtime.getRuntime().addShutdownHook(new Thread(this::_hcf));
+			this.onHostUnload(new FutureTask<>(this::_haltAndCatchFire));
 
 			super.create(creating); // intentionally placed here
 
-			this.getCancellationToken().set(false);
+			this.getCancellationToken().throwIfCancellationRequested();
 		}
 	}
 
@@ -139,7 +143,7 @@ public class SimpleHostImpl extends AbstractHost
 		final TimeUnit timeUnit = TimeUnit.SECONDS;
 		boolean success = false;
 
-		this.getCancellationToken().set(true);
+		this.getCancellationToken().cancel();
 
 		try
 		{
@@ -220,9 +224,18 @@ public class SimpleHostImpl extends AbstractHost
 		while (this.shouldRunDispatchLoop());
 	}
 
+	@Override
+	protected void onHostUnload(FutureTask<?> futureTask)
+	{
+		if (futureTask == null)
+			throw new ArgumentNullException("futureTask");
+
+		Runtime.getRuntime().addShutdownHook(new Thread(futureTask));
+	}
+
 	protected boolean shouldRunDispatchLoop()
 	{
 		return this.getConfiguration().enableDispatchLoop() &&
-				!this.getCancellationToken().get();
+				!this.getCancellationToken().isCancellationRequested();
 	}
 }
