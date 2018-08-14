@@ -39,13 +39,18 @@ public abstract class AbstractLifecycle<TCreationException extends Exception, TD
 	@Override
 	public final void /* dispose */ close() throws TDisposalException
 	{
-		this.terminate();
+		this.dispose();
 	}
 
 	@Override
 	public final void create() throws TCreationException
 	{
-		this.initialize();
+		if (this.isCreated())
+			return;
+
+		//GC.ReRegisterForFinalize(this);
+		this.create(true);
+		this.maybeSetIsCreated();
 	}
 
 	protected abstract void create(boolean creating) throws TCreationException;
@@ -53,7 +58,12 @@ public abstract class AbstractLifecycle<TCreationException extends Exception, TD
 	@Override
 	public final void dispose() throws TDisposalException
 	{
-		this.terminate();
+		if (this.isDisposed())
+			return;
+
+		this.dispose(true);
+		//GC.SuppressFinalize(this);
+		this.maybeSetIsDisposed();
 	}
 
 	protected abstract void dispose(boolean disposing) throws TDisposalException;
@@ -70,16 +80,6 @@ public abstract class AbstractLifecycle<TCreationException extends Exception, TD
 		//GC.SuppressFinalize(this);
 	}
 
-	private final void initialize() throws TCreationException
-	{
-		if (this.isCreated())
-			return;
-
-		//GC.ReRegisterForFinalize(this);
-		this.create(true);
-		this.maybeSetIsCreated();
-	}
-
 	protected void maybeSetIsCreated()
 	{
 		this.explicitSetIsCreated();
@@ -88,15 +88,5 @@ public abstract class AbstractLifecycle<TCreationException extends Exception, TD
 	protected void maybeSetIsDisposed()
 	{
 		this.explicitSetIsDisposed();
-	}
-
-	private final void terminate() throws TDisposalException
-	{
-		if (this.isDisposed())
-			return;
-
-		this.dispose(true);
-		//GC.SuppressFinalize(this);
-		this.maybeSetIsDisposed();
 	}
 }
