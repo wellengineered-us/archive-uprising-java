@@ -14,10 +14,32 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.WebApiSourceConnector",
 				"StageSpecificConfiguration": {
-					"EndpointUri": "https://jsonplaceholder.typicode.com/posts",
+					"EndpointUri": "http://localhost:5000/api/InboundSync",
 					"HttpMethod": "GET",
+					"HttpScope": "RESOURCE",
+					"SerializationStrategyClassName": "com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl",
+					"CompressionStrategyClassName": "com.syncprem.uprising.streamingio.proxywrappers.strategies.NoneCompressionStrategyImpl"
+				}
+			},
+			"ProcessorConfigurations": [
+			],
+			"DestinationConfiguration": {
+				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.ConsoleDestinationConnector",
+				"StageSpecificConfiguration": {
+				}
+			}
+		},
+		{
+			"Enabled": false,
+			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
+			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
+			"SourceConfiguration": {
+				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.WebApiSourceConnector",
+				"StageSpecificConfiguration": {
+					"EndpointUri": "http://localhost:5000/api/InboundSync",
+					"HttpMethod": "POST",
 					"HttpScope": "COLLECTION",
-					"SerializationStrategyClassName": "com.syncprem.uprising.streamingio.proxywrappers.strategies.JsonSerializationStrategyImpl",
+					"SerializationStrategyClassName": "com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl",
 					"CompressionStrategyClassName": "com.syncprem.uprising.streamingio.proxywrappers.strategies.NoneCompressionStrategyImpl"
 				}
 			},

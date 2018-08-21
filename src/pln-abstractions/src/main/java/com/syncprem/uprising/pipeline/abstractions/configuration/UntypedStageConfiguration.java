@@ -6,6 +6,7 @@
 package com.syncprem.uprising.pipeline.abstractions.configuration;
 
 import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl;
 import com.syncprem.uprising.pipeline.abstractions.stage.Stage;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class UntypedStageConfiguration extends ComponentConfiguration
 
 		if (this.getStageSpecificConfiguration() != null)
 		{
-			this.setUntypedStageSpecificConfiguration(Utils.getObjectFromJsonMap(this.getStageSpecificConfiguration(), clazz));
+			this.setUntypedStageSpecificConfiguration(JsonSerializationStrategyImpl.getObjectFromJsonMap(this.getStageSpecificConfiguration(), clazz));
 		}
 	}
 

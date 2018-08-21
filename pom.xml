@@ -53,7 +53,7 @@
 
 	<developers>
 		<developer>
-			<id>xxx</id>
+			<id>daniel.bullington@syncprem.com</id>
 			<name>Daniel Bullington</name>
 			<email>daniel.bullington@syncprem.com</email>
 			<organization>SyncPrem</organization>
@@ -69,6 +69,7 @@
 	<modules>
 		<module>src/inf-polyfills</module>
 		<module>src/inf-configuration</module>
+		<module>src/inf-serialization</module>
 		<module>src/sio-primitives</module>
 		<module>src/sio-proxywrappers</module>
 		<module>src/sio-datamasking</module>

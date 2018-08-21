@@ -39,9 +39,10 @@ public final class PullOutputStreamContent extends AbstractHttpStreamingContent
 	@Override
 	protected void serializeToOutputStream(OutputStream outputStream) throws IOException
 	{
-		final InputStream inputStream = this.getInputContentStream();
 		if (outputStream == null)
 			throw new ArgumentNullException("outputStream");
+
+		final InputStream inputStream = this.getInputContentStream();
 
 		try (inputStream)
 		{

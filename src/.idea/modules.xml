@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/inf-configuration/inf-configuration.iml" filepath="$PROJECT_DIR$/inf-configuration/inf-configuration.iml" />
       <module fileurl="file://$PROJECT_DIR$/inf-polyfills/inf-polyfills.iml" filepath="$PROJECT_DIR$/inf-polyfills/inf-polyfills.iml" />
+      <module fileurl="file://$PROJECT_DIR$/inf-serialization/inf-serialization.iml" filepath="$PROJECT_DIR$/inf-serialization/inf-serialization.iml" />
       <module fileurl="file://$PROJECT_DIR$/pln-abstractions/pln-abstractions.iml" filepath="$PROJECT_DIR$/pln-abstractions/pln-abstractions.iml" />
       <module fileurl="file://$PROJECT_DIR$/pln-core/pln-core.iml" filepath="$PROJECT_DIR$/pln-core/pln-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/pln-hostcli/pln-hostcli.iml" filepath="$PROJECT_DIR$/pln-hostcli/pln-hostcli.iml" />

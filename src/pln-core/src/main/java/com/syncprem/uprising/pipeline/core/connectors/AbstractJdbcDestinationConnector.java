@@ -199,12 +199,23 @@ public abstract class AbstractJdbcDestinationConnector extends AbstractDestinati
 		if (this.getSpecification().getExecuteCommand() != null &&
 				!Utils.isNullOrEmptyString(this.getSpecification().getExecuteCommand().getCommandText()))
 		{
+			JdbcStreamingResult singlgResult = null;
+
 			parameters = this.getSpecification().getExecuteCommand().getParameters(this.getDestinationUnitOfWork());
 
 			// single result expected ???
-			records = UnitOfWorkExtensions.executeSchemaRecords(this.getDestinationUnitOfWork(),
+			results = UnitOfWorkExtensions.executeSchemaResults(this.getDestinationUnitOfWork(),
 					this.getSpecification().getExecuteCommand().getCommandType(),
-					this.getSpecification().getExecuteCommand().getCommandText(), parameters, null);
+					this.getSpecification().getExecuteCommand().getCommandText(), parameters);
+
+			failFastOnlyWhen(results == null, "results == null");
+
+			if (results.hasNext())
+				singlgResult = results.next();
+
+			failFastOnlyWhen(singlgResult == null, "singlgResult == null");
+
+			records = singlgResult.getRecords();
 
 			failFastOnlyWhen(records == null, "records == null");
 

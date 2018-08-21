@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="inf-configuration" />
         <module name="inf-polyfills" />
+        <module name="inf-serialization" />
         <module name="pln-abstractions" />
         <module name="pln-core" />
         <module name="pln-hostcli" />
@@ -22,6 +23,7 @@
     <bytecodeTargetLevel>
       <module name="inf-configuration" target="1.10" />
       <module name="inf-polyfills" target="1.10" />
+      <module name="inf-serialization" target="1.10" />
       <module name="pln-abstractions" target="1.10" />
       <module name="pln-core" target="1.10" />
       <module name="pln-hostcli" target="1.10" />
@@ -37,6 +39,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="inf-configuration" options="-Xlint:all" />
       <module name="inf-polyfills" options="-Xlint:all" />
+      <module name="inf-serialization" options="-Xlint:all" />
       <module name="pln-abstractions" options="-Xlint:all" />
       <module name="pln-core" options="-Xlint:all" />
       <module name="pln-hostcli" options="-Xlint:all" />

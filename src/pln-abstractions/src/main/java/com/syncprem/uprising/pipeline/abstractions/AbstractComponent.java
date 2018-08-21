@@ -5,6 +5,7 @@
 
 package com.syncprem.uprising.pipeline.abstractions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.syncprem.uprising.infrastructure.polyfills.AbstractLifecycle;
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 
@@ -27,18 +28,21 @@ public abstract class AbstractComponent extends AbstractLifecycle<Exception, Exc
 
 	private final UUID componentId;
 
+	@JsonIgnore
 	@Override
 	public final UUID getComponentId()
 	{
 		return this.componentId;
 	}
 
+	@JsonIgnore
 	@Override
 	public final boolean isAsync()
 	{
 		return false;
 	}
 
+	@JsonIgnore
 	@Override
 	public final boolean isReusable()
 	{

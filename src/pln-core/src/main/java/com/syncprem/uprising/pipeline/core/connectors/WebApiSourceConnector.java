@@ -6,12 +6,14 @@
 package com.syncprem.uprising.pipeline.core.connectors;
 
 import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.serialization.SerializationStrategy;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.AbstractSourceConnector;
 import com.syncprem.uprising.pipeline.core.configurations.WebApiConnectorSpecificConfiguration;
+import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.strategies.CompressionStrategy;
 import com.syncprem.uprising.streamingio.restful.*;
@@ -72,9 +74,12 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 	@Override
 	protected void preExecuteInternal(Context context, RecordConfiguration configuration) throws Exception
 	{
+		Schema schema;
+		Map<String, Object> componentState;
+
 		HttpStreamingClient sourceHttpStreamingClient;
 		HttpStreamingRequest httpStreamingRequest;
-		HttpStreamingResponse httpStreamingResponse;
+		HttpStreamingResponse httpStreamingResponse = null;
 
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -101,15 +106,40 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 
 			failFastOnlyWhen(httpStreamingResponse.getResponseStatus() != HttpStatus.HTTP_OK, "httpStreamingResponse.getResponseStatus() != HttpStatus.HTTP_OK");
 		}
+
+		if (!context.getLocalState().containsKey(this))
+			context.getLocalState().put(this, (componentState = new HashMap<>()));
+		else
+			componentState = context.getLocalState().get(this);
+
+		failFastOnlyWhen(componentState == null, "componentState == null");
+
+		schema = this.getSchemaUsingHeadResponse(httpStreamingResponse);
+
+		failFastOnlyWhen(schema == null, "schema == null");
+
+		componentState.put(CONTEXT_COMPONENT_SCOPED_SCHEMA, schema);
+	}
+
+	private Schema getSchemaUsingHeadResponse(HttpStreamingResponse httpStreamingResponse)
+	{
+		Schema schema;
+		SchemaBuilder schemaBuilder;
+
+		if (httpStreamingResponse == null)
+			throw new ArgumentNullException("httpStreamingResponse");
+
+		schemaBuilder = SchemaBuilderImpl.create().withType(SchemaType.UNKNOWN);
+		schema = schemaBuilder.build();
+
+		return schema;
 	}
 
 	@Override
 	protected Channel produceInternal(Context context, RecordConfiguration configuration) throws Exception
 	{
 		Channel channel;
-
-		SchemaBuilder rootSchemaBuilder, childSchemaBuilder;
-		Schema rootSchema, childSchema;
+		Schema schema;
 
 		Iterator<Payload> payloads;
 		Map<String, Object> componentState;
@@ -129,14 +159,9 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 
 		failFastOnlyWhen(componentState == null, "componentState == null");
 
-		// TODO: JIT-infer schema based on JSON?
-		rootSchemaBuilder = SchemaBuilderImpl.create().withType(SchemaType.UNKNOWN);
+		schema = (Schema) componentState.getOrDefault(CONTEXT_COMPONENT_SCOPED_SCHEMA, null);
 
-		rootSchema = rootSchemaBuilder.build();
-
-		failFastOnlyWhen(rootSchema == null, "rootSchema == null");
-
-		componentState.put(CONTEXT_COMPONENT_SCOPED_SCHEMA, rootSchema); // just for good measure
+		failFastOnlyWhen(schema == null, "schema == null");
 
 		if (!Utils.isNullOrEmptyString(this.getSpecification().getEndpointUri()))
 		{
@@ -192,10 +217,21 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 
 				failFastOnlyWhen(!httpStreamingResponse.isRestfulCongruentSuccessResult(), "!httpStreamingResponse.isRestfulCongruentSuccessResult()");
 
-				//httpStreamingResponse.getResponseContent().copyTo(System.out);
-			}
+				// deserialize response into payload...
+				final HttpStreamingContent responseContent = httpStreamingResponse.getResponseContent();
 
-			channel = context.createEmptyChannel(); //??
+				failFastOnlyWhen(responseContent == null, "responseContent == null");
+
+				payloads = this.getPayloadUsingHttpResponseContent(httpStreamingResponse.getResponseHeaders(), responseContent);
+
+				failFastOnlyWhen(payloads == null, "payloads == null");
+
+				records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
+
+				failFastOnlyWhen(records == null, "records == null");
+
+				channel = context.createChannel(records);
+			}
 		}
 		else
 			channel = context.createEmptyChannel();
@@ -203,5 +239,73 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 		failFastOnlyWhen(channel == null, "channel == null");
 
 		return channel;
+	}
+
+	private Iterator<Payload> getPayloadUsingHttpResponseContent(Map<String, Iterable<String>> responseHeaders, HttpStreamingContent responseContent)
+	{
+		if (responseHeaders == null)
+			throw new ArgumentNullException("responseHeaders");
+
+		if (responseContent == null)
+			throw new ArgumentNullException("responseContent");
+
+		System.out.println(responseHeaders.get("Content-Type"));
+
+		return new AbstractYieldIterator<Payload>()
+		{
+			@Override
+			protected Iterator<Payload> newIterator(int state)
+			{
+				return null;
+			}
+
+			@Override
+			protected boolean onTryYield(TryOut<Payload> value) throws Exception
+			{
+				return false;
+			}
+
+			@Override
+			protected void onYieldComplete() throws Exception
+			{
+
+			}
+
+			@Override
+			protected void onYieldFault(Exception ex)
+			{
+
+			}
+
+			@Override
+			protected void onYieldResume() throws Exception
+			{
+
+			}
+
+			@Override
+			protected void onYieldReturn(Payload value) throws Exception
+			{
+
+			}
+
+			@Override
+			protected void onYieldStart() throws Exception
+			{
+
+			}
+
+			@Override
+			protected void create(boolean creating) throws Exception
+			{
+
+			}
+
+			@Override
+			protected void dispose(boolean disposing) throws Exception
+			{
+
+			}
+		};
 	}
 }

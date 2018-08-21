@@ -8,6 +8,9 @@ package com.syncprem.uprising.streamingio.proxywrappers;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static com.syncprem.uprising.infrastructure.polyfills.Utils.formatCurrentThreadId;
+import static com.syncprem.uprising.infrastructure.polyfills.Utils.formatObjectInfo;
+
 public class ProgressWrappedOutputStreamImpl extends WrappedOutputStreamImpl
 {
 	public ProgressWrappedOutputStreamImpl(OutputStream baseOutputStream)
@@ -15,6 +18,7 @@ public class ProgressWrappedOutputStreamImpl extends WrappedOutputStreamImpl
 		super(baseOutputStream);
 	}
 
+	protected static final int DEFAULT_STREAM_WRITE_PUNCTUATE_MODULO = 1000;
 	private long total = 0L;
 
 	public long getTotal()
@@ -81,6 +85,9 @@ public class ProgressWrappedOutputStreamImpl extends WrappedOutputStreamImpl
 
 	private void writeProgress(long offset, long count, long retval)
 	{
-		//System.out.println(String.format("WRITE: offset=%s, count=%s; retval=%s; total=%s", offset, count, retval, this.getTotal()));
+		/*if ((this.getTotal() % DEFAULT_STREAM_WRITE_PUNCTUATE_MODULO) == 0)
+			System.out.println(String.format("[%s %s WRITE: offset=%s, count=%s; retval=%s; total=%s]",
+					formatObjectInfo(this), formatCurrentThreadId(),
+					offset, count, retval, this.getTotal()));*/
 	}
 }

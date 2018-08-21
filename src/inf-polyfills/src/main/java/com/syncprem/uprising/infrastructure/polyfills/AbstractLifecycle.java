@@ -5,6 +5,8 @@
 
 package com.syncprem.uprising.infrastructure.polyfills;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class AbstractLifecycle<TCreationException extends Exception, TDisposalException extends Exception> implements Creatable, Disposable
 {
 	protected AbstractLifecycle()
@@ -14,6 +16,7 @@ public abstract class AbstractLifecycle<TCreationException extends Exception, TD
 	private boolean isCreated;
 	private boolean isDisposed;
 
+	@JsonIgnore
 	@Override
 	public final boolean isCreated()
 	{
@@ -25,6 +28,7 @@ public abstract class AbstractLifecycle<TCreationException extends Exception, TD
 		this.isCreated = isCreated;
 	}
 
+	@JsonIgnore
 	@Override
 	public final boolean isDisposed()
 	{

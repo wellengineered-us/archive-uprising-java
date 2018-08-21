@@ -14,6 +14,9 @@
 			"SourceConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"StageSpecificConfiguration": {
+					"MaxRandomRecordCount": 1000,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "DotNetCore_%s"
 				}
 			},
 			"ProcessorConfigurations": [
@@ -21,10 +24,10 @@
 			"DestinationConfiguration": {
 				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.WebApiDestinationConnector",
 				"StageSpecificConfiguration": {
-					"EndpointUri": "https://jsonplaceholder.typicode.com/posts",
+					"EndpointUri": "http://localhost:5000/api/InboundSync",
 					"HttpMethod": "POST",
 					"HttpScope": "COLLECTION",
-					"SerializationStrategyClassName": "com.syncprem.uprising.streamingio.proxywrappers.strategies.JsonSerializationStrategyImpl",
+					"SerializationStrategyClassName": "com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl",
 					"CompressionStrategyClassName": "com.syncprem.uprising.streamingio.proxywrappers.strategies.NoneCompressionStrategyImpl"
 				}
 			}

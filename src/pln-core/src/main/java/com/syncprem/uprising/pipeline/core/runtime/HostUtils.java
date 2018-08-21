@@ -9,6 +9,7 @@ import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
 import com.syncprem.uprising.infrastructure.polyfills.Message;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
+import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl;
 import com.syncprem.uprising.pipeline.abstractions.configuration.HostConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Host;
 
@@ -30,7 +31,7 @@ public final class HostUtils
 
 		sourceFilePath = new File(sourceFilePath).getAbsolutePath();
 
-		hostConfiguration = Utils.getObjectFromJsonFile(sourceFilePath, HostConfiguration.class);
+		hostConfiguration = new JsonSerializationStrategyImpl().deserializeObjectFromFile(HostConfiguration.class, sourceFilePath);
 
 		messages = hostConfiguration.validate("Host");
 

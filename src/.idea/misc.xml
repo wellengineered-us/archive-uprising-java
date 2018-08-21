@@ -4,6 +4,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/inf-configuration/pom.xml" />
+        <option value="$PROJECT_DIR$/inf-serialization/pom.xml" />
         <option value="$PROJECT_DIR$/inf-polyfills/pom.xml" />
         <option value="$PROJECT_DIR$/pln-abstractions/pom.xml" />
         <option value="$PROJECT_DIR$/pln-core/pom.xml" />

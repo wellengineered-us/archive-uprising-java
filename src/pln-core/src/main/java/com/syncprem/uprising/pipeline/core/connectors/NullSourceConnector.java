@@ -193,6 +193,8 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 		else
 			componentState = context.getLocalState().get(this);
 
+		failFastOnlyWhen(componentState == null, "componentState == null");
+
 		schema = getSchema();
 
 		failFastOnlyWhen(schema == null, "schema == null");
@@ -221,6 +223,8 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 			context.getLocalState().put(this, (componentState = new HashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
+
+		failFastOnlyWhen(componentState == null, "componentState == null");
 
 		schema = (Schema) componentState.getOrDefault(CONTEXT_COMPONENT_SCOPED_SCHEMA, null);
 

@@ -128,7 +128,7 @@ public class JdbcConnectorSpecificConfiguration extends StageSpecificConfigurati
 			driverClass = this.getDriverClass();
 
 			if (driverClass == null)
-				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to load driver driver class by name.", context), Severity.ERROR));
+				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to load driver class by name.", context), Severity.ERROR));
 			else if (!Driver.class.isAssignableFrom(driverClass))
 				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s loaded an unrecognized driver driver class by name.", context), Severity.ERROR));
 			else

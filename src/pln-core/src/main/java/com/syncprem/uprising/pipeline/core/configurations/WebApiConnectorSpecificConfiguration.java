@@ -6,6 +6,7 @@
 package com.syncprem.uprising.pipeline.core.configurations;
 
 import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.serialization.SerializationStrategy;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.streamingio.proxywrappers.strategies.CompressionStrategy;
 import com.syncprem.uprising.streamingio.restful.HttpMethod;
@@ -110,42 +111,42 @@ public class WebApiConnectorSpecificConfiguration extends StageSpecificConfigura
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector HTTP scope is required.", context), Severity.ERROR));
 
 		if (Utils.isNullOrEmptyString(this.getSerializationStrategyClassName()))
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s driver class name is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s serialization strategy class name is required.", context), Severity.ERROR));
 		else
 		{
 			serializationStrategyClass = this.getSerializationStrategyClass();
 
 			if (serializationStrategyClass == null)
-				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to load driver driver class by name.", context), Severity.ERROR));
+				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to load serialization strategy class by name.", context), Severity.ERROR));
 			else if (!SerializationStrategy.class.isAssignableFrom(serializationStrategyClass))
-				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s loaded an unrecognized driver driver class by name.", context), Severity.ERROR));
+				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s loaded an unrecognized serialization strategy class by name.", context), Severity.ERROR));
 			else
 			{
 				// new-ing up via default public constructor should be low friction
 				serializationStrategy_ = Utils.newObjectFromClass(serializationStrategyClass);
 
 				if (serializationStrategy_ == null)
-					messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to instantiate driver driver class by name using default, public constructor.", context), Severity.ERROR));
+					messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to instantiate serialization strategy class by name using default, public constructor.", context), Severity.ERROR));
 			}
 		}
 
 		if (Utils.isNullOrEmptyString(this.getCompressionStrategyClassName()))
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s compressionStrategy class name is required.", context), Severity.ERROR));
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s compression strategy class name is required.", context), Severity.ERROR));
 		else
 		{
 			compressionStrategyClass = this.getCompressionStrategyClass();
 
 			if (compressionStrategyClass == null)
-				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to load compressionStrategy compressionStrategy class by name.", context), Severity.ERROR));
+				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to load compression strategy class by name.", context), Severity.ERROR));
 			else if (!CompressionStrategy.class.isAssignableFrom(compressionStrategyClass))
-				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s loaded an unrecognized compressionStrategy compressionStrategy class by name.", context), Severity.ERROR));
+				messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s loaded an unrecognized compression strategy class by name.", context), Severity.ERROR));
 			else
 			{
 				// new-ing up via default public constructor should be low friction
 				compressionStrategy_ = Utils.newObjectFromClass(compressionStrategyClass);
 
 				if (compressionStrategy_ == null)
-					messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to instantiate compressionStrategy compressionStrategy class by name using default, public constructor.", context), Severity.ERROR));
+					messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s failed to instantiate compression strategy class by name using default, public constructor.", context), Severity.ERROR));
 			}
 		}
 

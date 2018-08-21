@@ -18,6 +18,7 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.4" level="project" />
     <orderEntry type="module" module-name="inf-configuration" />
+    <orderEntry type="module" module-name="inf-serialization" />
     <orderEntry type="module" module-name="sio-primitives" />
     <orderEntry type="module" module-name="sio-proxywrappers" />
     <orderEntry type="module" module-name="sio-relational" />

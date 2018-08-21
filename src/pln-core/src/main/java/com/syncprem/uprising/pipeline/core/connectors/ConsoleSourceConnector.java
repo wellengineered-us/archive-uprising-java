@@ -239,6 +239,8 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 		else
 			componentState = context.getLocalState().get(this);
 
+		failFastOnlyWhen(componentState == null, "componentState == null");
+
 		schema = schemaBuilder.build();
 
 		if (schema == null)
@@ -269,6 +271,8 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 		else
 			componentState = context.getLocalState().get(this);
 
+		failFastOnlyWhen(componentState == null, "componentState == null");
+
 		schema = (Schema) componentState.getOrDefault(CONTEXT_COMPONENT_SCOPED_SCHEMA, null);
 
 		failFastOnlyWhen(schema == null, "schema == null");
@@ -277,7 +281,7 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 
 		failFastOnlyWhen(payloads == null, "payloads == null");
 
-		records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, null, null));
+		records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
 
 		failFastOnlyWhen(records == null, "records == null");
 

@@ -5,43 +5,16 @@
 
 package com.syncprem.uprising.infrastructure.polyfills;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.UUID;
-
-import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_COMMENTS;
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNRESOLVED_OBJECT_IDS;
-import static com.fasterxml.jackson.databind.MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES;
 
 public final class Utils
 {
 	public static final String EMPTY_STRING = "";
-
-	private static <Tin, Tout> Tout convertObject(Tin value, Class<Tout> clazz)
-	{
-		ObjectMapper objectMapper;
-		Tout obj;
-
-		if (value == null)
-			throw new ArgumentNullException("value");
-
-		if (clazz == null)
-			throw new ArgumentNullException("clazz");
-
-		objectMapper = new ObjectMapper();
-		objectMapper
-				.configure(ALLOW_COMMENTS, true)
-				.configure(ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-				.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.configure(FAIL_ON_UNRESOLVED_OBJECT_IDS, false);
-
-		obj = objectMapper.convertValue(value, clazz);
-		return obj;
-	}
 
 	public static <T> T failFastOnlyWhen(boolean conditional, String label) throws FailFastException
 	{
@@ -95,60 +68,6 @@ public final class Utils
 			throw new ArgumentNullException("uuid");
 
 		return uuid.toString().replace("-", "").toUpperCase();
-	}
-
-	public static <Tin, Tout extends Map<?, ?>> Tout getMapFromJsonObject(Tin value, Class<Tout> clazz)
-	{
-		return convertObject(value, clazz);
-	}
-
-
-	/**
-	 * TODO: move to JsonSerializationStrategyImpl.java
-	 *
-	 * @param filePath
-	 * @param clazz
-	 * @param <T>
-	 * @return
-	 */
-	public static <T> T getObjectFromJsonFile(String filePath, Class<T> clazz)
-	{
-		ObjectMapper objectMapper;
-		T obj;
-
-		if (filePath == null)
-			throw new ArgumentNullException("filePath");
-
-		if (clazz == null)
-			throw new ArgumentNullException("clazz");
-
-		if (filePath.isEmpty())
-			throw new ArgumentOutOfRangeException("filePath");
-
-		try
-		{
-			objectMapper = new ObjectMapper();
-			objectMapper
-					.configure(ALLOW_COMMENTS, true)
-					.configure(ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-					.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-					.configure(FAIL_ON_UNRESOLVED_OBJECT_IDS, false);
-			try (FileReader fileReader = new FileReader(filePath))
-			{
-				obj = objectMapper.readValue(fileReader, clazz);
-				return obj;
-			}
-		}
-		catch (IOException ioex)
-		{
-			ioex.printStackTrace();
-			return null;
-		}
-	}
-
-	public static <Tin extends Map<?, ?>, Tout> Tout getObjectFromJsonMap(Tin value, Class<Tout> clazz)
-	{
-		return convertObject(value, clazz);
 	}
 
 	public static <T> T getValueOrDefault(T value, final T defaultValue)

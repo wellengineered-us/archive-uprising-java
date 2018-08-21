@@ -16,8 +16,8 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>com.syncprem.uprising.pln-core</artifactId>
-	<name>SyncPrem Uprising - pln-core</name>
+	<artifactId>com.syncprem.uprising.inf-serialization</artifactId>
+	<name>SyncPrem Uprising - inf-serialization</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -25,54 +25,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>com.syncprem.uprising.inf-polyfills</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.inf-configuration</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.inf-serialization</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.sio-primitives</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.sio-proxywrappers</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.sio-relational</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.sio-restful</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.sio-textual</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>com.syncprem.uprising.pln-abstractions</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>mssql-jdbc</artifactId>
-			<version>6.5.2.jre9-preview</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

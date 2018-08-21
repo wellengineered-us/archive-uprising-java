@@ -5,9 +5,7 @@
 
 package com.syncprem.uprising.pipeline.core.runtime;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
-import com.syncprem.uprising.infrastructure.polyfills.Utils;
+import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractHost;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
@@ -142,6 +140,8 @@ public class SimpleHostImpl extends AbstractHost
 		final long timeout = 5;
 		final TimeUnit timeUnit = TimeUnit.SECONDS;
 		boolean success = false;
+
+		failFastOnlyWhen(!this.getCancellationToken().canBeCanceled(), "!this.getCancellationToken().canBeCanceled()");
 
 		this.getCancellationToken().cancel();
 

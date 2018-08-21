@@ -6,6 +6,7 @@
 package com.syncprem.uprising.pipeline.abstractions.configuration;
 
 import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class TypedStageConfiguration<TStageSpecificConfiguration extends StageSp
 		{
 			TStageSpecificConfiguration temp;
 
-			temp = Utils.getObjectFromJsonMap(this.getStageSpecificConfiguration(), clazz);
+			temp = JsonSerializationStrategyImpl.getObjectFromJsonMap(this.getStageSpecificConfiguration(), clazz);
 
 			//if (temp == null)
 			//temp = Utils.newObjectFromClass(clazz);
