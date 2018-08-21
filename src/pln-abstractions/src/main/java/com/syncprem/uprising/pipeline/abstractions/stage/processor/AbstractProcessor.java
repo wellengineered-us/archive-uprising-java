@@ -6,23 +6,23 @@
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.stage.AbstractStage;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public abstract class AbstractProcessor<TStageSpecificConfiguration extends StageSpecificConfiguration> extends AbstractStage<TStageSpecificConfiguration> implements Processor<TStageSpecificConfiguration>
+public abstract class AbstractProcessor<TTarget extends Component, TStageSpecificConfiguration extends StageSpecificConfiguration> extends AbstractStage<TStageSpecificConfiguration> implements Processor<TTarget, TStageSpecificConfiguration>
 {
 	protected AbstractProcessor()
 	{
 	}
 
 	@Override
-	public final Channel process(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate next) throws SyncPremException
+	public final TTarget process(Context context, RecordConfiguration configuration, TTarget target, ProcessDelegate<TTarget> next) throws SyncPremException
 	{
-		Channel newChannel;
+		TTarget newTarget;
 
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -30,8 +30,8 @@ public abstract class AbstractProcessor<TStageSpecificConfiguration extends Stag
 		if (configuration == null)
 			throw new ArgumentNullException("configuration");
 
-		if (channel == null)
-			throw new ArgumentNullException("runtime");
+		if (target == null)
+			throw new ArgumentNullException("target");
 
 		//if (next == _null)
 		//throw new ArgumentNullException("next");
@@ -39,15 +39,15 @@ public abstract class AbstractProcessor<TStageSpecificConfiguration extends Stag
 		try
 		{
 			this.assertValidConfiguration();
-			newChannel = this.processInternal(context, configuration, channel, next);
+			newTarget = this.processInternal(context, configuration, target, next);
 		}
 		catch (Exception ex)
 		{
 			throw new SyncPremException(ex);
 		}
 
-		return newChannel;
+		return newTarget;
 	}
 
-	protected abstract Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate next) throws Exception;
+	protected abstract TTarget processInternal(Context context, RecordConfiguration configuration, TTarget target, ProcessDelegate<TTarget> next) throws Exception;
 }

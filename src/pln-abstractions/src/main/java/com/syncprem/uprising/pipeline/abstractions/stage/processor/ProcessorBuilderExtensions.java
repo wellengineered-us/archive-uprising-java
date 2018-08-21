@@ -5,12 +5,13 @@
 
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedStageConfiguration;
 
-public interface ProcessorBuilderExtensions
+public interface ProcessorBuilderExtensions<TTarget extends Component>
 {
-	ProcessorBuilder from(Processor<? extends StageSpecificConfiguration> processor, UntypedStageConfiguration stageConfiguration) throws Exception;
+	ProcessorBuilder<TTarget> from(Processor<TTarget, ? extends StageSpecificConfiguration> processor, UntypedStageConfiguration stageConfiguration) throws Exception;
 
-	ProcessorBuilder from(Class<? extends Processor<? extends StageSpecificConfiguration>> processorClass, UntypedStageConfiguration stageConfiguration) throws Exception;
+	ProcessorBuilder<TTarget> from(Class<? extends Processor<TTarget, ? extends StageSpecificConfiguration>> processorClass, UntypedStageConfiguration stageConfiguration) throws Exception;
 }

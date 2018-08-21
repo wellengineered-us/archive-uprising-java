@@ -14,7 +14,7 @@ import com.syncprem.uprising.pipeline.abstractions.stage.processor.AbstractProce
 import com.syncprem.uprising.pipeline.abstractions.stage.processor.ProcessDelegate;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public class ConsoleProcessor extends AbstractProcessor<StageSpecificConfiguration>
+public class ConsoleProcessor extends AbstractProcessor<Channel, StageSpecificConfiguration>
 {
 	public ConsoleProcessor()
 	{
@@ -48,7 +48,7 @@ public class ConsoleProcessor extends AbstractProcessor<StageSpecificConfigurati
 
 
 	@Override
-	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate next) throws SyncPremException
+	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -59,19 +59,12 @@ public class ConsoleProcessor extends AbstractProcessor<StageSpecificConfigurati
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
-		if (next == null)
-			throw new ArgumentNullException("next");
+		System.out.println(String.format("%s::processInternal (before next) processor", ConsoleProcessor.class.getName()));
 
-		try
-		{
-			System.out.println(String.format("%s::processInternal (before next) processor", ConsoleProcessor.class.getName()));
+		if (next != null)
 			channel = next.invoke(context, configuration, channel);
-			System.out.println(String.format("%s::processInternal (after next) processor", ConsoleProcessor.class.getName()));
-		}
-		catch (Exception ex)
-		{
-			throw new SyncPremException(ex);
-		}
+
+		System.out.println(String.format("%s::processInternal (after next) processor", ConsoleProcessor.class.getName()));
 
 		return channel;
 	}

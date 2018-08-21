@@ -15,7 +15,7 @@ import com.syncprem.uprising.pipeline.abstractions.stage.processor.ProcessDelega
 import com.syncprem.uprising.pipeline.abstractions.stage.processor.ProcessorClosure;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public class NullProcessor extends AbstractProcessor<StageSpecificConfiguration>
+public class NullProcessor extends AbstractProcessor<Channel, StageSpecificConfiguration>
 {
 	public NullProcessor()
 	{
@@ -30,7 +30,7 @@ public class NullProcessor extends AbstractProcessor<StageSpecificConfiguration>
 		return retval;
 	}
 
-	private static Channel nullProcessorMethod(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate next) throws SyncPremException
+	private static Channel nullProcessorMethod(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -82,9 +82,8 @@ public class NullProcessor extends AbstractProcessor<StageSpecificConfiguration>
 			throw new ArgumentNullException("configuration");
 	}
 
-
 	@Override
-	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate next) throws SyncPremException
+	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -95,17 +94,10 @@ public class NullProcessor extends AbstractProcessor<StageSpecificConfiguration>
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
-		if (next == null)
-			throw new ArgumentNullException("next");
-
-		try
-		{
+		//System.out.print(">");
+		if (next != null)
 			channel = next.invoke(context, configuration, channel);
-		}
-		catch (Exception ex)
-		{
-			throw new SyncPremException(ex);
-		}
+		//System.out.print("<");
 
 		return channel;
 	}

@@ -5,11 +5,13 @@
 
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
-public interface ProcessorBuilder
+import com.syncprem.uprising.pipeline.abstractions.Component;
+
+public interface ProcessorBuilder<TTarget extends Component>
 {
-	ProcessDelegate build();
+	ProcessDelegate<TTarget> build();
 
-	ProcessorBuilder new_();
+	ProcessorBuilder<TTarget> new_();
 
-	ProcessorBuilder use(ChainDelegate<ProcessDelegate, ProcessDelegate> middleware);
+	ProcessorBuilder<TTarget> use(ChainDelegate<ProcessDelegate<TTarget>, ProcessDelegate<TTarget>> middleware);
 }

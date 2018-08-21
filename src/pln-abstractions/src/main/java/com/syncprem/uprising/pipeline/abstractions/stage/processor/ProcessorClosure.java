@@ -6,14 +6,14 @@
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public final class ProcessorClosure
+public final class ProcessorClosure<TTarget extends Component>
 {
-	private ProcessorClosure(ProcessToNextDelegate processToNext, ProcessDelegate next)
+	private ProcessorClosure(ProcessToNextDelegate<TTarget> processToNext, ProcessDelegate<TTarget> next)
 	{
 		if (processToNext == null)
 			throw new ArgumentNullException("processToNext");
@@ -25,20 +25,20 @@ public final class ProcessorClosure
 		this.next = next;
 	}
 
-	private final ProcessDelegate next;
-	private final ProcessToNextDelegate processToNext;
+	private final ProcessDelegate<TTarget> next;
+	private final ProcessToNextDelegate<TTarget> processToNext;
 
-	private ProcessDelegate getNext()
+	private ProcessDelegate<TTarget> getNext()
 	{
 		return this.next;
 	}
 
-	private ProcessToNextDelegate getProcessToNext()
+	private ProcessToNextDelegate<TTarget> getProcessToNext()
 	{
 		return this.processToNext;
 	}
 
-	public static ProcessDelegate getMiddlewareChain(ProcessToNextDelegate processToNext, ProcessDelegate next)
+	public static <TTarget extends Component> ProcessDelegate<TTarget> getMiddlewareChain(ProcessToNextDelegate<TTarget> processToNext, ProcessDelegate<TTarget> next)
 	{
 		if (processToNext == null)
 			throw new ArgumentNullException("processToNext");
@@ -46,12 +46,12 @@ public final class ProcessorClosure
 		if (next == null)
 			throw new ArgumentNullException("next");
 
-		return new ProcessorClosure(processToNext, next)::transform;
+		return new ProcessorClosure<>(processToNext, next)::transform;
 	}
 
-	private Channel transform(Context context, RecordConfiguration configuration, Channel channel) throws SyncPremException
+	private TTarget transform(Context context, RecordConfiguration configuration, TTarget target) throws SyncPremException
 	{
 		System.out.println("voo doo!");
-		return this.getProcessToNext().invoke(context, configuration, channel, this.getNext());
+		return this.getProcessToNext().invoke(context, configuration, target, this.getNext());
 	}
 }

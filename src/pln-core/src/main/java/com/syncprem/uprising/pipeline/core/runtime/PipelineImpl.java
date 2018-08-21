@@ -8,6 +8,7 @@ package com.syncprem.uprising.pipeline.core.runtime;
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedStageConfiguration;
@@ -46,7 +47,7 @@ public final class PipelineImpl extends AbstractPipeline
 
 		Class<? extends SourceConnector<? extends StageSpecificConfiguration>> sourceConnectorClass;
 		Class<? extends DestinationConnector<? extends StageSpecificConfiguration>> destinationConnectorType;
-		Map<UntypedStageConfiguration, Class<? extends Processor<? extends StageSpecificConfiguration>>> processorTypeConfigMappings;
+		Map<UntypedStageConfiguration, Class<? extends Processor<Channel, ? extends StageSpecificConfiguration>>> processorTypeConfigMappings;
 
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -57,7 +58,7 @@ public final class PipelineImpl extends AbstractPipeline
 
 		for (UntypedStageConfiguration processorConfiguration : this.getConfiguration().getProcessorConfigurations())
 		{
-			Class<? extends Processor<? extends StageSpecificConfiguration>> processorClass;
+			Class<? extends Processor<Channel, ? extends StageSpecificConfiguration>> processorClass;
 
 			if (processorConfiguration == null)
 				continue;
@@ -99,10 +100,10 @@ public final class PipelineImpl extends AbstractPipeline
 				{
 					RecordConfiguration configuration;
 
-					ProcessDelegate process;
-					ProcessorBuilderImpl processorBuilderImpl;
-					ProcessorBuilder processorBuilder;
-					ProcessorBuilderExtensions processorBuilderExtensions;
+					ProcessDelegate<Channel> process;
+					ProcessorBuilderImpl<Channel> processorBuilderImpl;
+					ProcessorBuilder<Channel> processorBuilder;
+					ProcessorBuilderExtensions<Channel> processorBuilderExtensions;
 
 					configuration = this.getConfiguration().getRecordConfiguration();
 
@@ -112,7 +113,7 @@ public final class PipelineImpl extends AbstractPipeline
 					sourceConnector.preExecute(context, configuration);
 					destinationConnector.preExecute(context, configuration);
 
-					processorBuilderImpl = new ProcessorBuilderImpl();
+					processorBuilderImpl = new ProcessorBuilderImpl<>();
 					processorBuilder = processorBuilderImpl;
 					processorBuilderExtensions = processorBuilderImpl;
 
@@ -136,7 +137,7 @@ public final class PipelineImpl extends AbstractPipeline
 					}
 
 					// by processor class (reflection)
-					for (Map.Entry<UntypedStageConfiguration, Class<? extends Processor<? extends StageSpecificConfiguration>>> processorTypeConfigMapping : processorTypeConfigMappings.entrySet())
+					for (Map.Entry<UntypedStageConfiguration, Class<? extends Processor<Channel, ? extends StageSpecificConfiguration>>> processorTypeConfigMapping : processorTypeConfigMappings.entrySet())
 					{
 						if (processorTypeConfigMapping == null)
 							continue;

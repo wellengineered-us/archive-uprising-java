@@ -5,15 +5,15 @@
 
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
 @FunctionalInterface
-public interface ProcessDelegate
+public interface ProcessDelegate<TTarget extends Component>
 {
-	Channel invoke(Context context, RecordConfiguration configuration, Channel channel) throws SyncPremException;
+	TTarget invoke(Context context, RecordConfiguration configuration, TTarget target) throws SyncPremException;
 }
 
 

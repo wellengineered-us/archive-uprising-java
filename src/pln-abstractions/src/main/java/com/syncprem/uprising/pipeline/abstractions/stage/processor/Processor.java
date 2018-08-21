@@ -5,14 +5,14 @@
 
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.stage.Stage;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public interface Processor<TStageSpecificConfiguration extends StageSpecificConfiguration> extends Stage<TStageSpecificConfiguration>
+public interface Processor<TTarget extends Component, TStageSpecificConfiguration extends StageSpecificConfiguration> extends Stage<TStageSpecificConfiguration>
 {
-	Channel process(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate next) throws SyncPremException;
+	TTarget process(Context context, RecordConfiguration configuration, TTarget target, ProcessDelegate<TTarget> next) throws SyncPremException;
 }
