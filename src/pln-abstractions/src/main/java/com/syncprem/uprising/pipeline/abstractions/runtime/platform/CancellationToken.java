@@ -10,9 +10,9 @@ import com.syncprem.uprising.infrastructure.polyfills.OperationCanceledException
 
 public interface CancellationToken extends Disposable
 {
-	boolean canBeCanceled();
-
 	boolean isCancellationRequested();
+
+	boolean canBeCanceled();
 
 	void cancel();
 

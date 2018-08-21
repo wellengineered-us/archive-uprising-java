@@ -47,6 +47,88 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 		this.sourceHttpStreamingClient = sourceHttpStreamingClient;
 	}
 
+	private Iterator<Payload> getPayloadUsingHttpResponseContent(Map<String, Iterable<String>> responseHeaders, HttpStreamingContent responseContent)
+	{
+		if (responseHeaders == null)
+			throw new ArgumentNullException("responseHeaders");
+
+		if (responseContent == null)
+			throw new ArgumentNullException("responseContent");
+
+		System.out.println(responseHeaders.get("Content-Type"));
+
+		return new AbstractYieldIterator<Payload>()
+		{
+			@Override
+			protected void create(boolean creating) throws Exception
+			{
+
+			}
+
+			@Override
+			protected void dispose(boolean disposing) throws Exception
+			{
+
+			}
+
+			@Override
+			protected Iterator<Payload> newIterator(int state)
+			{
+				return null;
+			}
+
+			@Override
+			protected boolean onTryYield(TryOut<Payload> value) throws Exception
+			{
+				return false;
+			}
+
+			@Override
+			protected void onYieldComplete() throws Exception
+			{
+
+			}
+
+			@Override
+			protected void onYieldFault(Exception ex)
+			{
+
+			}
+
+			@Override
+			protected void onYieldResume() throws Exception
+			{
+
+			}
+
+			@Override
+			protected void onYieldReturn(Payload value) throws Exception
+			{
+
+			}
+
+			@Override
+			protected void onYieldStart() throws Exception
+			{
+
+			}
+		};
+	}
+
+	private Schema getSchemaUsingHeadResponse(HttpStreamingResponse httpStreamingResponse)
+	{
+		Schema schema;
+		SchemaBuilder schemaBuilder;
+
+		if (httpStreamingResponse == null)
+			throw new ArgumentNullException("httpStreamingResponse");
+
+		schemaBuilder = SchemaBuilderImpl.create().withType(SchemaType.UNKNOWN);
+		schema = schemaBuilder.build();
+
+		return schema;
+	}
+
 	@Override
 	protected Class<? extends WebApiConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
 	{
@@ -119,20 +201,6 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 		failFastOnlyWhen(schema == null, "schema == null");
 
 		componentState.put(CONTEXT_COMPONENT_SCOPED_SCHEMA, schema);
-	}
-
-	private Schema getSchemaUsingHeadResponse(HttpStreamingResponse httpStreamingResponse)
-	{
-		Schema schema;
-		SchemaBuilder schemaBuilder;
-
-		if (httpStreamingResponse == null)
-			throw new ArgumentNullException("httpStreamingResponse");
-
-		schemaBuilder = SchemaBuilderImpl.create().withType(SchemaType.UNKNOWN);
-		schema = schemaBuilder.build();
-
-		return schema;
 	}
 
 	@Override
@@ -239,73 +307,5 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 		failFastOnlyWhen(channel == null, "channel == null");
 
 		return channel;
-	}
-
-	private Iterator<Payload> getPayloadUsingHttpResponseContent(Map<String, Iterable<String>> responseHeaders, HttpStreamingContent responseContent)
-	{
-		if (responseHeaders == null)
-			throw new ArgumentNullException("responseHeaders");
-
-		if (responseContent == null)
-			throw new ArgumentNullException("responseContent");
-
-		System.out.println(responseHeaders.get("Content-Type"));
-
-		return new AbstractYieldIterator<Payload>()
-		{
-			@Override
-			protected Iterator<Payload> newIterator(int state)
-			{
-				return null;
-			}
-
-			@Override
-			protected boolean onTryYield(TryOut<Payload> value) throws Exception
-			{
-				return false;
-			}
-
-			@Override
-			protected void onYieldComplete() throws Exception
-			{
-
-			}
-
-			@Override
-			protected void onYieldFault(Exception ex)
-			{
-
-			}
-
-			@Override
-			protected void onYieldResume() throws Exception
-			{
-
-			}
-
-			@Override
-			protected void onYieldReturn(Payload value) throws Exception
-			{
-
-			}
-
-			@Override
-			protected void onYieldStart() throws Exception
-			{
-
-			}
-
-			@Override
-			protected void create(boolean creating) throws Exception
-			{
-
-			}
-
-			@Override
-			protected void dispose(boolean disposing) throws Exception
-			{
-
-			}
-		};
 	}
 }

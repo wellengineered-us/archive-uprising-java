@@ -6,7 +6,6 @@
 package com.syncprem.uprising.pipeline.abstractions.stage;
 
 import com.syncprem.uprising.infrastructure.configuration.Configurable;
-import com.syncprem.uprising.infrastructure.polyfills.Validatable;
 import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.Specifiable;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;

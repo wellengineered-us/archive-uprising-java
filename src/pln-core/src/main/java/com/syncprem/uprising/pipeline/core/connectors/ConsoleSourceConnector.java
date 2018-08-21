@@ -19,11 +19,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
-import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__enter;
-import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__leave;
-import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__watching;
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.*;
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
 public final class ConsoleSourceConnector extends AbstractSourceConnector<StageSpecificConfiguration>
@@ -43,6 +44,12 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 	private static PrintStream getTextWriter()
 	{
 		return textWriter;
+	}
+
+	@Override
+	protected Class<StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	{
+		return StageSpecificConfiguration.class;
 	}
 
 	public LifecycleIterator<Payload> getYieldViaConsole(Schema schema)
@@ -65,8 +72,8 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 
 		iterator = new AbstractYieldIterator<Payload>()
 		{
-			private long recordIndex;
 			final long recordInitial = 0L;
+			private long recordIndex;
 
 			@Override
 			protected void create(boolean creating) throws Exception
@@ -161,12 +168,6 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 		__leave(__);
 
 		return iterator;
-	}
-
-	@Override
-	protected Class<StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
-	{
-		return StageSpecificConfiguration.class;
 	}
 
 	@Override

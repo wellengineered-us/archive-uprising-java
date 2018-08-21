@@ -5,7 +5,10 @@
 
 package com.syncprem.uprising.pipeline.core.configurations;
 
-import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.polyfills.Message;
+import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
+import com.syncprem.uprising.infrastructure.polyfills.Severity;
+import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.infrastructure.serialization.SerializationStrategy;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.streamingio.proxywrappers.strategies.CompressionStrategy;

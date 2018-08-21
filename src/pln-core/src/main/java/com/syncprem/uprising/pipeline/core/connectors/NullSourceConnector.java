@@ -14,13 +14,10 @@ import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.Abstra
 import com.syncprem.uprising.pipeline.core.configurations.NullConnectorSpecificConfiguration;
 import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
-import com.syncprem.uprising.streamingio.textual.TextualStreamingRecord;
 
 import java.util.*;
 
-import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__enter;
-import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__leave;
-import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__watching;
+import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.*;
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
 public final class NullSourceConnector extends AbstractSourceConnector<NullConnectorSpecificConfiguration>
@@ -44,7 +41,7 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 
 		schemaBuilder.addField(Utils.EMPTY_STRING, UUID.class, false, true, null);
 
-		for (long fieldIndex = 0; fieldIndex < (long)this.getSpecification().getMaxRandomFieldCount(); fieldIndex++)
+		for (long fieldIndex = 0; fieldIndex < (long) this.getSpecification().getMaxRandomFieldCount(); fieldIndex++)
 		{
 			final String fieldName = String.format(this.getSpecification().getFieldNameFormat(), fieldIndex);
 
@@ -68,15 +65,15 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 		failFastOnlyWhen(schema.getFields() == null, "schema.getFields() == null");
 
 		final int fieldCount = schema.getFields().size();
-		final long recordCount = getRandom().nextInt((int)(long)this.getSpecification().getMaxRandomRecordCount());
+		final long recordCount = getRandom().nextInt((int) (long) this.getSpecification().getMaxRandomRecordCount());
 
 		fields = new Field[fieldCount];
 		schema.getFields().values().toArray(fields);
 
 		iterator = new AbstractYieldIterator<Payload>()
 		{
-			private long recordIndex;
 			final long recordInitial = 0L;
+			private long recordIndex;
 
 			@Override
 			protected void create(boolean creating) throws Exception

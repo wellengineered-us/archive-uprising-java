@@ -19,10 +19,9 @@ public class NullConnectorSpecificConfiguration extends StageSpecificConfigurati
 	public NullConnectorSpecificConfiguration()
 	{
 	}
-
-	private Long maxRandomRecordCount;
-	private Long maxRandomFieldCount;
 	private String fieldNameFormat;
+	private Long maxRandomFieldCount;
+	private Long maxRandomRecordCount;
 
 	public String getFieldNameFormat()
 	{
@@ -34,16 +33,6 @@ public class NullConnectorSpecificConfiguration extends StageSpecificConfigurati
 		this.fieldNameFormat = fieldNameFormat;
 	}
 
-	public Long getMaxRandomRecordCount()
-	{
-		return this.maxRandomRecordCount;
-	}
-
-	public void setMaxRandomRecordCount(Long maxRandomRecordCount)
-	{
-		this.maxRandomRecordCount = maxRandomRecordCount;
-	}
-
 	public Long getMaxRandomFieldCount()
 	{
 		return this.maxRandomFieldCount;
@@ -52,6 +41,16 @@ public class NullConnectorSpecificConfiguration extends StageSpecificConfigurati
 	public void setMaxRandomFieldCount(Long maxRandomFieldCount)
 	{
 		this.maxRandomFieldCount = maxRandomFieldCount;
+	}
+
+	public Long getMaxRandomRecordCount()
+	{
+		return this.maxRandomRecordCount;
+	}
+
+	public void setMaxRandomRecordCount(Long maxRandomRecordCount)
+	{
+		this.maxRandomRecordCount = maxRandomRecordCount;
 	}
 
 	@Override

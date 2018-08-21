@@ -5,7 +5,10 @@
 
 package com.syncprem.uprising.pipeline.abstractions.configuration;
 
-import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
+import com.syncprem.uprising.infrastructure.polyfills.Message;
+import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl;
 
 import java.util.ArrayList;

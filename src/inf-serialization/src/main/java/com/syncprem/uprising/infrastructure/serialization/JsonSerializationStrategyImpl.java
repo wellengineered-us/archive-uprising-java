@@ -28,14 +28,29 @@ public class JsonSerializationStrategyImpl implements SerializationStrategy, Nat
 	{
 	}
 
-	public static <Tin, Tout extends Map<?, ?>> Tout getMapFromJsonObject(Tin value, Class<Tout> clazz)
+	private static ObjectMapper getObjectMapper()
 	{
-		return convertObject(value, clazz);
+		ObjectMapper objectMapper;
+
+		objectMapper = new ObjectMapper();
+		objectMapper
+				.configure(AUTO_CLOSE_TARGET, false)
+				.configure(ALLOW_COMMENTS, true)
+				.configure(ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+				.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+				.configure(FAIL_ON_UNRESOLVED_OBJECT_IDS, false);
+
+		return objectMapper;
 	}
 
-	public static <Tin extends Map<?, ?>, Tout> Tout getObjectFromJsonMap(Tin value, Class<Tout> clazz)
+	private static ObjectWriter getObjectWriter()
 	{
-		return convertObject(value, clazz);
+		ObjectWriter objectWriter;
+
+		final ObjectMapper objectMapper = getObjectMapper();
+		objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+
+		return objectWriter;
 	}
 
 	private static <Tin, Tout> Tout convertObject(Tin value, Class<Tout> clazz)
@@ -55,6 +70,16 @@ public class JsonSerializationStrategyImpl implements SerializationStrategy, Nat
 		return obj;
 	}
 
+	public static <Tin, Tout extends Map<?, ?>> Tout getMapFromJsonObject(Tin value, Class<Tout> clazz)
+	{
+		return convertObject(value, clazz);
+	}
+
+	public static <Tin extends Map<?, ?>, Tout> Tout getObjectFromJsonMap(Tin value, Class<Tout> clazz)
+	{
+		return convertObject(value, clazz);
+	}
+
 	@Override
 	public <TObject> TObject deserializeObjectFromByteStream(Class<? extends TObject> clazz, InputStream inputStream) throws Exception
 	{
@@ -64,7 +89,7 @@ public class JsonSerializationStrategyImpl implements SerializationStrategy, Nat
 			throw new ArgumentNullException("clazz");
 
 		//if (inputStream.available() <= 0)
-			//return null;
+		//return null;
 
 		final ObjectMapper objectMapper = getObjectMapper();
 
@@ -122,19 +147,22 @@ public class JsonSerializationStrategyImpl implements SerializationStrategy, Nat
 	}
 
 	@Override
-	public <TObject> String serializeObjectToString(Class<? extends TObject> clazz, TObject obj) throws Exception
+	public <TObject> void serializeObjectToByteStream(OutputStream outputStream, Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
-		throw new NotImplementedException();
+		if (outputStream == null)
+			throw new ArgumentNullException("outputStream");
+
+		if (obj == null)
+			throw new ArgumentNullException("obj");
+
+		final ObjectWriter objectWriter = getObjectWriter();
+
+		// TODO: verify this is stream IO oriented
+		objectWriter.writeValue(outputStream, obj);
 	}
 
 	@Override
-	public <TObject> void serializeObjectToNative(JsonGenerator nativeOutput, Class<? extends TObject> clazz, TObject obj) throws Exception
-	{
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public <TObject> void serializeObjectToFile(String outputFilePath, Class<? extends TObject> clazz, TObject obj) throws Exception
+	public <TObject> byte[] serializeObjectToBytes(Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
 		throw new NotImplementedException();
 	}
@@ -155,48 +183,20 @@ public class JsonSerializationStrategyImpl implements SerializationStrategy, Nat
 	}
 
 	@Override
-	public <TObject> byte[] serializeObjectToBytes(Class<? extends TObject> clazz, TObject obj) throws Exception
+	public <TObject> void serializeObjectToFile(String outputFilePath, Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
 		throw new NotImplementedException();
 	}
 
 	@Override
-	public <TObject> void serializeObjectToByteStream(OutputStream outputStream, Class<? extends TObject> clazz, TObject obj) throws Exception
+	public <TObject> void serializeObjectToNative(JsonGenerator nativeOutput, Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
-		if (outputStream == null)
-			throw new ArgumentNullException("outputStream");
-
-		if (obj == null)
-			throw new ArgumentNullException("obj");
-
-		final ObjectWriter objectWriter = getObjectWriter();
-
-		// TODO: verify this is stream IO oriented
-		objectWriter.writeValue(outputStream, obj);
+		throw new NotImplementedException();
 	}
 
-	private static ObjectMapper getObjectMapper()
+	@Override
+	public <TObject> String serializeObjectToString(Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
-		ObjectMapper objectMapper;
-
-		objectMapper = new ObjectMapper();
-		objectMapper
-				.configure(AUTO_CLOSE_TARGET, false)
-				.configure(ALLOW_COMMENTS, true)
-				.configure(ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-				.configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-				.configure(FAIL_ON_UNRESOLVED_OBJECT_IDS, false);
-
-		return objectMapper;
-	}
-
-	private static ObjectWriter getObjectWriter()
-	{
-		ObjectWriter objectWriter;
-
-		final ObjectMapper objectMapper = getObjectMapper();
-		objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-
-		return objectWriter;
+		throw new NotImplementedException();
 	}
 }

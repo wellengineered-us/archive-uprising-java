@@ -50,20 +50,6 @@ public final class WebApiDestinationConnector extends AbstractDestinationConnect
 		this.destinationHttpStreamingClient = destinationHttpStreamingClient;
 	}
 
-	private Schema getSchemaUsingHeadResponse(HttpStreamingResponse httpStreamingResponse)
-	{
-		Schema schema;
-		SchemaBuilder schemaBuilder;
-
-		if (httpStreamingResponse == null)
-			throw new ArgumentNullException("httpStreamingResponse");
-
-		schemaBuilder = SchemaBuilderImpl.create().withType(SchemaType.UNKNOWN);
-		schema = schemaBuilder.build();
-
-		return schema;
-	}
-
 	@Override
 	protected void consumeInternal(Context context, RecordConfiguration configuration, Channel channel) throws Exception
 	{
@@ -143,6 +129,20 @@ public final class WebApiDestinationConnector extends AbstractDestinationConnect
 
 		failFastOnlyWhen(recordCount != 0L, "recordCount != 0L");
 		failFastOnlyWhen(!records.isDisposed(), "!records.isDisposed()");
+	}
+
+	private Schema getSchemaUsingHeadResponse(HttpStreamingResponse httpStreamingResponse)
+	{
+		Schema schema;
+		SchemaBuilder schemaBuilder;
+
+		if (httpStreamingResponse == null)
+			throw new ArgumentNullException("httpStreamingResponse");
+
+		schemaBuilder = SchemaBuilderImpl.create().withType(SchemaType.UNKNOWN);
+		schema = schemaBuilder.build();
+
+		return schema;
 	}
 
 	@Override

@@ -8,9 +8,6 @@ package com.syncprem.uprising.streamingio.proxywrappers;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static com.syncprem.uprising.infrastructure.polyfills.Utils.formatCurrentThreadId;
-import static com.syncprem.uprising.infrastructure.polyfills.Utils.formatObjectInfo;
-
 public class ProgressWrappedOutputStreamImpl extends WrappedOutputStreamImpl
 {
 	public ProgressWrappedOutputStreamImpl(OutputStream baseOutputStream)

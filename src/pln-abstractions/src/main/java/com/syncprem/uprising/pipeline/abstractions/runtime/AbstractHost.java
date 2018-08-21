@@ -31,6 +31,8 @@ public abstract class AbstractHost extends AbstractComponent implements Host
 		this.configuration = configuration;
 	}
 
+	protected abstract void onHostUnload(FutureTask<?> futureTask);
+
 	@Override
 	public final void run() throws SyncPremException
 	{
@@ -45,6 +47,4 @@ public abstract class AbstractHost extends AbstractComponent implements Host
 	}
 
 	protected abstract void runInternal() throws Exception;
-
-	protected abstract void onHostUnload(FutureTask<?> futureTask);
 }

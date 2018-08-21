@@ -56,25 +56,7 @@ public class StringSerializationStrategyImpl implements SerializationStrategy, N
 	}
 
 	@Override
-	public <TObject> String serializeObjectToString(Class<? extends TObject> clazz, TObject obj) throws Exception
-	{
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public <TObject> void serializeObjectToNative(CharSequence charSequence, Class<? extends TObject> clazz, TObject obj) throws Exception
-	{
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public <TObject> void serializeObjectToFile(String outputFilePath, Class<? extends TObject> clazz, TObject obj) throws Exception
-	{
-		throw new NotImplementedException();
-	}
-
-	@Override
-	public <TObject> void serializeObjectToCharStream(Writer outputWriter, Class<? extends TObject> clazz, TObject obj) throws Exception
+	public <TObject> void serializeObjectToByteStream(OutputStream outputStream, Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
 		throw new NotImplementedException();
 	}
@@ -86,7 +68,25 @@ public class StringSerializationStrategyImpl implements SerializationStrategy, N
 	}
 
 	@Override
-	public <TObject> void serializeObjectToByteStream(OutputStream outputStream, Class<? extends TObject> clazz, TObject obj) throws Exception
+	public <TObject> void serializeObjectToCharStream(Writer outputWriter, Class<? extends TObject> clazz, TObject obj) throws Exception
+	{
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public <TObject> void serializeObjectToFile(String outputFilePath, Class<? extends TObject> clazz, TObject obj) throws Exception
+	{
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public <TObject> void serializeObjectToNative(CharSequence charSequence, Class<? extends TObject> clazz, TObject obj) throws Exception
+	{
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public <TObject> String serializeObjectToString(Class<? extends TObject> clazz, TObject obj) throws Exception
 	{
 		throw new NotImplementedException();
 	}

@@ -6,7 +6,6 @@
 package com.syncprem.uprising.pipeline.abstractions.stage;
 
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
-import com.syncprem.uprising.infrastructure.polyfills.Validatable;
 import com.syncprem.uprising.pipeline.abstractions.AbstractComponent;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;

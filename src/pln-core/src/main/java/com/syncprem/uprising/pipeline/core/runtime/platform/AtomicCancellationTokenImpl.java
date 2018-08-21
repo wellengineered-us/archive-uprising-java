@@ -34,6 +34,12 @@ public final class AtomicCancellationTokenImpl extends AbstractLifecycle<Excepti
 	}
 
 	@Override
+	public boolean isCancellationRequested()
+	{
+		return this.getAtomicBoolean() == null || !this.getAtomicBoolean().get();
+	}
+
+	@Override
 	public boolean canBeCanceled()
 	{
 		return this.getAtomicBoolean() != null;
@@ -44,12 +50,6 @@ public final class AtomicCancellationTokenImpl extends AbstractLifecycle<Excepti
 	{
 		if (this.getAtomicBoolean() != null)
 			this.getAtomicBoolean().set(false);
-	}
-
-	@Override
-	public boolean isCancellationRequested()
-	{
-		return this.getAtomicBoolean() == null || !this.getAtomicBoolean().get();
 	}
 
 	@Override

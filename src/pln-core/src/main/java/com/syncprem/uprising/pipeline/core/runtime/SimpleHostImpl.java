@@ -5,7 +5,9 @@
 
 package com.syncprem.uprising.pipeline.core.runtime;
 
-import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
+import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractHost;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
@@ -184,6 +186,15 @@ public class SimpleHostImpl extends AbstractHost
 	}
 
 	@Override
+	protected void onHostUnload(FutureTask<?> futureTask)
+	{
+		if (futureTask == null)
+			throw new ArgumentNullException("futureTask");
+
+		Runtime.getRuntime().addShutdownHook(new Thread(futureTask));
+	}
+
+	@Override
 	protected void runInternal() throws Exception
 	{
 		long loopIndex = -1L;
@@ -222,15 +233,6 @@ public class SimpleHostImpl extends AbstractHost
 			this.maybeDispatchAwait();
 		}
 		while (this.shouldRunDispatchLoop());
-	}
-
-	@Override
-	protected void onHostUnload(FutureTask<?> futureTask)
-	{
-		if (futureTask == null)
-			throw new ArgumentNullException("futureTask");
-
-		Runtime.getRuntime().addShutdownHook(new Thread(futureTask));
 	}
 
 	protected boolean shouldRunDispatchLoop()

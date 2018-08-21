@@ -200,7 +200,7 @@ public final class HttpStreamingClientImpl extends AbstractLifecycle<Exception, 
 				responseInputStream = httpUrlConnection.getErrorStream();
 			}
 
-			if(responseInputStream == null)
+			if (responseInputStream == null)
 				responseContent = new EmptyStreamContent();
 			else
 				responseContent = new PullOutputStreamContent(responseInputStream);
