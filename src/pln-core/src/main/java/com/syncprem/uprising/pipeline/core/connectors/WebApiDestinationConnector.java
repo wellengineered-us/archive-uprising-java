@@ -131,6 +131,12 @@ public final class WebApiDestinationConnector extends AbstractDestinationConnect
 		failFastOnlyWhen(!records.isDisposed(), "!records.isDisposed()");
 	}
 
+	@Override
+	protected Class<? extends WebApiConnectorSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
+	{
+		return WebApiConnectorSpecificConfiguration.class;
+	}
+
 	private Schema getSchemaUsingHeadResponse(HttpStreamingResponse httpStreamingResponse)
 	{
 		Schema schema;
@@ -143,12 +149,6 @@ public final class WebApiDestinationConnector extends AbstractDestinationConnect
 		schema = schemaBuilder.build();
 
 		return schema;
-	}
-
-	@Override
-	protected Class<? extends WebApiConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
-	{
-		return WebApiConnectorSpecificConfiguration.class;
 	}
 
 	@Override

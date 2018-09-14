@@ -12,7 +12,6 @@ import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.AbstractSourceConnector;
 import com.syncprem.uprising.pipeline.core.configurations.JdbcConnectorSpecificConfiguration;
-import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.WrappedIteratorExtensions;
 import com.syncprem.uprising.streamingio.relational.JdbcStreamingColumnImpl;
@@ -43,6 +42,12 @@ public final class JdbcSourceConnector extends AbstractSourceConnector<JdbcConne
 	private void setSourceUnitOfWork(UnitOfWork sourceUnitOfWork)
 	{
 		this.sourceUnitOfWork = sourceUnitOfWork;
+	}
+
+	@Override
+	protected Class<JdbcConnectorSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
+	{
+		return JdbcConnectorSpecificConfiguration.class;
 	}
 
 	private LifecycleIterator<Channel> getMultiplexedChannels(Context context, Iterator<JdbcStreamingResult> results)
@@ -105,7 +110,7 @@ public final class JdbcSourceConnector extends AbstractSourceConnector<JdbcConne
 
 			failFastOnlyWhen(payloads == null, "payloads == null");
 
-			records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(fieldSchema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
+			records = new DelayedProjectionIterator<>(payloads, (i, p) -> context.createRecord(fieldSchema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
 
 			failFastOnlyWhen(records == null, "records == null");
 
@@ -120,12 +125,6 @@ public final class JdbcSourceConnector extends AbstractSourceConnector<JdbcConne
 		};
 
 		return channels;
-	}
-
-	@Override
-	protected Class<JdbcConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
-	{
-		return JdbcConnectorSpecificConfiguration.class;
 	}
 
 	@Override

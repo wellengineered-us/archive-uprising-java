@@ -7,8 +7,8 @@ package com.syncprem.uprising.pipeline.core.connectors;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.LifecycleIterator;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
@@ -17,7 +17,7 @@ import com.syncprem.uprising.streamingio.proxywrappers.WrappedIteratorExtensions
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
-public final class NullDestinationConnector extends AbstractDestinationConnector<StageSpecificConfiguration>
+public final class NullDestinationConnector extends AbstractDestinationConnector<ComponentSpecificConfiguration>
 {
 	public NullDestinationConnector()
 	{
@@ -48,9 +48,9 @@ public final class NullDestinationConnector extends AbstractDestinationConnector
 	}
 
 	@Override
-	protected Class<? extends StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<? extends ComponentSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
 	{
-		return StageSpecificConfiguration.class;
+		return ComponentSpecificConfiguration.class;
 	}
 
 	@Override

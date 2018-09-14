@@ -3,14 +3,19 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.abstractions.stage;
+package com.syncprem.uprising.pipeline.abstractions.middleware;
 
+import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
 @FunctionalInterface
-public interface ExecuteDelegate
+public interface MiddlewareDelegate<TComponent extends Component>
 {
-	void invoke(Context context, RecordConfiguration configuration) throws SyncPremException;
+	TComponent invoke(Context context, RecordConfiguration configuration, TComponent target) throws SyncPremException;
 }
+
+
+
+

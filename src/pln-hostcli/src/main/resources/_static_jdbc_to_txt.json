@@ -3,7 +3,8 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 {
-	"Version": "1",
+	"TargetEngineVersion": "0.2.0",
+	"ConfigurationVersion": "2.0.0",
 	"HostClassName": "com.syncprem.uprising.pipeline.core.runtime.SimpleHostImpl",
 	"EnableDispatchLoop": false,
 	"PipelineConfigurations": [
@@ -12,8 +13,8 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.JdbcSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.JdbcSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"DriverClassName": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
 					"ConnectionUrl": "jdbc:sqlserver://localhost:1433;databaseName=bank_account_demo;user=bank_account_demo_mssql_lcl_login;password=LrJGmP6UfW8TEp7x3wWhECUYULE6zzMcWQ03R6UxeB4xzVmnq5S4Lx0vApegZVH",
 					"PreExecuteCommand": {
@@ -30,11 +31,11 @@
 					}
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.LinedTextualDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.LinedTextualDestinationConnector",
+				"ComponentSpecificConfiguration": {
 					"TextualFilePath": "_out_\\sample.txt",
 					"TextualConfiguration": {
 						"TextualHeaderFieldConfigurations": [

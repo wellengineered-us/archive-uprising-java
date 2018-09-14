@@ -9,7 +9,7 @@ import com.syncprem.uprising.infrastructure.polyfills.Message;
 import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.polyfills.Severity;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.streamingio.textual.TextualFieldSpec;
 import com.syncprem.uprising.streamingio.textual.TextualSpec;
 
@@ -21,7 +21,7 @@ public abstract class AbstractTextualFileConnectorSpecificConfiguration<
 		TTextualSpec extends TextualSpec<TTextualFieldSpec>,
 		TTextualFieldConfiguration extends AbstractTextualFieldConfiguration,
 		TTextualConfiguration
-				extends AbstractTextualConfiguration<TTextualFieldConfiguration, TTextualFieldSpec, TTextualSpec>> extends StageSpecificConfiguration
+				extends AbstractTextualConfiguration<TTextualFieldConfiguration, TTextualFieldSpec, TTextualSpec>> extends ComponentSpecificConfiguration
 {
 	protected AbstractTextualFileConnectorSpecificConfiguration()
 	{

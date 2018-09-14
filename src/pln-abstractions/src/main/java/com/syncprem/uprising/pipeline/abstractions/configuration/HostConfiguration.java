@@ -9,6 +9,7 @@ import com.syncprem.uprising.infrastructure.configuration.ConfigurationObjectCol
 import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Host;
 
+import java.lang.module.ModuleDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,19 @@ public class HostConfiguration extends ComponentConfiguration
 	}
 
 	private final ConfigurationObjectCollectionImpl<PipelineConfiguration> pipelineConfigurations;
+	private String configurationVersion;
 	private Boolean enableDispatchLoop;
 	private String hostClassName;
-	private String version;
+
+	public String getConfigurationVersion()
+	{
+		return this.configurationVersion;
+	}
+
+	public void setConfigurationVersion(String configurationVersion)
+	{
+		this.configurationVersion = configurationVersion;
+	}
 
 	public Class<? extends Host> getHostClass()
 	{
@@ -52,19 +63,9 @@ public class HostConfiguration extends ComponentConfiguration
 		return this.pipelineConfigurations;
 	}
 
-	public String getVersion()
-	{
-		return this.version;
-	}
-
 	public void setEnableDispatchLoop(Boolean enableDispatchLoop)
 	{
 		this.enableDispatchLoop = enableDispatchLoop;
-	}
-
-	public void setFieldName(String version)
-	{
-		this.version = version;
 	}
 
 	public Boolean enableDispatchLoop()
@@ -82,8 +83,17 @@ public class HostConfiguration extends ComponentConfiguration
 
 		messages = new ArrayList<>();
 
-		if (Utils.isNullOrEmptyString(this.getVersion()))
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Not a valid host configuration (version missing)."), Severity.ERROR));
+		final TryOut<ModuleDescriptor.Version> outVersion = new TryOut<>();
+		final ModuleDescriptor.Version currentEngineVersion = ModuleDescriptor.Version.parse("0.2.0");
+		final ModuleDescriptor.Version currentConfigurationVersion = ModuleDescriptor.Version.parse("2.0.0");
+		final ModuleDescriptor.Version minimumConfigurationVersion = currentConfigurationVersion;
+
+		if (Utils.isNullOrEmptyString(this.getConfigurationVersion()) ||
+				!Utils.tryParseValid(this.getConfigurationVersion(), outVersion))
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Not a valid host configuration (configurationVersion missing)."), Severity.ERROR));
+		else if (!outVersion.isSet() || minimumConfigurationVersion == null ||
+				outVersion.getValue().compareTo(minimumConfigurationVersion) < 0)
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Host configuration configurationVersion '%s' is less than the required minimum configuration configurationVersion '%s'.", outVersion.getValue(), minimumConfigurationVersion), Severity.ERROR));
 
 		if (Utils.isNullOrEmptyString(this.getHostClassName()))
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s host class name is required.", context), Severity.ERROR));

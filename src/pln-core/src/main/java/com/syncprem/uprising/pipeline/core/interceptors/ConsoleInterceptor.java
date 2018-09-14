@@ -3,27 +3,27 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.core.processors;
+package com.syncprem.uprising.pipeline.core.interceptors;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.AbstractProcessor;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.ProcessDelegate;
+import com.syncprem.uprising.pipeline.abstractions.stage.interceptor.AbstractInterceptor;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public class ConsoleProcessor extends AbstractProcessor<Channel, StageSpecificConfiguration>
+public class ConsoleInterceptor extends AbstractInterceptor<ComponentSpecificConfiguration>
 {
-	public ConsoleProcessor()
+	public ConsoleInterceptor()
 	{
 	}
 
 	@Override
-	protected Class<? extends StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<? extends ComponentSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
 	{
-		return StageSpecificConfiguration.class;
+		return ComponentSpecificConfiguration.class;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ConsoleProcessor extends AbstractProcessor<Channel, StageSpecificCo
 
 
 	@Override
-	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate<Channel> next) throws SyncPremException
+	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -59,12 +59,12 @@ public class ConsoleProcessor extends AbstractProcessor<Channel, StageSpecificCo
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
-		System.out.println(String.format("%s::processInternal (before next) processor", ConsoleProcessor.class.getName()));
+		System.out.println(String.format("%s::processInternal (before next) interceptor", ConsoleInterceptor.class.getName()));
 
 		if (next != null)
 			channel = next.invoke(context, configuration, channel);
 
-		System.out.println(String.format("%s::processInternal (after next) processor", ConsoleProcessor.class.getName()));
+		System.out.println(String.format("%s::processInternal (after next) interceptor", ConsoleInterceptor.class.getName()));
 
 		return channel;
 	}

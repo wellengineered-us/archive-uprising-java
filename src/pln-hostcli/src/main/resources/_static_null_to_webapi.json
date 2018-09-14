@@ -3,7 +3,8 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 {
-	"Version": "1",
+	"TargetEngineVersion": "0.2.0",
+	"ConfigurationVersion": "2.0.0",
 	"HostClassName": "com.syncprem.uprising.pipeline.core.runtime.SimpleHostImpl",
 	"EnableDispatchLoop": false,
 	"PipelineConfigurations": [
@@ -12,18 +13,18 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"MaxRandomRecordCount": 1000,
 					"MaxRandomFieldCount": 10,
 					"FieldNameFormat": "DotNetCore_%s"
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.WebApiDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.WebApiDestinationConnector",
+				"ComponentSpecificConfiguration": {
 					"EndpointUri": "http://localhost:5000/api/InboundSync",
 					"HttpMethod": "POST",
 					"HttpScope": "COLLECTION",

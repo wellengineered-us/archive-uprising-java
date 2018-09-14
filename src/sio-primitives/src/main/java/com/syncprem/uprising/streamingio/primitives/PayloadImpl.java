@@ -20,6 +20,7 @@ public class PayloadImpl extends LinkedHashMap<String, Object> implements Payloa
 		super(fieldCount);
 	}
 
+	public static final PayloadImpl EMPTY = new PayloadImpl(0);
 	private static final long serialVersionUID = -5365630128856068164L;
 
 	public static PayloadImpl fromPrimitive(Object value)

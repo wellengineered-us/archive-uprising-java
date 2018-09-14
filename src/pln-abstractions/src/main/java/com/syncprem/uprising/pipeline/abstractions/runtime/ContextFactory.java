@@ -7,5 +7,10 @@ package com.syncprem.uprising.pipeline.abstractions.runtime;
 
 public interface ContextFactory
 {
+	default Context cloneContext(Context context)
+	{
+		return context;
+	}
+
 	Context createContext();
 }

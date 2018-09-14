@@ -113,7 +113,7 @@ public abstract class AbstractJdbcDestinationConnector extends AbstractDestinati
 	protected abstract void consumeInternal(Context context, RecordConfiguration configuration, JdbcStreamingDataReader dataReader) throws Exception;
 
 	@Override
-	protected Class<JdbcConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<JdbcConnectorSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
 	{
 		return JdbcConnectorSpecificConfiguration.class;
 	}

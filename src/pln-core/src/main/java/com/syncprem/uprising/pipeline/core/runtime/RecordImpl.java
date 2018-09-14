@@ -5,105 +5,16 @@
 
 package com.syncprem.uprising.pipeline.core.runtime;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
-import com.syncprem.uprising.streamingio.primitives.Offset;
-import com.syncprem.uprising.streamingio.primitives.Partition;
-import com.syncprem.uprising.streamingio.primitives.Payload;
-import com.syncprem.uprising.streamingio.primitives.Schema;
+import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractRecord;
+import com.syncprem.uprising.streamingio.primitives.*;
 
-import java.time.Instant;
-
-public final class RecordImpl implements Record
+public final class RecordImpl extends AbstractRecord
 {
 	public RecordImpl(Schema schema, Payload payload, String topic, Partition partition, Offset offset)
 	{
-		if (schema == null)
-			throw new ArgumentNullException("schema");
-
-		if (payload == null)
-			throw new ArgumentNullException("record");
-
-		if (topic == null)
-			throw new ArgumentNullException("topic");
-
-		/*if (partition == null)
-			throw new ArgumentNullException("partition");
-
-		if (offset == null)
-			throw new ArgumentNullException("offset");
-
-		if (topic.isEmpty())
-			throw new ArgumentOutOfRangeException("topic");*/
-
-		this.schema = schema;
-		this.payload = payload;
-		this.topic = topic;
-		this.partition = partition;
-		this.offset = offset;
-		this.instant = Instant.now();
+		super(schema, payload, topic, partition, offset);
 	}
 
-	private final Instant instant;
-	private final Offset offset;
-	private final Partition partition;
-	private final Payload payload;
-	private final Schema schema;
-	private final String topic;
-	private long index;
-
-	@Override
-	public long getIndex()
-	{
-		return this.index;
-	}
-
-	@Override
-	public void setIndex(long index)
-	{
-		this.index = index;
-	}
-
-	@Override
-	public Instant getInstant()
-	{
-		return this.instant;
-	}
-
-	@Override
-	public Offset getOffset()
-	{
-		return this.offset;
-	}
-
-	@Override
-	public Partition getPartition()
-	{
-		return this.partition;
-	}
-
-	@Override
-	public Payload getPayload()
-	{
-		return this.payload;
-	}
-
-	@Override
-	public Schema getSchema()
-	{
-		return this.schema;
-	}
-
-	@Override
-	public String getTopic()
-	{
-		return this.topic;
-	}
-
-	@Override
-	public String toString()
-	{
-		return Utils.toStringSafe(this.getPayload());
-	}
+	public static final RecordImpl EMPTY = new RecordImpl(SchemaBuilderImpl.EMPTY, PayloadImpl.EMPTY, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE);
 }

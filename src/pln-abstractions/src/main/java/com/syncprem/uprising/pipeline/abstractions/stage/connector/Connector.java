@@ -5,10 +5,10 @@
 
 package com.syncprem.uprising.pipeline.abstractions.stage.connector;
 
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.stage.Stage;
 
-public interface Connector<TStageSpecificConfiguration extends StageSpecificConfiguration> extends Stage<TStageSpecificConfiguration>
+public interface Connector<TComponentSpecificConfiguration extends ComponentSpecificConfiguration> extends Stage<TComponentSpecificConfiguration>
 {
 	String CONTEXT_COMPONENT_SCOPED_SCHEMA = "context_component_scoped_schema";
 }

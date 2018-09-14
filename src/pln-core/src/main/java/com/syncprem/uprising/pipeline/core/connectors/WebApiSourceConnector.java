@@ -13,7 +13,6 @@ import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.AbstractSourceConnector;
 import com.syncprem.uprising.pipeline.core.configurations.WebApiConnectorSpecificConfiguration;
-import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.strategies.CompressionStrategy;
 import com.syncprem.uprising.streamingio.restful.*;
@@ -45,6 +44,12 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 	private void setSourceHttpStreamingClient(HttpStreamingClient sourceHttpStreamingClient)
 	{
 		this.sourceHttpStreamingClient = sourceHttpStreamingClient;
+	}
+
+	@Override
+	protected Class<? extends WebApiConnectorSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
+	{
+		return WebApiConnectorSpecificConfiguration.class;
 	}
 
 	private Iterator<Payload> getPayloadUsingHttpResponseContent(Map<String, Iterable<String>> responseHeaders, HttpStreamingContent responseContent)
@@ -127,12 +132,6 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 		schema = schemaBuilder.build();
 
 		return schema;
-	}
-
-	@Override
-	protected Class<? extends WebApiConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
-	{
-		return WebApiConnectorSpecificConfiguration.class;
 	}
 
 	@Override
@@ -294,7 +293,7 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 
 				failFastOnlyWhen(payloads == null, "payloads == null");
 
-				records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
+				records = new DelayedProjectionIterator<>(payloads, (i, p) -> context.createRecord(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
 
 				failFastOnlyWhen(records == null, "records == null");
 

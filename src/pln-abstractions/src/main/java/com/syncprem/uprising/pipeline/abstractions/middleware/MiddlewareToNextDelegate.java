@@ -3,17 +3,16 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.abstractions.stage.processor;
+package com.syncprem.uprising.pipeline.abstractions.middleware;
 
 import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-@FunctionalInterface
-public interface ProcessDelegate<TTarget extends Component>
+public interface MiddlewareToNextDelegate<TComponent extends Component>
 {
-	TTarget invoke(Context context, RecordConfiguration configuration, TTarget target) throws SyncPremException;
+	TComponent invoke(Context context, RecordConfiguration configuration, TComponent target, MiddlewareDelegate<TComponent> next) throws SyncPremException;
 }
 
 

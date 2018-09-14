@@ -8,21 +8,25 @@ package com.syncprem.uprising.pipeline.core.runtime;
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
-import com.syncprem.uprising.pipeline.abstractions.Component;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedStageConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedComponentConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilder;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderExtensions;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderImpl;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
 import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractPipeline;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.destination.DestinationConnector;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.SourceConnector;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.*;
-import com.syncprem.uprising.pipeline.core.processors.NullProcessor;
-import com.syncprem.uprising.streamingio.primitives.SyncPremException;
+import com.syncprem.uprising.pipeline.abstractions.stage.interceptor.Interceptor;
+import com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
 public final class PipelineImpl extends AbstractPipeline
 {
@@ -34,7 +38,14 @@ public final class PipelineImpl extends AbstractPipeline
 	@Override
 	protected Context createContextInternal()
 	{
-		return new ContextImpl();
+		Context context;
+
+		if (this.getConfiguration().getContextClass() == null)
+			context = new ContextImpl(); // fallback
+		else
+			context = Utils.newObjectFromClass(this.getConfiguration().getContextClass());
+
+		return context;
 	}
 
 	@Override
@@ -42,50 +53,46 @@ public final class PipelineImpl extends AbstractPipeline
 	{
 		Channel channel;
 
-		SourceConnector<? extends StageSpecificConfiguration> sourceConnector;
-		DestinationConnector<? extends StageSpecificConfiguration> destinationConnector;
+		SourceConnector<? extends ComponentSpecificConfiguration> sourceConnector;
+		DestinationConnector<? extends ComponentSpecificConfiguration> destinationConnector;
 
-		Class<? extends SourceConnector<? extends StageSpecificConfiguration>> sourceConnectorClass;
-		Class<? extends DestinationConnector<? extends StageSpecificConfiguration>> destinationConnectorType;
-		Map<UntypedStageConfiguration, Class<? extends Processor<Channel, ? extends StageSpecificConfiguration>>> processorTypeConfigMappings;
+		Class<? extends SourceConnector<? extends ComponentSpecificConfiguration>> sourceConnectorClass;
+		Class<? extends DestinationConnector<? extends ComponentSpecificConfiguration>> destinationConnectorClass;
+		Map<UntypedComponentConfiguration, Class<? extends Interceptor<? extends ComponentSpecificConfiguration>>> interceptorTypeConfigMappings;
 
 		if (context == null)
 			throw new ArgumentNullException("context");
 
-		sourceConnectorClass = this.getConfiguration().getSourceConfiguration().getStageClass();
-		destinationConnectorType = this.getConfiguration().getDestinationConfiguration().getStageClass();
-		processorTypeConfigMappings = new HashMap<>();
+		sourceConnectorClass = this.getConfiguration().getSourceConfiguration().getComponentClass();
+		destinationConnectorClass = this.getConfiguration().getDestinationConfiguration().getComponentClass();
+		interceptorTypeConfigMappings = new HashMap<>();
 
-		for (UntypedStageConfiguration processorConfiguration : this.getConfiguration().getProcessorConfigurations())
+		for (UntypedComponentConfiguration interceptorConfiguration : this.getConfiguration().getInterceptorConfigurations())
 		{
-			Class<? extends Processor<Channel, ? extends StageSpecificConfiguration>> processorClass;
+			Class<? extends Interceptor<? extends ComponentSpecificConfiguration>> interceptorClass;
 
-			if (processorConfiguration == null)
+			if (interceptorConfiguration == null)
 				continue;
 
-			processorClass = processorConfiguration.getStageClass();
+			interceptorClass = interceptorConfiguration.getComponentClass();
 
-			if (processorClass == null)
+			if (interceptorClass == null)
 				continue;
 
-			processorTypeConfigMappings.put(processorConfiguration, processorClass);
+			interceptorTypeConfigMappings.put(interceptorConfiguration, interceptorClass);
 		}
 
-		if (sourceConnectorClass == null)
-			throw new SyncPremException("sourceConnectorClass");
+		failFastOnlyWhen(sourceConnectorClass == null, "sourceConnectorClass == null");
 
 		sourceConnector = Utils.newObjectFromClass(sourceConnectorClass);
 
-		if (sourceConnector == null)
-			throw new InvalidOperationException("sourceConnector");
+		failFastOnlyWhen(sourceConnector == null, "sourceConnector == null");
 
-		if (destinationConnectorType == null)
-			throw new InvalidOperationException("destinationConnectorType");
+		failFastOnlyWhen(destinationConnectorClass == null, "destinationConnectorClass == null");
 
-		destinationConnector = Utils.newObjectFromClass(destinationConnectorType);
+		destinationConnector = Utils.newObjectFromClass(destinationConnectorClass);
 
-		if (destinationConnector == null)
-			throw new InvalidOperationException("destinationConnector");
+		failFastOnlyWhen(destinationConnector == null, "destinationConnector == null");
 
 		try (sourceConnector)
 		{
@@ -100,10 +107,12 @@ public final class PipelineImpl extends AbstractPipeline
 				{
 					RecordConfiguration configuration;
 
-					ProcessDelegate<Channel> process;
-					ProcessorBuilderImpl<Channel> processorBuilderImpl;
-					ProcessorBuilder<Channel> processorBuilder;
-					ProcessorBuilderExtensions<Channel> processorBuilderExtensions;
+					// ----- START REFACTOR -----
+
+					MiddlewareDelegate<Channel> interceptor;
+					MiddlewareBuilderImpl<Channel, UntypedComponentConfiguration> interceptorBuilderImpl;
+					MiddlewareBuilder<Channel> interceptorBuilder;
+					MiddlewareBuilderExtensions<Channel, UntypedComponentConfiguration> interceptorBuilderExtensions;
 
 					configuration = this.getConfiguration().getRecordConfiguration();
 
@@ -113,54 +122,63 @@ public final class PipelineImpl extends AbstractPipeline
 					sourceConnector.preExecute(context, configuration);
 					destinationConnector.preExecute(context, configuration);
 
-					processorBuilderImpl = new ProcessorBuilderImpl<>();
-					processorBuilder = processorBuilderImpl;
-					processorBuilderExtensions = processorBuilderImpl;
+					interceptorBuilderImpl = new MiddlewareBuilderImpl<>();
+					interceptorBuilder = interceptorBuilderImpl;
+					interceptorBuilderExtensions = interceptorBuilderImpl;
 
-					if (false)
+					if (true)
 					{
 						// object instance
-						processorBuilderExtensions.from(new NullProcessor(), new UntypedStageConfiguration());
+						final NullInterceptor nullInterceptor = new NullInterceptor();
+						nullInterceptor.setConfiguration(new UntypedComponentConfiguration());
+						nullInterceptor.create();
+						interceptorBuilderExtensions.with(nullInterceptor);
 
 						// regular methods
-						processorBuilder.use(NullProcessor::nullMiddlewareMethod);
+						interceptorBuilder.use(NullInterceptor::nullInterceptorMethod);
 
 						// lambda expressions
-						processorBuilder.use(next ->
+						interceptorBuilder.use(next ->
 						{
 							return (_context, _configuration, _channel) ->
 							{
-								System.out.println("processor_first");
-								return next.invoke(_context, _configuration, _channel);
+								if (next != null)
+									return next.invoke(_context, _configuration, _channel);
+								else
+									return _channel;
 							};
 						});
 					}
 
-					// by processor class (reflection)
-					for (Map.Entry<UntypedStageConfiguration, Class<? extends Processor<Channel, ? extends StageSpecificConfiguration>>> processorTypeConfigMapping : processorTypeConfigMappings.entrySet())
+					// by interceptor class (reflection)
+					for (Map.Entry<UntypedComponentConfiguration, Class<? extends Interceptor<? extends ComponentSpecificConfiguration>>> interceptorTypeConfigMapping : interceptorTypeConfigMappings.entrySet())
 					{
-						if (processorTypeConfigMapping == null)
+						if (interceptorTypeConfigMapping == null)
 							continue;
 
-						if (processorTypeConfigMapping.getKey() == null)
-							throw new InvalidOperationException("processorTypeConfigMapping.isKey()");
+						if (interceptorTypeConfigMapping.getKey() == null)
+							throw new InvalidOperationException("interceptorTypeConfigMapping.isKey()");
 
-						if (processorTypeConfigMapping.getValue() == null)
-							throw new InvalidOperationException("processorTypeConfigMapping.getValue()");
+						if (interceptorTypeConfigMapping.getValue() == null)
+							throw new InvalidOperationException("interceptorTypeConfigMapping.getValue()");
 
-						processorBuilderExtensions.from(processorTypeConfigMapping.getValue(), processorTypeConfigMapping.getKey());
+						interceptorBuilderExtensions.from(interceptorTypeConfigMapping.getValue(), interceptorTypeConfigMapping.getKey());
 					}
 
-					process = processorBuilder.build();
+					interceptor = interceptorBuilder.build();
 
-					if (process == null)
-						throw new InvalidOperationException("process");
+					// ----- END REFACTOR -----
+
+					failFastOnlyWhen(interceptor == null, "interceptor == null");
 
 					channel = sourceConnector.produce(context, configuration);
 
-					channel = process.invoke(context, configuration, channel);
+					try (Channel _channel = channel) // disposal outer-most channel
+					{
+						channel = interceptor.invoke(context, configuration, channel);
 
-					destinationConnector.consume(context, configuration, channel);
+						destinationConnector.consume(context, configuration, channel);
+					}
 
 					destinationConnector.postExecute(context, configuration);
 					sourceConnector.postExecute(context, configuration);

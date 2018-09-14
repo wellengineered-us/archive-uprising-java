@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public final class WrappedIteratorExtensions
 {
-	private static final int DEFAULT_PROCESSING_CALLBACK_PUNCTUATE_MODULO = 1000;
+	private static final int DEFAULT_PROCESSING_CALLBACK_PUNCTUATE_MODULO = 100000;
 
 	public static <T> long forceIteration(Iterator<T> iterator) throws Exception
 	{
@@ -37,7 +37,7 @@ public final class WrappedIteratorExtensions
 					itemCallback.onItem(recordIndex, item);
 			}
 
-			return recordIndex + 1;
+			return recordIndex + 1; // record count NOT index
 		}
 		finally
 		{

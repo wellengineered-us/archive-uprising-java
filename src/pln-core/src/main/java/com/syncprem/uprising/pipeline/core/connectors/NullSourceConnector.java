@@ -12,7 +12,6 @@ import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.AbstractSourceConnector;
 import com.syncprem.uprising.pipeline.core.configurations.NullConnectorSpecificConfiguration;
-import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
 
 import java.util.*;
@@ -49,6 +48,12 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 		}
 
 		return schemaBuilder.build();
+	}
+
+	@Override
+	protected Class<NullConnectorSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
+	{
+		return NullConnectorSpecificConfiguration.class;
 	}
 
 	public LifecycleIterator<Payload> getRandomPayloads(Schema schema)
@@ -158,12 +163,6 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 	}
 
 	@Override
-	protected Class<NullConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
-	{
-		return NullConnectorSpecificConfiguration.class;
-	}
-
-	@Override
 	protected void postExecuteInternal(Context context, RecordConfiguration configuration) throws Exception
 	{
 		if (context == null)
@@ -231,7 +230,7 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 
 		failFastOnlyWhen(payloads == null, "payloads == null");
 
-		records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
+		records = new DelayedProjectionIterator<>(payloads, (i, p) -> context.createRecord(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
 
 		failFastOnlyWhen(records == null, "records == null");
 

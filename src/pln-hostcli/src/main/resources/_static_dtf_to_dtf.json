@@ -6,7 +6,7 @@
 	"PipelineAqtn": "SyncPrem.Pipeline.Core.StaticPipeline, SyncPrem.Pipeline.Core",
 	"SourceConfiguration": {
 		"StageAqtn": "SyncPrem.Pipeline.Core.Connectors.FlatText.DelimitedTextSourceConnector, SyncPrem.Pipeline.Core",
-		"StageSpecificConfiguration": {
+		"ComponentSpecificConfiguration": {
 			"DelimitedTextFilePath": "Confidential_Banking_Data.txt",
 			"DelimitedTextSpecConfiguration": {
 				"FirstRecordIsHeader": true,
@@ -62,18 +62,18 @@
 			}
 		}
 	},
-	"ProcessorConfigurations": [
+	"InterceptorConfigurations": [
 		/*{
 			"StageAqtn":
 				"SyncPrem.Pipeline.Core.Processors.MessageReshapeProcessor, SyncPrem.Pipeline.Core",
-			"StageSpecificConfiguration":
+			"ComponentSpecificConfiguration":
 			{
 			}
 		}*/
 	],
 	"DestinationConfiguration": {
 		"StageAqtn": "SyncPrem.Pipeline.Core.Connectors.FlatText.DelimitedTextDestinationConnector, SyncPrem.Pipeline.Core",
-		"StageSpecificConfiguration": {
+		"ComponentSpecificConfiguration": {
 			"DelimitedTextFilePath": "Public_Banking_Data.csv",
 			"DelimitedTextSpecConfiguration": {
 				"FirstRecordIsHeader": true,

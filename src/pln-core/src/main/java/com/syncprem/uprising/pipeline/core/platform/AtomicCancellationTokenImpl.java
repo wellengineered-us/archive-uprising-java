@@ -3,11 +3,11 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.core.runtime.platform;
+package com.syncprem.uprising.pipeline.core.platform;
 
 import com.syncprem.uprising.infrastructure.polyfills.AbstractLifecycle;
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.pipeline.abstractions.runtime.platform.CancellationToken;
+import com.syncprem.uprising.pipeline.abstractions.platform.CancellationToken;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

@@ -10,7 +10,7 @@ import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.polyfills.Severity;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.infrastructure.serialization.SerializationStrategy;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.streamingio.proxywrappers.strategies.CompressionStrategy;
 import com.syncprem.uprising.streamingio.restful.HttpMethod;
 import com.syncprem.uprising.streamingio.restful.HttpScope;
@@ -18,7 +18,7 @@ import com.syncprem.uprising.streamingio.restful.HttpScope;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebApiConnectorSpecificConfiguration extends StageSpecificConfiguration
+public class WebApiConnectorSpecificConfiguration extends ComponentSpecificConfiguration
 {
 	public WebApiConnectorSpecificConfiguration()
 	{

@@ -3,7 +3,7 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.abstractions.stage.processor;
+package com.syncprem.uprising.pipeline.abstractions.middleware;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.pipeline.abstractions.Component;
@@ -11,9 +11,9 @@ import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfigura
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public final class ProcessorClosure<TTarget extends Component>
+public final class MiddlewareClosure<TComponent extends Component>
 {
-	private ProcessorClosure(ProcessToNextDelegate<TTarget> processToNext, ProcessDelegate<TTarget> next)
+	private MiddlewareClosure(MiddlewareToNextDelegate<TComponent> processToNext, MiddlewareDelegate<TComponent> next)
 	{
 		if (processToNext == null)
 			throw new ArgumentNullException("processToNext");
@@ -25,20 +25,20 @@ public final class ProcessorClosure<TTarget extends Component>
 		this.next = next;
 	}
 
-	private final ProcessDelegate<TTarget> next;
-	private final ProcessToNextDelegate<TTarget> processToNext;
+	private final MiddlewareDelegate<TComponent> next;
+	private final MiddlewareToNextDelegate<TComponent> processToNext;
 
-	private ProcessDelegate<TTarget> getNext()
+	private MiddlewareDelegate<TComponent> getNext()
 	{
 		return this.next;
 	}
 
-	private ProcessToNextDelegate<TTarget> getProcessToNext()
+	private MiddlewareToNextDelegate<TComponent> getProcessToNext()
 	{
 		return this.processToNext;
 	}
 
-	public static <TTarget extends Component> ProcessDelegate<TTarget> getMiddlewareChain(ProcessToNextDelegate<TTarget> processToNext, ProcessDelegate<TTarget> next)
+	public static <TComponent extends Component> MiddlewareDelegate<TComponent> getMiddlewareChain(MiddlewareToNextDelegate<TComponent> processToNext, MiddlewareDelegate<TComponent> next)
 	{
 		if (processToNext == null)
 			throw new ArgumentNullException("processToNext");
@@ -46,12 +46,11 @@ public final class ProcessorClosure<TTarget extends Component>
 		if (next == null)
 			throw new ArgumentNullException("next");
 
-		return new ProcessorClosure<>(processToNext, next)::transform;
+		return new MiddlewareClosure<>(processToNext, next)::transform;
 	}
 
-	private TTarget transform(Context context, RecordConfiguration configuration, TTarget target) throws SyncPremException
+	private TComponent transform(Context context, RecordConfiguration configuration, TComponent target) throws SyncPremException
 	{
-		System.out.println("voo doo!");
 		return this.getProcessToNext().invoke(context, configuration, target, this.getNext());
 	}
 }

@@ -3,7 +3,8 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 {
-	"Version": "1",
+	"TargetEngineVersion": "0.2.0",
+	"ConfigurationVersion": "2.0.0",
 	"HostClassName": "com.syncprem.uprising.pipeline.core.runtime.SimpleHostImpl",
 	"EnableDispatchLoop": true,
 	"PipelineConfigurations": [
@@ -12,33 +13,33 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"MaxRandomRecordCount": 100,
 					"MaxRandomFieldCount": 10,
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				}
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
+				"ComponentSpecificConfiguration": {
 				}
 			}
 		},
@@ -47,33 +48,33 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"MaxRandomRecordCount": 1000,
 					"MaxRandomFieldCount": 100,
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				}
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
+				"ComponentSpecificConfiguration": {
 				}
 			}
 		},
@@ -82,33 +83,33 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"MaxRandomRecordCount": 10,
 					"MaxRandomFieldCount": 100,
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				}
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
+				"ComponentSpecificConfiguration": {
 				}
 			}
 		},
@@ -117,33 +118,33 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"MaxRandomRecordCount": 100,
 					"MaxRandomFieldCount": 1000,
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				}
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
+				"ComponentSpecificConfiguration": {
 				}
 			}
 		},
@@ -152,33 +153,33 @@
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
+				"ComponentSpecificConfiguration": {
 					"MaxRandomRecordCount": 1000000,
 					"MaxRandomFieldCount": 100,
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"ProcessorConfigurations": [
+			"InterceptorConfigurations": [
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"StageClassName": "com.syncprem.uprising.pipeline.core.processors.NullProcessor",
-					"StageSpecificConfiguration": {
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentSpecificConfiguration": {
 					}
 				}
 			],
 			"DestinationConfiguration": {
-				"StageClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
-				"StageSpecificConfiguration": {
+				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
+				"ComponentSpecificConfiguration": {
 				}
 			}
 		}

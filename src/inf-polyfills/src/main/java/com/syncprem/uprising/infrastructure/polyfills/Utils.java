@@ -9,6 +9,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.module.ModuleDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
@@ -203,6 +204,19 @@ public final class Utils
 		return null;
 	}
 
+	public static void safeDispose(Disposable disposable)
+	{
+		try
+		{
+			if (disposable != null)
+				disposable.dispose();
+		}
+		catch (Exception ex)
+		{
+			failFastWithException(ex);
+		}
+	}
+
 	public static long streamCopy(InputStream source, OutputStream destination) throws IOException
 	{
 		if (source == null)
@@ -232,6 +246,20 @@ public final class Utils
 	public static String toStringSafe(Object value)
 	{
 		return value == null ? EMPTY_STRING : value.toString();
+	}
+
+	public static boolean tryParseValid(String value, TryOut<ModuleDescriptor.Version> outVersion)
+	{
+		try
+		{
+			final ModuleDescriptor.Version version = ModuleDescriptor.Version.parse(value);
+			outVersion.setValue(version);
+			return true;
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
 	}
 
 	/*public static <K, V> boolean tryGetValue(Map<K, V> thisMap, K key, TryOut<V> outValue)

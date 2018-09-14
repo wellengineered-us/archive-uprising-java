@@ -82,7 +82,7 @@ public class ProgressWrappedOutputStreamImpl extends WrappedOutputStreamImpl
 
 	private void writeProgress(long offset, long count, long retval)
 	{
-		/*if ((this.getTotal() % DEFAULT_STREAM_WRITE_PUNCTUATE_MODULO) == 0)
+		/*if (((this.getTotal() + 1) % DEFAULT_STREAM_WRITE_PUNCTUATE_MODULO) == 0)
 			System.out.println(String.format("[%s %s WRITE: offset=%s, count=%s; retval=%s; total=%s]",
 					formatObjectInfo(this), formatCurrentThreadId(),
 					offset, count, retval, this.getTotal()));*/

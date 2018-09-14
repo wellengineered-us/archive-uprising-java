@@ -5,28 +5,13 @@
 
 package com.syncprem.uprising.pipeline.core.runtime;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.LifecycleIterator;
-import com.syncprem.uprising.pipeline.abstractions.AbstractComponent;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
+import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractChannel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Stream;
 
-public final class ChannelImpl extends AbstractComponent implements Channel
+public final class ChannelImpl extends AbstractChannel
 {
-	public ChannelImpl(LifecycleIterator<Record> records)
+	public ChannelImpl(Stream stream)
 	{
-		if (records == null)
-			throw new ArgumentNullException("records");
-
-		this.records = new StreamImpl(records);
-	}
-
-	private final Stream records;
-
-	@Override
-	public Stream getRecords()
-	{
-		return this.records;
+		super(stream);
 	}
 }

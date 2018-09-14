@@ -10,7 +10,7 @@ import com.syncprem.uprising.infrastructure.polyfills.Message;
 import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.polyfills.Severity;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.streamingio.relational.IsolationLevel;
 import com.syncprem.uprising.streamingio.relational.uow.UnitOfWork;
 import com.syncprem.uprising.streamingio.relational.uow.UnitOfWorkFactory;
@@ -20,7 +20,7 @@ import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JdbcConnectorSpecificConfiguration extends StageSpecificConfiguration implements UnitOfWorkFactory
+public class JdbcConnectorSpecificConfiguration extends ComponentSpecificConfiguration implements UnitOfWorkFactory
 {
 	public JdbcConnectorSpecificConfiguration()
 	{

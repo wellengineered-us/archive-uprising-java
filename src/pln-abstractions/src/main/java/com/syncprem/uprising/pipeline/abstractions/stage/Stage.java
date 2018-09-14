@@ -8,14 +8,13 @@ package com.syncprem.uprising.pipeline.abstractions.stage;
 import com.syncprem.uprising.infrastructure.configuration.Configurable;
 import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.Specifiable;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedStageConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedComponentConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public interface Stage<TStageSpecificConfiguration extends StageSpecificConfiguration>
-		extends Component, Configurable<UntypedStageConfiguration>, Specifiable<TStageSpecificConfiguration>
+public interface Stage<TComponentSpecificConfiguration extends ComponentSpecificConfiguration> extends Component, Configurable<UntypedComponentConfiguration>, Specifiable<TComponentSpecificConfiguration>
 {
 	void postExecute(Context context, RecordConfiguration configuration) throws SyncPremException;
 

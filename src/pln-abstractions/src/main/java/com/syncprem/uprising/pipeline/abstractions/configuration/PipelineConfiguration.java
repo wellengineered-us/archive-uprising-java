@@ -17,24 +17,24 @@ public class PipelineConfiguration extends ComponentConfiguration
 {
 	public PipelineConfiguration()
 	{
-		this.processorConfigurations = new ConfigurationObjectCollectionImpl<UntypedStageConfiguration>(this);
+		this.interceptorConfigurations = new ConfigurationObjectCollectionImpl<UntypedComponentConfiguration>(this);
 	}
 
-	public PipelineConfiguration(ConfigurationObjectCollectionImpl<UntypedStageConfiguration> processorConfigurations)
+	public PipelineConfiguration(ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> interceptorConfigurations)
 	{
-		if (processorConfigurations == null)
-			throw new ArgumentNullException("processorConfigurations");
+		if (interceptorConfigurations == null)
+			throw new ArgumentNullException("interceptorConfigurations");
 
-		this.processorConfigurations = processorConfigurations;
+		this.interceptorConfigurations = interceptorConfigurations;
 	}
 
-	private final ConfigurationObjectCollectionImpl<UntypedStageConfiguration> processorConfigurations;
+	private final ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> interceptorConfigurations;
 	private String contextClassName;
-	private UntypedStageConfiguration destinationConfiguration;
+	private UntypedComponentConfiguration destinationConfiguration;
 	private Boolean isEnabled;
 	private String pipelineClassName;
 	private RecordConfiguration recordConfiguration;
-	private UntypedStageConfiguration sourceConfiguration;
+	private UntypedComponentConfiguration sourceConfiguration;
 
 	public Class<? extends Context> getContextClass()
 	{
@@ -51,14 +51,19 @@ public class PipelineConfiguration extends ComponentConfiguration
 		this.contextClassName = contextClassName;
 	}
 
-	public UntypedStageConfiguration getDestinationConfiguration()
+	public UntypedComponentConfiguration getDestinationConfiguration()
 	{
 		return this.destinationConfiguration;
 	}
 
-	public void setDestinationConfiguration(UntypedStageConfiguration destinationConfiguration)
+	public void setDestinationConfiguration(UntypedComponentConfiguration destinationConfiguration)
 	{
 		this.destinationConfiguration = destinationConfiguration;
+	}
+
+	public ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> getInterceptorConfigurations()
+	{
+		return this.interceptorConfigurations;
 	}
 
 	public Class<? extends Pipeline> getPipelineClass()
@@ -76,11 +81,6 @@ public class PipelineConfiguration extends ComponentConfiguration
 		this.pipelineClassName = pipelineClassName;
 	}
 
-	public ConfigurationObjectCollectionImpl<UntypedStageConfiguration> getProcessorConfigurations()
-	{
-		return this.processorConfigurations;
-	}
-
 	public RecordConfiguration getRecordConfiguration()
 	{
 		return this.recordConfiguration;
@@ -91,12 +91,12 @@ public class PipelineConfiguration extends ComponentConfiguration
 		this.recordConfiguration = recordConfiguration;
 	}
 
-	public UntypedStageConfiguration getSourceConfiguration()
+	public UntypedComponentConfiguration getSourceConfiguration()
 	{
 		return this.sourceConfiguration;
 	}
 
-	public void setSourceConfiguration(UntypedStageConfiguration sourceConfiguration)
+	public void setSourceConfiguration(UntypedComponentConfiguration sourceConfiguration)
 	{
 		this.sourceConfiguration = sourceConfiguration;
 	}
@@ -168,10 +168,10 @@ public class PipelineConfiguration extends ComponentConfiguration
 		else
 			MessageImpl.addRange(messages, this.getSourceConfiguration().validate(String.format("%s/%s", context, "Source")));
 
-		if (this.getProcessorConfigurations() == null)
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Processor configuration is required."), Severity.ERROR));
+		if (this.getInterceptorConfigurations() == null)
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Interceptor configuration is required."), Severity.ERROR));
 		else
-			MessageImpl.addRange(messages, this.getProcessorConfigurations().validateAll(String.format("%s/%s", context, "Processor")));
+			MessageImpl.addRange(messages, this.getInterceptorConfigurations().validateAll(String.format("%s/%s", context, "Interceptor")));
 
 		if (this.getDestinationConfiguration() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Destination configuration is required."), Severity.ERROR));

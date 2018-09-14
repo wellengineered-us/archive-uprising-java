@@ -9,11 +9,11 @@ import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.platform.CancellationToken;
 import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractHost;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Pipeline;
-import com.syncprem.uprising.pipeline.abstractions.runtime.platform.CancellationToken;
-import com.syncprem.uprising.pipeline.core.runtime.platform.AtomicCancellationTokenImpl;
+import com.syncprem.uprising.pipeline.core.platform.AtomicCancellationTokenImpl;
 
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.Semaphore;

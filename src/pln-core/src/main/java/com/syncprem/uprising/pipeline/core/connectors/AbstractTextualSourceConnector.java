@@ -17,7 +17,6 @@ import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.Abstra
 import com.syncprem.uprising.pipeline.core.configurations.AbstractTextualConfiguration;
 import com.syncprem.uprising.pipeline.core.configurations.AbstractTextualFieldConfiguration;
 import com.syncprem.uprising.pipeline.core.configurations.AbstractTextualFileConnectorSpecificConfiguration;
-import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.WrappedIteratorExtensions;
 import com.syncprem.uprising.streamingio.textual.TextualFieldSpec;
@@ -209,7 +208,7 @@ public abstract class AbstractTextualSourceConnector
 
 		failFastOnlyWhen(payloads == null, "payloads == null");
 
-		records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
+		records = new DelayedProjectionIterator<>(payloads, (i, p) -> context.createRecord(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
 
 		failFastOnlyWhen(records == null, "records == null");
 

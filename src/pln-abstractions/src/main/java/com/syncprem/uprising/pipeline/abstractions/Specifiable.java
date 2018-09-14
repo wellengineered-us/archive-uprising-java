@@ -5,9 +5,7 @@
 
 package com.syncprem.uprising.pipeline.abstractions;
 
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
-
-public interface Specifiable<TSpecification extends StageSpecificConfiguration>
+public interface Specifiable<TSpecification>
 {
 	TSpecification getSpecification();
 

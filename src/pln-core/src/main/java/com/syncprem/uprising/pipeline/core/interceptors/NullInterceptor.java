@@ -3,34 +3,34 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.core.processors;
+package com.syncprem.uprising.pipeline.core.interceptors;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareClosure;
+import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.AbstractProcessor;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.ProcessDelegate;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.ProcessorClosure;
+import com.syncprem.uprising.pipeline.abstractions.stage.interceptor.AbstractInterceptor;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public class NullProcessor extends AbstractProcessor<Channel, StageSpecificConfiguration>
+public class NullInterceptor extends AbstractInterceptor<ComponentSpecificConfiguration>
 {
-	public NullProcessor()
+	public NullInterceptor()
 	{
 	}
 
-	public static ProcessDelegate nullMiddlewareMethod(ProcessDelegate next)
+	public static MiddlewareDelegate<Channel> nullInterceptorMethod(MiddlewareDelegate<Channel> next)
 	{
-		ProcessDelegate retval;
+		MiddlewareDelegate<Channel> retval;
 
-		retval = ProcessorClosure.getMiddlewareChain(NullProcessor::nullProcessorMethod, next);
+		retval = MiddlewareClosure.getMiddlewareChain(NullInterceptor::nullInterceptorMethod, next);
 
 		return retval;
 	}
 
-	private static Channel nullProcessorMethod(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate<Channel> next) throws SyncPremException
+	private static Channel nullInterceptorMethod(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -41,25 +41,16 @@ public class NullProcessor extends AbstractProcessor<Channel, StageSpecificConfi
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
-		if (next == null)
-			throw new ArgumentNullException("next");
-
-		try
-		{
+		if (next != null)
 			channel = next.invoke(context, configuration, channel);
-		}
-		catch (Exception ex)
-		{
-			throw new SyncPremException(ex);
-		}
 
 		return channel;
 	}
 
 	@Override
-	protected Class<? extends StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<? extends ComponentSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
 	{
-		return StageSpecificConfiguration.class;
+		return ComponentSpecificConfiguration.class;
 	}
 
 	@Override
@@ -83,7 +74,7 @@ public class NullProcessor extends AbstractProcessor<Channel, StageSpecificConfi
 	}
 
 	@Override
-	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, ProcessDelegate<Channel> next) throws SyncPremException
+	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -94,10 +85,9 @@ public class NullProcessor extends AbstractProcessor<Channel, StageSpecificConfi
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
-		//System.out.print(">");
+		//System.out.println("z");
 		if (next != null)
 			channel = next.invoke(context, configuration, channel);
-		//System.out.print("<");
 
 		return channel;
 	}

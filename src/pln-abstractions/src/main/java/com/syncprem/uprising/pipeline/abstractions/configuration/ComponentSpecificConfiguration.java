@@ -5,9 +5,9 @@
 
 package com.syncprem.uprising.pipeline.abstractions.configuration;
 
-public class StageSpecificConfiguration extends ComponentConfiguration
+public class ComponentSpecificConfiguration extends ComponentConfiguration
 {
-	public StageSpecificConfiguration()
+	public ComponentSpecificConfiguration()
 	{
 	}
 }

@@ -6,14 +6,14 @@
 package com.syncprem.uprising.pipeline.abstractions.stage.connector.source;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.AbstractConnector;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public abstract class AbstractSourceConnector<TStageSpecificConfiguration extends StageSpecificConfiguration> extends AbstractConnector<TStageSpecificConfiguration> implements SourceConnector<TStageSpecificConfiguration>
+public abstract class AbstractSourceConnector<TComponentSpecificConfiguration extends ComponentSpecificConfiguration> extends AbstractConnector<TComponentSpecificConfiguration> implements SourceConnector<TComponentSpecificConfiguration>
 {
 	protected AbstractSourceConnector()
 	{

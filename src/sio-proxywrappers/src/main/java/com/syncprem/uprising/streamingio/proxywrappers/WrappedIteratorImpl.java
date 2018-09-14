@@ -35,7 +35,7 @@ public final class WrappedIteratorImpl<TInputItem, TOutputItem> extends Abstract
 		this.sourceLabel = sourceLabel;
 		this.processingCallback = processingCallback;
 	}
-
+	public static final long DEFAULT_INDEX = -1;
 	private final ProcessingCallback processingCallback;
 	private final long punctuateModulo;
 	private final String sourceLabel;
@@ -114,7 +114,7 @@ public final class WrappedIteratorImpl<TInputItem, TOutputItem> extends Abstract
 	{
 		super.onYieldReturn(value);
 
-		if ((this.getItemIndex() % this.getPunctuateModulo()) == 0)
+		if (((this.getItemIndex() + 1) % this.getPunctuateModulo()) == 0)
 			this.getProcessingCallback().onProgress(this.getPunctuateModulo(),
 					this.getSourceLabel(), this.getItemIndex(), false, this.getRollingTiming());
 	}
@@ -126,6 +126,6 @@ public final class WrappedIteratorImpl<TInputItem, TOutputItem> extends Abstract
 		this.setStartInstant(Instant.now());
 
 		this.getProcessingCallback().onProgress(this.getPunctuateModulo(),
-				this.getSourceLabel(), -1, false, this.getRollingTiming());
+				this.getSourceLabel(), DEFAULT_INDEX, false, this.getRollingTiming());
 	}
 }

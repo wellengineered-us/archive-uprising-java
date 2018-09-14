@@ -6,13 +6,12 @@
 package com.syncprem.uprising.pipeline.core.connectors;
 
 import com.syncprem.uprising.infrastructure.polyfills.*;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.AbstractSourceConnector;
-import com.syncprem.uprising.pipeline.core.runtime.RecordImpl;
 import com.syncprem.uprising.streamingio.primitives.*;
 
 import java.io.BufferedReader;
@@ -27,7 +26,7 @@ import java.util.UUID;
 import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.*;
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
-public final class ConsoleSourceConnector extends AbstractSourceConnector<StageSpecificConfiguration>
+public final class ConsoleSourceConnector extends AbstractSourceConnector<ComponentSpecificConfiguration>
 {
 	public ConsoleSourceConnector()
 	{
@@ -47,9 +46,9 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 	}
 
 	@Override
-	protected Class<StageSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<ComponentSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
 	{
-		return StageSpecificConfiguration.class;
+		return ComponentSpecificConfiguration.class;
 	}
 
 	public LifecycleIterator<Payload> getYieldViaConsole(Schema schema)
@@ -282,7 +281,7 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<StageS
 
 		failFastOnlyWhen(payloads == null, "payloads == null");
 
-		records = new DelayedProjectionIterator<>(payloads, (i, p) -> new RecordImpl(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
+		records = new DelayedProjectionIterator<>(payloads, (i, p) -> context.createRecord(schema, p, Utils.EMPTY_STRING, PartitionImpl.NONE, OffsetImpl.NONE));
 
 		failFastOnlyWhen(records == null, "records == null");
 

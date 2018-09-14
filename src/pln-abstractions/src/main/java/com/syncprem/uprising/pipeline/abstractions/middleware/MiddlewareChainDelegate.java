@@ -3,12 +3,12 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.abstractions.stage.processor;
+package com.syncprem.uprising.pipeline.abstractions.middleware;
 
 @FunctionalInterface
-public interface ChainDelegate<T, R>
+public interface MiddlewareChainDelegate<T, R>
 {
-	R invoke(T input);
+	R invoke(T input) throws Exception;
 }
 
 

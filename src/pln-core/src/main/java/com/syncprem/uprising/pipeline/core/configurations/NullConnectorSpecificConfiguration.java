@@ -9,16 +9,17 @@ import com.syncprem.uprising.infrastructure.polyfills.Message;
 import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.polyfills.Severity;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
-import com.syncprem.uprising.pipeline.abstractions.configuration.StageSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NullConnectorSpecificConfiguration extends StageSpecificConfiguration
+public class NullConnectorSpecificConfiguration extends ComponentSpecificConfiguration
 {
 	public NullConnectorSpecificConfiguration()
 	{
 	}
+
 	private String fieldNameFormat;
 	private Long maxRandomFieldCount;
 	private Long maxRandomRecordCount;

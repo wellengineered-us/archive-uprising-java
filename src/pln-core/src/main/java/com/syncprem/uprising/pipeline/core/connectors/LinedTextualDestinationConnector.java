@@ -38,7 +38,7 @@ public final class LinedTextualDestinationConnector extends AbstractTextualDesti
 	}
 
 	@Override
-	protected Class<LinedTextualFileConnectorSpecificConfiguration> getStageSpecificConfigurationClass(Object reserved)
+	protected Class<LinedTextualFileConnectorSpecificConfiguration> getComponentSpecificConfigurationClass(Object reserved)
 	{
 		return LinedTextualFileConnectorSpecificConfiguration.class;
 	}
