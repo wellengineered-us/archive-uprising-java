@@ -30,12 +30,19 @@ public abstract class AbstractPipeline extends AbstractComponent implements Pipe
 	}
 
 	@Override
-	public final Context createContext()
+	public final Context createContext() throws SyncPremException
 	{
-		return this.createContextInternal();
+		try
+		{
+			return this.createContextInternal();
+		}
+		catch (Exception ex)
+		{
+			throw new SyncPremException(ex);
+		}
 	}
 
-	protected abstract Context createContextInternal();
+	protected abstract Context createContextInternal() throws Exception;
 
 	@Override
 	public final long execute(Context context) throws SyncPremException

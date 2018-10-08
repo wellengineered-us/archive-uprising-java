@@ -17,10 +17,7 @@ import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderE
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderImpl;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
 import com.syncprem.uprising.pipeline.abstractions.processor.StreamProcessor;
-import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractContext;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Stream;
+import com.syncprem.uprising.pipeline.abstractions.runtime.*;
 import com.syncprem.uprising.pipeline.core.processors.NullStreamProcessor;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.WrappedIteratorExtensions;
@@ -62,7 +59,7 @@ public final class ContextImpl extends AbstractContext
 
 		streamProcessorTypeConfigMappings = new HashMap<>();
 
-		/*for (UntypedComponentConfiguration streamProcessorConfiguration : this.getConfiguration().getInterceptorConfigurations())
+		for (UntypedComponentConfiguration streamProcessorConfiguration : this.getConfiguration().getInterceptorConfigurations())
 		{
 			Class<? extends StreamProcessor<? extends ComponentSpecificConfiguration>> streamProcessorClass;
 
@@ -74,8 +71,14 @@ public final class ContextImpl extends AbstractContext
 			if (streamProcessorClass == null)
 				continue;
 
+			/*if (!streamProcessorClass.isAssignableFrom(StreamProcessor.class))
+				continue;*/
+
+			if (!StreamProcessor.class.isAssignableFrom(streamProcessorClass))
+				continue;
+
 			streamProcessorTypeConfigMappings.put(streamProcessorConfiguration, streamProcessorClass);
-		}*/
+		}
 
 		final NullStreamProcessor nullStreamProcessor = new NullStreamProcessor();
 
@@ -141,7 +144,8 @@ public final class ContextImpl extends AbstractContext
 			System.out.println(String.format("[(progress) %s@%s-%s: itemIndex = %s (%s#), isCompleted = %s, rollingTiming = %sms]", sourceLabel, formatCurrentThreadId(), formatUUID(this.getComponentId()), itemIndex, itemIndex + 1, isCompleted, rollingTiming));
 		});
 
-		final Stream stream = this.createStream(records);
+		final StreamFactory streamFactory = this;
+		final Stream stream = streamFactory.createStream(records);
 		channel = new ChannelImpl(stream);
 		channel.create();
 
@@ -152,11 +156,9 @@ public final class ContextImpl extends AbstractContext
 	protected Channel createEmptyChannelInternal() throws Exception
 	{
 		Channel channel;
-		LifecycleIterator<Record> records;
-		final List<Record> temp = Collections.emptyList();
 
-		records = WrappedIteratorExtensions.toLifecycleIterator(temp.iterator());
-		channel = this.createChannel(records);
+		final Stream stream = this.createEmptyStream();
+		channel = this.createChannel(stream);
 
 		return channel;
 	}

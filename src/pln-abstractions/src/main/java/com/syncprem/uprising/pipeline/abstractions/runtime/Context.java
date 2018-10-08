@@ -5,11 +5,13 @@
 
 package com.syncprem.uprising.pipeline.abstractions.runtime;
 
+import com.syncprem.uprising.infrastructure.configuration.Configurable;
 import com.syncprem.uprising.pipeline.abstractions.Component;
+import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 
 import java.util.Map;
 
-public interface Context extends Component, ChannelFactory, StreamFactory, RecordFactory
+public interface Context extends Component, Configurable<PipelineConfiguration>, ChannelFactory, StreamFactory, RecordFactory
 {
 	Map<String, Object> getGlobalState();
 

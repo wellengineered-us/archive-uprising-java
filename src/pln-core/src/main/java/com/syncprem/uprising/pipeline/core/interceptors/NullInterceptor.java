@@ -85,7 +85,6 @@ public class NullInterceptor extends AbstractInterceptor<ComponentSpecificConfig
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
-		//System.out.println("z");
 		if (next != null)
 			channel = next.invoke(context, configuration, channel);
 

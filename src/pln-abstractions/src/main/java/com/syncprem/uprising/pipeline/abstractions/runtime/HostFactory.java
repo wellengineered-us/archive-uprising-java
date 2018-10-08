@@ -5,7 +5,9 @@
 
 package com.syncprem.uprising.pipeline.abstractions.runtime;
 
+import com.syncprem.uprising.streamingio.primitives.SyncPremException;
+
 public interface HostFactory
 {
-	Host createHost();
+	Host createHost() throws SyncPremException;
 }

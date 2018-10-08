@@ -9,6 +9,7 @@ import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.LifecycleIterator;
 import com.syncprem.uprising.pipeline.abstractions.AbstractComponent;
 import com.syncprem.uprising.pipeline.abstractions.Component;
+import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 import com.syncprem.uprising.streamingio.primitives.*;
 
 import java.util.Map;
@@ -32,9 +33,21 @@ public abstract class AbstractContext extends AbstractComponent implements Conte
 		this.globalState = globalState;
 		this.localState = localState;
 	}
-
 	private final Map<String, Object> globalState;
 	private final Map<Component, Map<String, Object>> localState;
+	private PipelineConfiguration configuration;
+
+	@Override
+	public final PipelineConfiguration getConfiguration()
+	{
+		return this.configuration;
+	}
+
+	@Override
+	public final void setConfiguration(PipelineConfiguration configuration)
+	{
+		this.configuration = configuration;
+	}
 
 	@Override
 	public final Map<String, Object> getGlobalState()

@@ -27,12 +27,12 @@
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelProcessor",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamProcessor",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -44,7 +44,7 @@
 			}
 		},
 		{
-			"Enabled": true,
+			"Enabled": false,
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
@@ -79,7 +79,7 @@
 			}
 		},
 		{
-			"Enabled": true,
+			"Enabled": false,
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
@@ -114,7 +114,7 @@
 			}
 		},
 		{
-			"Enabled": true,
+			"Enabled": false,
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {
@@ -149,7 +149,7 @@
 			}
 		},
 		{
-			"Enabled": true,
+			"Enabled": false,
 			"PipelineClassName": "com.syncprem.uprising.pipeline.core.runtime.PipelineImpl",
 			"ContextClassName": "com.syncprem.uprising.pipeline.core.runtime.ContextImpl",
 			"SourceConfiguration": {

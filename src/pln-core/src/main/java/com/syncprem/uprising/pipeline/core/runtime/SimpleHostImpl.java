@@ -6,13 +6,10 @@
 package com.syncprem.uprising.pipeline.core.runtime;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.platform.CancellationToken;
-import com.syncprem.uprising.pipeline.abstractions.runtime.AbstractHost;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Pipeline;
+import com.syncprem.uprising.pipeline.abstractions.runtime.*;
 import com.syncprem.uprising.pipeline.core.platform.AtomicCancellationTokenImpl;
 
 import java.util.concurrent.FutureTask;
@@ -26,7 +23,6 @@ public class SimpleHostImpl extends AbstractHost
 	public SimpleHostImpl()
 	{
 	}
-
 	private final CancellationToken cancellationToken = new AtomicCancellationTokenImpl();
 	private final Semaphore mainThreadSemaphore = new Semaphore(1);
 
@@ -40,9 +36,12 @@ public class SimpleHostImpl extends AbstractHost
 		return this.mainThreadSemaphore;
 	}
 
-	protected static void executePipeline(Class<? extends Pipeline> pipelineClass, PipelineConfiguration pipelineConfiguration) throws Exception
+	protected static void executePipeline(PipelineFactory pipelineFactory, Class<? extends Pipeline> pipelineClass, PipelineConfiguration pipelineConfiguration) throws Exception
 	{
 		Pipeline pipeline;
+
+		if (pipelineFactory == null)
+			throw new ArgumentNullException("pipelineFactory");
 
 		if (pipelineClass == null)
 			throw new ArgumentNullException("pipelineClass");
@@ -50,7 +49,7 @@ public class SimpleHostImpl extends AbstractHost
 		if (pipelineConfiguration == null)
 			throw new ArgumentNullException("pipelineConfiguration");
 
-		pipeline = Utils.newObjectFromClass(pipelineClass);
+		pipeline = pipelineFactory.createPipeline(pipelineClass);
 
 		failFastOnlyWhen(pipeline == null, "pipeline == null");
 
@@ -59,7 +58,9 @@ public class SimpleHostImpl extends AbstractHost
 			pipeline.setConfiguration(pipelineConfiguration);
 			pipeline.create();
 
-			try (Context context = pipeline.createContext())
+			final ContextFactory contextFactory = pipeline;
+
+			try (Context context = contextFactory.createContext())
 			{
 				pipeline.create();
 				pipeline.execute(context);
@@ -102,6 +103,22 @@ public class SimpleHostImpl extends AbstractHost
 	}
 
 	@Override
+	protected Pipeline createPipelineInternal(Class<? extends Pipeline> clazz) throws Exception
+	{
+		Pipeline pipeline;
+
+		if (clazz == null)
+			throw new ArgumentNullException("clazz");
+
+		/*if (clazz == null)
+			pipeline = new PipelineImpl(); // fallback
+		else*/
+		pipeline = Utils.newObjectFromClass(clazz);
+
+		return pipeline;
+	}
+
+	@Override
 	protected void dispose(boolean disposing) throws Exception
 	{
 		if (this.isDisposed())
@@ -128,7 +145,7 @@ public class SimpleHostImpl extends AbstractHost
 
 		try
 		{
-			executePipeline(pipelineClass, pipelineConfiguration);
+			executePipeline(this, pipelineClass, pipelineConfiguration);
 		}
 		finally
 		{
@@ -221,8 +238,7 @@ public class SimpleHostImpl extends AbstractHost
 
 				pipelineClass = pipelineConfiguration.getPipelineClass();
 
-				if (pipelineClass == null)
-					throw new InvalidOperationException("pipelineClass");
+				failFastOnlyWhen(pipelineClass == null, "pipelineClass == null");
 
 				System.out.println("dispatch_loop: execute...");
 				this.executePipelineOnce(pipelineClass, pipelineConfiguration);

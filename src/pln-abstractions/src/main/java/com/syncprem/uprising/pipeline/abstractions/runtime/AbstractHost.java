@@ -5,6 +5,7 @@
 
 package com.syncprem.uprising.pipeline.abstractions.runtime;
 
+import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.pipeline.abstractions.AbstractComponent;
 import com.syncprem.uprising.pipeline.abstractions.configuration.HostConfiguration;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
@@ -30,6 +31,24 @@ public abstract class AbstractHost extends AbstractComponent implements Host
 	{
 		this.configuration = configuration;
 	}
+
+	@Override
+	public final Pipeline createPipeline(Class<? extends Pipeline> clazz) throws SyncPremException
+	{
+		if (clazz == null)
+			throw new ArgumentNullException("clazz");
+
+		try
+		{
+			return this.createPipelineInternal(clazz);
+		}
+		catch (Exception ex)
+		{
+			throw new SyncPremException(ex);
+		}
+	}
+
+	protected abstract Pipeline createPipelineInternal(Class<? extends Pipeline> clazz) throws Exception;
 
 	protected abstract void onHostUnload(FutureTask<?> futureTask);
 

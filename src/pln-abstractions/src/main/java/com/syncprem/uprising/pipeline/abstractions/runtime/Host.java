@@ -10,7 +10,7 @@ import com.syncprem.uprising.pipeline.abstractions.Component;
 import com.syncprem.uprising.pipeline.abstractions.configuration.HostConfiguration;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public interface Host extends Component, Configurable<HostConfiguration>
+public interface Host extends Component, Configurable<HostConfiguration>, PipelineFactory
 {
 	void run() throws SyncPremException;
 }

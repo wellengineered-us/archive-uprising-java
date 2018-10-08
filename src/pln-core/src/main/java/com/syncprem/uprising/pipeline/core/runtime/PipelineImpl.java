@@ -9,6 +9,7 @@ import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
+import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedComponentConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilder;
@@ -36,14 +37,20 @@ public final class PipelineImpl extends AbstractPipeline
 	}
 
 	@Override
-	protected Context createContextInternal()
+	protected Context createContextInternal() throws Exception
 	{
 		Context context;
 
-		if (this.getConfiguration().getContextClass() == null)
+		final PipelineConfiguration pipelineConfiguration = this.getConfiguration();
+
+		if (pipelineConfiguration == null ||
+				pipelineConfiguration.getContextClass() == null)
 			context = new ContextImpl(); // fallback
 		else
-			context = Utils.newObjectFromClass(this.getConfiguration().getContextClass());
+			context = Utils.newObjectFromClass(pipelineConfiguration.getContextClass());
+
+		context.setConfiguration(pipelineConfiguration);
+		context.create();
 
 		return context;
 	}
@@ -77,6 +84,12 @@ public final class PipelineImpl extends AbstractPipeline
 			interceptorClass = interceptorConfiguration.getComponentClass();
 
 			if (interceptorClass == null)
+				continue;
+
+			/*if (!interceptorClass.isAssignableFrom(Interceptor.class))
+				continue;*/
+
+			if (!Interceptor.class.isAssignableFrom(interceptorClass))
 				continue;
 
 			interceptorTypeConfigMappings.put(interceptorConfiguration, interceptorClass);
@@ -126,7 +139,7 @@ public final class PipelineImpl extends AbstractPipeline
 					interceptorBuilder = interceptorBuilderImpl;
 					interceptorBuilderExtensions = interceptorBuilderImpl;
 
-					if (true)
+					if (false)
 					{
 						// object instance
 						final NullInterceptor nullInterceptor = new NullInterceptor();

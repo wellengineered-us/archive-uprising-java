@@ -38,14 +38,11 @@ public class UntypedComponentConfiguration extends ComponentConfiguration
 	private String componentClassName;
 	private ComponentSpecificConfiguration untypedComponentSpecificConfiguration;
 
-	@SuppressWarnings("unchecked")
 	public <TComponent extends SpecConfComponent<? extends ComponentSpecificConfiguration>> Class<? extends TComponent> getComponentClass()
 	{
 		Class<? extends TComponent> clazz;
-		Class<? extends SpecConfComponent<? extends ComponentSpecificConfiguration>> klazz;
 
-		klazz = Utils.loadClassByName(this.getComponentClassName());
-		clazz = (Class<? extends TComponent>) klazz;
+		clazz = Utils.loadClassByName(this.getComponentClassName());
 
 		return clazz;
 	}

@@ -35,6 +35,7 @@ public final class WrappedIteratorImpl<TInputItem, TOutputItem> extends Abstract
 		this.sourceLabel = sourceLabel;
 		this.processingCallback = processingCallback;
 	}
+
 	public static final long DEFAULT_INDEX = -1;
 	private final ProcessingCallback processingCallback;
 	private final long punctuateModulo;

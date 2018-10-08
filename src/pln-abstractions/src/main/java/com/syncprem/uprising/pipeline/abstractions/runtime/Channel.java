@@ -10,4 +10,9 @@ import com.syncprem.uprising.pipeline.abstractions.Component;
 public interface Channel extends Component
 {
 	Stream getRecords();
+
+	default Stream getStream()
+	{
+		return this.getRecords();
+	}
 }

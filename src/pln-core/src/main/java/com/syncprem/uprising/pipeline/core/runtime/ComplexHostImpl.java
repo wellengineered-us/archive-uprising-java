@@ -10,6 +10,7 @@ import com.syncprem.uprising.infrastructure.polyfills.FailFastException;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Pipeline;
+import com.syncprem.uprising.pipeline.abstractions.runtime.PipelineFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -47,10 +48,13 @@ public final class ComplexHostImpl extends SimpleHostImpl
 		this.threadPool = threadPool;
 	}
 
-	private static void executePipelineOnceAndRelease(Semaphore semaphore, Class<? extends Pipeline> pipelineClass, PipelineConfiguration pipelineConfiguration)
+	private static void executePipelineOnceAndRelease(Semaphore semaphore, PipelineFactory pipelineFactory, Class<? extends Pipeline> pipelineClass, PipelineConfiguration pipelineConfiguration)
 	{
 		if (semaphore == null)
 			throw new ArgumentNullException("semaphore");
+
+		if (pipelineFactory == null)
+			throw new ArgumentNullException("pipelineFactory");
 
 		if (pipelineClass == null)
 			throw new ArgumentNullException("pipelineClass");
@@ -60,7 +64,7 @@ public final class ComplexHostImpl extends SimpleHostImpl
 
 		try
 		{
-			executePipeline(pipelineClass, pipelineConfiguration);
+			executePipeline(pipelineFactory, pipelineClass, pipelineConfiguration);
 		}
 		catch (Exception ex)
 		{
@@ -119,7 +123,7 @@ public final class ComplexHostImpl extends SimpleHostImpl
 		if (!this.getSemaphore().tryAcquire(0L, TimeUnit.SECONDS))
 			failFastOnlyWhen(true, Utils.EMPTY_STRING);
 
-		this.getThreadPool().execute(() -> executePipelineOnceAndRelease(this.getSemaphore(), pipelineClass, pipelineConfiguration));
+		this.getThreadPool().execute(() -> executePipelineOnceAndRelease(this.getSemaphore(), this, pipelineClass, pipelineConfiguration));
 	}
 
 	@Override
