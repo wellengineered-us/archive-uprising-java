@@ -62,14 +62,22 @@
 			}
 		}
 	},
-	"InterceptorConfigurations": [
-		/*{
-			"StageAqtn":
-				"SyncPrem.Pipeline.Core.Processors.MessageReshapeProcessor, SyncPrem.Pipeline.Core",
-			"ComponentSpecificConfiguration":
-			{
+	"MiddlewareConfigurations": [
+		{
+			"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
+			"ComponentSpecificConfiguration": {
 			}
-		}*/
+		},
+		{
+			"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
+			"ComponentSpecificConfiguration": {
+			}
+		},
+		{
+			"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
+			"ComponentSpecificConfiguration": {
+			}
+		}
 	],
 	"DestinationConfiguration": {
 		"StageAqtn": "SyncPrem.Pipeline.Core.Connectors.FlatText.DelimitedTextDestinationConnector, SyncPrem.Pipeline.Core",

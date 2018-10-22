@@ -20,23 +20,34 @@
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelProcessor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamProcessor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
+					"ComponentSpecificConfiguration": {
+					}
+				},
+				{
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
+					"ComponentSpecificConfiguration": {
+					}
+				},
+				{
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
 			],
+			"RecordConfiguration": {},
 			"DestinationConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullDestinationConnector",
 				"ComponentSpecificConfiguration": {
@@ -55,19 +66,19 @@
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -90,19 +101,19 @@
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -125,19 +136,19 @@
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -160,19 +171,19 @@
 					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}

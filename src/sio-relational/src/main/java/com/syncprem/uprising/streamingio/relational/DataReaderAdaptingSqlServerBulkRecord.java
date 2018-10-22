@@ -11,6 +11,7 @@ import com.syncprem.uprising.infrastructure.polyfills.AbstractLifecycle;
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.FailFastException;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -116,7 +117,7 @@ public final class DataReaderAdaptingSqlServerBulkRecord extends AbstractLifecyc
 		}
 		catch (Exception ex)
 		{
-			throw new SQLServerException("Error on getRowData(): ", ex);
+			throw new FailFastException("Error on getRowData(): ", ex);
 		}
 	}
 
@@ -252,7 +253,49 @@ public final class DataReaderAdaptingSqlServerBulkRecord extends AbstractLifecyc
 		}
 		catch (Exception ex)
 		{
-			throw new SQLServerException("Error on next(): ", ex);
+			throw new FailFastException("Error on next(): ", ex);
 		}
+	}
+
+	@Override
+	public void addColumnMetadata(int i, String s, int i1, int i2, int i3, DateTimeFormatter dateTimeFormatter) throws SQLServerException
+	{
+
+	}
+
+	@Override
+	public void addColumnMetadata(int i, String s, int i1, int i2, int i3) throws SQLServerException
+	{
+
+	}
+
+	@Override
+	public void setTimestampWithTimezoneFormat(String s)
+	{
+
+	}
+
+	@Override
+	public void setTimestampWithTimezoneFormat(DateTimeFormatter dateTimeFormatter)
+	{
+
+	}
+
+	@Override
+	public void setTimeWithTimezoneFormat(String s)
+	{
+
+	}
+
+	@Override
+	public void setTimeWithTimezoneFormat(DateTimeFormatter dateTimeFormatter)
+	{
+
+	}
+
+	@Override
+	public DateTimeFormatter getColumnDateTimeFormatter(int i)
+	{
+		return null;
 	}
 }

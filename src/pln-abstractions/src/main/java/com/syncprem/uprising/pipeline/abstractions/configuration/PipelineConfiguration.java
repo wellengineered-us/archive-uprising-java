@@ -17,18 +17,18 @@ public class PipelineConfiguration extends ComponentConfiguration
 {
 	public PipelineConfiguration()
 	{
-		this.interceptorConfigurations = new ConfigurationObjectCollectionImpl<UntypedComponentConfiguration>(this);
+		this.middlewareConfigurations = new ConfigurationObjectCollectionImpl<UntypedComponentConfiguration>(this);
 	}
 
-	public PipelineConfiguration(ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> interceptorConfigurations)
+	public PipelineConfiguration(ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> middlewareConfigurations)
 	{
-		if (interceptorConfigurations == null)
-			throw new ArgumentNullException("interceptorConfigurations");
+		if (middlewareConfigurations == null)
+			throw new ArgumentNullException("middlewareConfigurations");
 
-		this.interceptorConfigurations = interceptorConfigurations;
+		this.middlewareConfigurations = middlewareConfigurations;
 	}
 
-	private final ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> interceptorConfigurations;
+	private final ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> middlewareConfigurations;
 	private String contextClassName;
 	private UntypedComponentConfiguration destinationConfiguration;
 	private Boolean isEnabled;
@@ -61,9 +61,9 @@ public class PipelineConfiguration extends ComponentConfiguration
 		this.destinationConfiguration = destinationConfiguration;
 	}
 
-	public ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> getInterceptorConfigurations()
+	public ConfigurationObjectCollectionImpl<UntypedComponentConfiguration> getMiddlewareConfigurations()
 	{
-		return this.interceptorConfigurations;
+		return this.middlewareConfigurations;
 	}
 
 	public Class<? extends Pipeline> getPipelineClass()
@@ -168,10 +168,10 @@ public class PipelineConfiguration extends ComponentConfiguration
 		else
 			MessageImpl.addRange(messages, this.getSourceConfiguration().validate(String.format("%s/%s", context, "Source")));
 
-		if (this.getInterceptorConfigurations() == null)
-			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Interceptor configuration is required."), Severity.ERROR));
+		if (this.getMiddlewareConfigurations() == null)
+			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("ChannelMiddleware configuration is required."), Severity.ERROR));
 		else
-			MessageImpl.addRange(messages, this.getInterceptorConfigurations().validateAll(String.format("%s/%s", context, "Interceptor")));
+			MessageImpl.addRange(messages, this.getMiddlewareConfigurations().validateAll(String.format("%s/%s", context, "ChannelMiddleware")));
 
 		if (this.getDestinationConfiguration() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("Destination configuration is required."), Severity.ERROR));

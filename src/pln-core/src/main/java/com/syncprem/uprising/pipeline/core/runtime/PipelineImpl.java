@@ -21,8 +21,8 @@ import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.destination.DestinationConnector;
 import com.syncprem.uprising.pipeline.abstractions.stage.connector.source.SourceConnector;
-import com.syncprem.uprising.pipeline.abstractions.stage.interceptor.Interceptor;
-import com.syncprem.uprising.pipeline.core.interceptors.NullInterceptor;
+import com.syncprem.uprising.pipeline.abstractions.stage.processor.ChannelMiddleware;
+import com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,34 +65,31 @@ public final class PipelineImpl extends AbstractPipeline
 
 		Class<? extends SourceConnector<? extends ComponentSpecificConfiguration>> sourceConnectorClass;
 		Class<? extends DestinationConnector<? extends ComponentSpecificConfiguration>> destinationConnectorClass;
-		Map<UntypedComponentConfiguration, Class<? extends Interceptor<? extends ComponentSpecificConfiguration>>> interceptorTypeConfigMappings;
+		Map<UntypedComponentConfiguration, Class<? extends ChannelMiddleware<? extends ComponentSpecificConfiguration>>> channelMiddlewareTypeConfigMappings;
 
 		if (context == null)
 			throw new ArgumentNullException("context");
 
 		sourceConnectorClass = this.getConfiguration().getSourceConfiguration().getComponentClass();
 		destinationConnectorClass = this.getConfiguration().getDestinationConfiguration().getComponentClass();
-		interceptorTypeConfigMappings = new HashMap<>();
+		channelMiddlewareTypeConfigMappings = new HashMap<>();
 
-		for (UntypedComponentConfiguration interceptorConfiguration : this.getConfiguration().getInterceptorConfigurations())
+		for (UntypedComponentConfiguration middlewareConfiguration : this.getConfiguration().getMiddlewareConfigurations())
 		{
-			Class<? extends Interceptor<? extends ComponentSpecificConfiguration>> interceptorClass;
+			Class<? extends ChannelMiddleware<? extends ComponentSpecificConfiguration>> middlewareClass;
 
-			if (interceptorConfiguration == null)
+			if (middlewareConfiguration == null)
 				continue;
 
-			interceptorClass = interceptorConfiguration.getComponentClass();
+			middlewareClass = middlewareConfiguration.getComponentClass();
 
-			if (interceptorClass == null)
+			if (middlewareClass == null)
 				continue;
 
-			/*if (!interceptorClass.isAssignableFrom(Interceptor.class))
-				continue;*/
-
-			if (!Interceptor.class.isAssignableFrom(interceptorClass))
+			if (!ChannelMiddleware.class.isAssignableFrom(middlewareClass))
 				continue;
 
-			interceptorTypeConfigMappings.put(interceptorConfiguration, interceptorClass);
+			channelMiddlewareTypeConfigMappings.put(middlewareConfiguration, middlewareClass);
 		}
 
 		failFastOnlyWhen(sourceConnectorClass == null, "sourceConnectorClass == null");
@@ -122,10 +119,10 @@ public final class PipelineImpl extends AbstractPipeline
 
 					// ----- START REFACTOR -----
 
-					MiddlewareDelegate<Channel> interceptor;
-					MiddlewareBuilderImpl<Channel, UntypedComponentConfiguration> interceptorBuilderImpl;
-					MiddlewareBuilder<Channel> interceptorBuilder;
-					MiddlewareBuilderExtensions<Channel, UntypedComponentConfiguration> interceptorBuilderExtensions;
+					MiddlewareDelegate<Channel> channelMiddlewareDelegate;
+					MiddlewareBuilderImpl<Channel, UntypedComponentConfiguration> channelMiddlewareBuilderImpl;
+					MiddlewareBuilder<Channel> channelMiddlewareBuilder;
+					MiddlewareBuilderExtensions<Channel, UntypedComponentConfiguration> channelMiddlewareBuilderExtensions;
 
 					configuration = this.getConfiguration().getRecordConfiguration();
 
@@ -135,23 +132,23 @@ public final class PipelineImpl extends AbstractPipeline
 					sourceConnector.preExecute(context, configuration);
 					destinationConnector.preExecute(context, configuration);
 
-					interceptorBuilderImpl = new MiddlewareBuilderImpl<>();
-					interceptorBuilder = interceptorBuilderImpl;
-					interceptorBuilderExtensions = interceptorBuilderImpl;
+					channelMiddlewareBuilderImpl = new MiddlewareBuilderImpl<>();
+					channelMiddlewareBuilder = channelMiddlewareBuilderImpl;
+					channelMiddlewareBuilderExtensions = channelMiddlewareBuilderImpl;
 
 					if (false)
 					{
 						// object instance
-						final NullInterceptor nullInterceptor = new NullInterceptor();
-						nullInterceptor.setConfiguration(new UntypedComponentConfiguration());
-						nullInterceptor.create();
-						interceptorBuilderExtensions.with(nullInterceptor);
+						final NullChannelMiddleware nullChannelMiddleware = new NullChannelMiddleware();
+						nullChannelMiddleware.setConfiguration(new UntypedComponentConfiguration());
+						nullChannelMiddleware.create();
+						channelMiddlewareBuilderExtensions.with(nullChannelMiddleware);
 
 						// regular methods
-						interceptorBuilder.use(NullInterceptor::nullInterceptorMethod);
+						channelMiddlewareBuilder.use(NullChannelMiddleware::nullChannelMiddlewareMethod);
 
 						// lambda expressions
-						interceptorBuilder.use(next ->
+						channelMiddlewareBuilder.use(next ->
 						{
 							return (_context, _configuration, _channel) ->
 							{
@@ -163,32 +160,32 @@ public final class PipelineImpl extends AbstractPipeline
 						});
 					}
 
-					// by interceptor class (reflection)
-					for (Map.Entry<UntypedComponentConfiguration, Class<? extends Interceptor<? extends ComponentSpecificConfiguration>>> interceptorTypeConfigMapping : interceptorTypeConfigMappings.entrySet())
+					// by processor class (reflection)
+					for (Map.Entry<UntypedComponentConfiguration, Class<? extends ChannelMiddleware<? extends ComponentSpecificConfiguration>>> channelMiddlewareTypeConfigMapping : channelMiddlewareTypeConfigMappings.entrySet())
 					{
-						if (interceptorTypeConfigMapping == null)
+						if (channelMiddlewareTypeConfigMapping == null)
 							continue;
 
-						if (interceptorTypeConfigMapping.getKey() == null)
-							throw new InvalidOperationException("interceptorTypeConfigMapping.isKey()");
+						if (channelMiddlewareTypeConfigMapping.getKey() == null)
+							throw new InvalidOperationException("channelMiddlewareTypeConfigMapping.isKey()");
 
-						if (interceptorTypeConfigMapping.getValue() == null)
-							throw new InvalidOperationException("interceptorTypeConfigMapping.getValue()");
+						if (channelMiddlewareTypeConfigMapping.getValue() == null)
+							throw new InvalidOperationException("channelMiddlewareTypeConfigMapping.getValue()");
 
-						interceptorBuilderExtensions.from(interceptorTypeConfigMapping.getValue(), interceptorTypeConfigMapping.getKey());
+						channelMiddlewareBuilderExtensions.from(channelMiddlewareTypeConfigMapping.getValue(), channelMiddlewareTypeConfigMapping.getKey());
 					}
 
-					interceptor = interceptorBuilder.build();
+					channelMiddlewareDelegate = channelMiddlewareBuilder.build();
 
 					// ----- END REFACTOR -----
 
-					failFastOnlyWhen(interceptor == null, "interceptor == null");
+					failFastOnlyWhen(channelMiddlewareDelegate == null, "processor == null");
 
 					channel = sourceConnector.produce(context, configuration);
 
 					try (Channel _channel = channel) // disposal outer-most channel
 					{
-						channel = interceptor.invoke(context, configuration, channel);
+						channel = channelMiddlewareDelegate.invoke(context, configuration, channel);
 
 						destinationConnector.consume(context, configuration, channel);
 					}

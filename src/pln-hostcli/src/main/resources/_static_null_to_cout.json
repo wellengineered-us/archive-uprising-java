@@ -15,21 +15,24 @@
 			"SourceConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"ComponentSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -47,21 +50,24 @@
 			"SourceConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"ComponentSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -79,21 +85,24 @@
 			"SourceConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"ComponentSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -111,21 +120,24 @@
 			"SourceConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"ComponentSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}
@@ -143,21 +155,24 @@
 			"SourceConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"ComponentSpecificConfiguration": {
+					"MaxRandomRecordCount": 100,
+					"MaxRandomFieldCount": 10,
+					"FieldNameFormat": "MyField_%s"
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}

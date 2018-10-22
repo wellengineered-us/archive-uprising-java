@@ -17,12 +17,27 @@
 				"ComponentSpecificConfiguration": {
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
+				{
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
+					"ComponentSpecificConfiguration": {
+					}
+				},
+				{
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
+					"ComponentSpecificConfiguration": {
+					}
+				},
+				{
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
+					"ComponentSpecificConfiguration": {
+					}
+				}
 			],
 			"DestinationConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.LinedTextualDestinationConnector",
 				"ComponentSpecificConfiguration": {
-					"TextualFilePath": "_out_\\sample.txt",
+					"TextualFilePath": "d:\\_out_\\sample.txt",
 					"TextualConfiguration": {
 						"TextualHeaderFieldConfigurations": [
 						]

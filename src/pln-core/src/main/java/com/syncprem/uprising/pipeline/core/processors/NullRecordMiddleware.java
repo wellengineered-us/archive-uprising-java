@@ -10,28 +10,27 @@ import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecif
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareClosure;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
-import com.syncprem.uprising.pipeline.abstractions.processor.AbstractChannelProcessor;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
+import com.syncprem.uprising.pipeline.abstractions.stage.processor.AbstractRecordMiddleware;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Stream;
+import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public class NullChannelProcessor extends AbstractChannelProcessor<ComponentSpecificConfiguration>
+public class NullRecordMiddleware extends AbstractRecordMiddleware<ComponentSpecificConfiguration>
 {
-	public NullChannelProcessor()
+	public NullRecordMiddleware()
 	{
 	}
 
-	public static MiddlewareDelegate<Channel> nullStreamProcessorMethod(MiddlewareDelegate<Channel> next)
+	public static MiddlewareDelegate<Record> nullRecordMiddlewareMethod(MiddlewareDelegate<Record> next)
 	{
-		MiddlewareDelegate<Channel> retval;
+		MiddlewareDelegate<Record> retval;
 
-		retval = MiddlewareClosure.getMiddlewareChain(NullChannelProcessor::nullStreamProcessorMethod, next);
+		retval = MiddlewareClosure.getMiddlewareChain(NullRecordMiddleware::nullRecordMiddlewareMethod, next);
 
 		return retval;
 	}
 
-	private static Channel nullStreamProcessorMethod(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
+	private static Record nullRecordMiddlewareMethod(Context context, RecordConfiguration configuration, Record record, MiddlewareDelegate<Record> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -39,13 +38,13 @@ public class NullChannelProcessor extends AbstractChannelProcessor<ComponentSpec
 		if (configuration == null)
 			throw new ArgumentNullException("configuration");
 
-		if (channel == null)
+		if (record == null)
 			throw new ArgumentNullException("record");
 
 		if (next != null)
-			channel = next.invoke(context, configuration, channel);
+			record = next.invoke(context, configuration, record);
 
-		return channel;
+		return record;
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class NullChannelProcessor extends AbstractChannelProcessor<ComponentSpec
 	}
 
 	@Override
-	protected Stream processInternal(Context context, RecordConfiguration configuration, Stream stream, MiddlewareDelegate<Stream> next) throws SyncPremException
+	protected Record processInternal(Context context, RecordConfiguration configuration, Record record, MiddlewareDelegate<Record> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -63,12 +62,12 @@ public class NullChannelProcessor extends AbstractChannelProcessor<ComponentSpec
 		if (configuration == null)
 			throw new ArgumentNullException("configuration");
 
-		if (stream == null)
-			throw new ArgumentNullException("stream");
+		if (record == null)
+			throw new ArgumentNullException("record");
 
 		if (next != null)
-			stream = next.invoke(context, configuration, stream);
+			record = next.invoke(context, configuration, record);
 
-		return stream;
+		return record;
 	}
 }

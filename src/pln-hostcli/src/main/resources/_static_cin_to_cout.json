@@ -6,7 +6,7 @@
 	"TargetEngineVersion": "0.2.0",
 	"ConfigurationVersion": "2.0.0",
 	"HostClassName": "com.syncprem.uprising.pipeline.core.runtime.SimpleHostImpl",
-	"EnableDispatchLoop": true,
+	"EnableDispatchLoop": false,
 	"PipelineConfigurations": [
 		{
 			"Enabled": true,
@@ -17,19 +17,19 @@
 				"ComponentSpecificConfiguration": {
 				}
 			},
-			"InterceptorConfigurations": [
+			"MiddlewareConfigurations": [
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				},
 				{
-					"ComponentClassName": "com.syncprem.uprising.pipeline.core.interceptors.ConsoleInterceptor",
+					"ComponentClassName": "com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware",
 					"ComponentSpecificConfiguration": {
 					}
 				}

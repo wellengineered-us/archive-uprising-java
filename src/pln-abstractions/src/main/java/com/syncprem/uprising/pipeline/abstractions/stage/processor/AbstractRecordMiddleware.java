@@ -3,30 +3,30 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.abstractions.stage.interceptor;
+package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.pipeline.abstractions.AbstractSpecConfComponent;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
-import com.syncprem.uprising.pipeline.abstractions.stage.AbstractStage;
+import com.syncprem.uprising.pipeline.abstractions.runtime.Record;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
-public abstract class AbstractInterceptor<TComponentSpecificConfiguration extends ComponentSpecificConfiguration>
-		extends AbstractStage<TComponentSpecificConfiguration> implements Interceptor<TComponentSpecificConfiguration>
+public abstract class AbstractRecordMiddleware<TComponentSpecificConfiguration extends ComponentSpecificConfiguration>
+		extends AbstractSpecConfComponent<TComponentSpecificConfiguration> implements RecordMiddleware<TComponentSpecificConfiguration>
 {
-	protected AbstractInterceptor()
+	protected AbstractRecordMiddleware()
 	{
 	}
 
 	@Override
-	public final Channel process(Context context, RecordConfiguration configuration, Channel target, MiddlewareDelegate<Channel> next) throws SyncPremException
+	public final Record process(Context context, RecordConfiguration configuration, Record target, MiddlewareDelegate<Record> next) throws SyncPremException
 	{
-		Channel newTarget;
+		Record newTarget;
 
 		if (context == null)
 			throw new ArgumentNullException("context");
@@ -43,9 +43,6 @@ public abstract class AbstractInterceptor<TComponentSpecificConfiguration extend
 		failFastOnlyWhen(!this.isCreated(), "!this.isCreated()");
 		failFastOnlyWhen(this.isDisposed(), "this.isDisposed()");
 
-		this.assertValidConfiguration();
-		this.preExecute(context, configuration);
-
 		try
 		{
 			newTarget = this.processInternal(context, configuration, target, next);
@@ -55,10 +52,8 @@ public abstract class AbstractInterceptor<TComponentSpecificConfiguration extend
 			throw new SyncPremException(ex);
 		}
 
-		this.postExecute(context, configuration);
-
 		return newTarget;
 	}
 
-	protected abstract Channel processInternal(Context context, RecordConfiguration configuration, Channel target, MiddlewareDelegate<Channel> next) throws Exception;
+	protected abstract Record processInternal(Context context, RecordConfiguration configuration, Record target, MiddlewareDelegate<Record> next) throws Exception;
 }

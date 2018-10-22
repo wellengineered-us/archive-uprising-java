@@ -3,7 +3,7 @@
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
-package com.syncprem.uprising.pipeline.core.interceptors;
+package com.syncprem.uprising.pipeline.core.processors;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
@@ -12,25 +12,25 @@ import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareClosure;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Channel;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
-import com.syncprem.uprising.pipeline.abstractions.stage.interceptor.AbstractInterceptor;
+import com.syncprem.uprising.pipeline.abstractions.stage.processor.AbstractChannelMiddleware;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public class NullInterceptor extends AbstractInterceptor<ComponentSpecificConfiguration>
+public class NullChannelMiddleware extends AbstractChannelMiddleware<ComponentSpecificConfiguration>
 {
-	public NullInterceptor()
+	public NullChannelMiddleware()
 	{
 	}
 
-	public static MiddlewareDelegate<Channel> nullInterceptorMethod(MiddlewareDelegate<Channel> next)
+	public static MiddlewareDelegate<Channel> nullChannelMiddlewareMethod(MiddlewareDelegate<Channel> next)
 	{
 		MiddlewareDelegate<Channel> retval;
 
-		retval = MiddlewareClosure.getMiddlewareChain(NullInterceptor::nullInterceptorMethod, next);
+		retval = MiddlewareClosure.getMiddlewareChain(NullChannelMiddleware::nullChannelMiddlewareMethod, next);
 
 		return retval;
 	}
 
-	private static Channel nullInterceptorMethod(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
+	private static Channel nullChannelMiddlewareMethod(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
 	{
 		if (context == null)
 			throw new ArgumentNullException("context");

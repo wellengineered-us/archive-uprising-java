@@ -16,9 +16,11 @@ import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilder;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderExtensions;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderImpl;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
-import com.syncprem.uprising.pipeline.abstractions.processor.StreamProcessor;
+import com.syncprem.uprising.pipeline.abstractions.stage.processor.RecordMiddleware;
 import com.syncprem.uprising.pipeline.abstractions.runtime.*;
-import com.syncprem.uprising.pipeline.core.processors.NullStreamProcessor;
+import com.syncprem.uprising.pipeline.abstractions.stage.processor.StreamMiddleware;
+import com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware;
+import com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.WrappedIteratorExtensions;
 
@@ -45,55 +47,52 @@ public final class ContextImpl extends AbstractContext
 
 		// ----- START REFACTOR -----
 
-		MiddlewareDelegate<Record> streamProcess;
-		MiddlewareBuilderImpl<Record, UntypedComponentConfiguration> streamProcessorBuilderImpl;
-		MiddlewareBuilder<Record> streamProcessorBuilder;
-		MiddlewareBuilderExtensions<Record, UntypedComponentConfiguration> streamProcessorBuilderExtensions;
+		MiddlewareDelegate<Record> recordMiddlewareDelegate;
+		MiddlewareBuilderImpl<Record, UntypedComponentConfiguration> recordMiddlewareBuilderImpl;
+		MiddlewareBuilder<Record> recordMiddlewareBuilder;
+		MiddlewareBuilderExtensions<Record, UntypedComponentConfiguration> recordMiddlewareBuilderExtensions;
 
-		Map<UntypedComponentConfiguration, Class<? extends StreamProcessor<? extends ComponentSpecificConfiguration>>> streamProcessorTypeConfigMappings;
+		Map<UntypedComponentConfiguration, Class<? extends RecordMiddleware<? extends ComponentSpecificConfiguration>>> recordMiddlewareTypeConfigMappings;
 
 		final RecordConfiguration configuration = new RecordConfiguration();
-		streamProcessorBuilderImpl = new MiddlewareBuilderImpl<>();
-		streamProcessorBuilder = streamProcessorBuilderImpl;
-		streamProcessorBuilderExtensions = streamProcessorBuilderImpl;
+		recordMiddlewareBuilderImpl = new MiddlewareBuilderImpl<>();
+		recordMiddlewareBuilder = recordMiddlewareBuilderImpl;
+		recordMiddlewareBuilderExtensions = recordMiddlewareBuilderImpl;
 
-		streamProcessorTypeConfigMappings = new HashMap<>();
+		recordMiddlewareTypeConfigMappings = new HashMap<>();
 
-		for (UntypedComponentConfiguration streamProcessorConfiguration : this.getConfiguration().getInterceptorConfigurations())
+		for (UntypedComponentConfiguration recordMiddlewareConfiguration : this.getConfiguration().getMiddlewareConfigurations())
 		{
-			Class<? extends StreamProcessor<? extends ComponentSpecificConfiguration>> streamProcessorClass;
+			Class<? extends RecordMiddleware<? extends ComponentSpecificConfiguration>> recordMiddlewareClass;
 
-			if (streamProcessorConfiguration == null)
+			if (recordMiddlewareConfiguration == null)
 				continue;
 
-			streamProcessorClass = streamProcessorConfiguration.getComponentClass();
+			recordMiddlewareClass = recordMiddlewareConfiguration.getComponentClass();
 
-			if (streamProcessorClass == null)
+			if (recordMiddlewareClass == null)
 				continue;
 
-			/*if (!streamProcessorClass.isAssignableFrom(StreamProcessor.class))
-				continue;*/
-
-			if (!StreamProcessor.class.isAssignableFrom(streamProcessorClass))
+			if (!RecordMiddleware.class.isAssignableFrom(recordMiddlewareClass))
 				continue;
 
-			streamProcessorTypeConfigMappings.put(streamProcessorConfiguration, streamProcessorClass);
+			recordMiddlewareTypeConfigMappings.put(recordMiddlewareConfiguration, recordMiddlewareClass);
 		}
 
-		final NullStreamProcessor nullStreamProcessor = new NullStreamProcessor();
+		final NullRecordMiddleware nullRecordMiddleware = new NullRecordMiddleware();
 
 		if (false)
 		{
 			// object instance
-			nullStreamProcessor.setConfiguration(new UntypedComponentConfiguration());
-			nullStreamProcessor.create();
-			streamProcessorBuilderExtensions.with(nullStreamProcessor);
+			nullRecordMiddleware.setConfiguration(new UntypedComponentConfiguration());
+			nullRecordMiddleware.create();
+			recordMiddlewareBuilderExtensions.with(nullRecordMiddleware);
 
 			// regular methods
-			streamProcessorBuilder.use(NullStreamProcessor::nullStreamProcessorMethod);
+			recordMiddlewareBuilder.use(NullRecordMiddleware::nullRecordMiddlewareMethod);
 
 			// lambda expressions
-			streamProcessorBuilder.use(next ->
+			recordMiddlewareBuilder.use(next ->
 			{
 				return (_context, _configuration, _record) ->
 				{
@@ -105,26 +104,26 @@ public final class ContextImpl extends AbstractContext
 			});
 		}
 
-		// by interceptor class (reflection)
-		for (Map.Entry<UntypedComponentConfiguration, Class<? extends StreamProcessor<? extends ComponentSpecificConfiguration>>> streamProcessorTypeConfigMapping : streamProcessorTypeConfigMappings.entrySet())
+		// by processor class (reflection)
+		for (Map.Entry<UntypedComponentConfiguration, Class<? extends RecordMiddleware<? extends ComponentSpecificConfiguration>>> recordMiddlewareTypeConfigMapping : recordMiddlewareTypeConfigMappings.entrySet())
 		{
-			if (streamProcessorTypeConfigMapping == null)
+			if (recordMiddlewareTypeConfigMapping == null)
 				continue;
 
-			if (streamProcessorTypeConfigMapping.getKey() == null)
-				throw new InvalidOperationException("streamProcessorTypeConfigMapping.isKey()");
+			if (recordMiddlewareTypeConfigMapping.getKey() == null)
+				throw new InvalidOperationException("recordMiddlewareTypeConfigMapping.isKey()");
 
-			if (streamProcessorTypeConfigMapping.getValue() == null)
-				throw new InvalidOperationException("streamProcessorTypeConfigMapping.getValue()");
+			if (recordMiddlewareTypeConfigMapping.getValue() == null)
+				throw new InvalidOperationException("recordMiddlewareTypeConfigMapping.getValue()");
 
-			streamProcessorBuilderExtensions.from(streamProcessorTypeConfigMapping.getValue(), streamProcessorTypeConfigMapping.getKey());
+			recordMiddlewareBuilderExtensions.from(recordMiddlewareTypeConfigMapping.getValue(), recordMiddlewareTypeConfigMapping.getKey());
 		}
 
-		streamProcess = streamProcessorBuilder.build();
+		recordMiddlewareDelegate = recordMiddlewareBuilder.build();
 
 		// ----- END REFACTOR -----
 
-		failFastOnlyWhen(streamProcess == null, "streamProcess == null");
+		failFastOnlyWhen(recordMiddlewareDelegate == null, "streamProcess == null");
 
 		records = WrappedIteratorExtensions.getWrappedIterator(records, "channel.records", (index, item) ->
 		{
@@ -132,16 +131,16 @@ public final class ContextImpl extends AbstractContext
 				throw new ArgumentNullException("item");
 
 			item.setIndex(index);
-			item = streamProcess.invoke(this, configuration, item);
+			item = recordMiddlewareDelegate.invoke(this, configuration, item);
 
 			return item;
 		}, (punctuateModulo, sourceLabel, itemIndex, isCompleted, rollingTiming) ->
 		{
 			if (isCompleted)
-				Utils.safeDispose(nullStreamProcessor);
+				Utils.safeDispose(nullRecordMiddleware);
 
 			//if (itemIndex == WrappedIteratorImpl.DEFAULT_INDEX || isCompleted)
-			System.out.println(String.format("[(progress) %s@%s-%s: itemIndex = %s (%s#), isCompleted = %s, rollingTiming = %sms]", sourceLabel, formatCurrentThreadId(), formatUUID(this.getComponentId()), itemIndex, itemIndex + 1, isCompleted, rollingTiming));
+			System.out.println(String.format("[(progress) %s@%s-%s: itemIndex = %s (%s#), isCompleted = %s, rollingTiming = %s sec(s)]", sourceLabel, formatCurrentThreadId(), formatUUID(this.getComponentId()), itemIndex, itemIndex + 1, isCompleted, rollingTiming));
 		});
 
 		final StreamFactory streamFactory = this;
@@ -191,6 +190,91 @@ public final class ContextImpl extends AbstractContext
 	@Override
 	protected Stream createStreamInternal(LifecycleIterator<Record> records) throws Exception
 	{
-		return new StreamImpl(records);
+		Stream stream;
+
+		// ----- START REFACTOR -----
+
+		MiddlewareDelegate<Stream> streamMiddlewareDelegate;
+		MiddlewareBuilderImpl<Stream, UntypedComponentConfiguration> streamMiddlewareBuilderImpl;
+		MiddlewareBuilder<Stream> streamMiddlewareBuilder;
+		MiddlewareBuilderExtensions<Stream, UntypedComponentConfiguration> streamMiddlewareBuilderExtensions;
+
+		Map<UntypedComponentConfiguration, Class<? extends StreamMiddleware<? extends ComponentSpecificConfiguration>>> streamMiddlewareTypeConfigMappings;
+
+		final RecordConfiguration configuration = new RecordConfiguration();
+		streamMiddlewareBuilderImpl = new MiddlewareBuilderImpl<>();
+		streamMiddlewareBuilder = streamMiddlewareBuilderImpl;
+		streamMiddlewareBuilderExtensions = streamMiddlewareBuilderImpl;
+
+		streamMiddlewareTypeConfigMappings = new HashMap<>();
+
+		for (UntypedComponentConfiguration streamMiddlewareConfiguration : this.getConfiguration().getMiddlewareConfigurations())
+		{
+			Class<? extends StreamMiddleware<? extends ComponentSpecificConfiguration>> streamMiddlewareClass;
+
+			if (streamMiddlewareConfiguration == null)
+				continue;
+
+			streamMiddlewareClass = streamMiddlewareConfiguration.getComponentClass();
+
+			if (streamMiddlewareClass == null)
+				continue;
+
+			if (!StreamMiddleware.class.isAssignableFrom(streamMiddlewareClass))
+				continue;
+
+			streamMiddlewareTypeConfigMappings.put(streamMiddlewareConfiguration, streamMiddlewareClass);
+		}
+
+		final NullStreamMiddleware nullStreamMiddleware = new NullStreamMiddleware();
+
+		if (false)
+		{
+			// object instance
+			nullStreamMiddleware.setConfiguration(new UntypedComponentConfiguration());
+			nullStreamMiddleware.create();
+			streamMiddlewareBuilderExtensions.with(nullStreamMiddleware);
+
+			// regular methods
+			streamMiddlewareBuilder.use(NullStreamMiddleware::nullStreamMiddlewareMethod);
+
+			// lambda expressions
+			streamMiddlewareBuilder.use(next ->
+			{
+				return (_context, _configuration, _stream) ->
+				{
+					if (next != null)
+						return next.invoke(_context, _configuration, _stream);
+					else
+						return _stream;
+				};
+			});
+		}
+
+		// by processor class (reflection)
+		for (Map.Entry<UntypedComponentConfiguration, Class<? extends StreamMiddleware<? extends ComponentSpecificConfiguration>>> streamMiddlewareTypeConfigMapping : streamMiddlewareTypeConfigMappings.entrySet())
+		{
+			if (streamMiddlewareTypeConfigMapping == null)
+				continue;
+
+			if (streamMiddlewareTypeConfigMapping.getKey() == null)
+				throw new InvalidOperationException("streamMiddlewareTypeConfigMapping.isKey()");
+
+			if (streamMiddlewareTypeConfigMapping.getValue() == null)
+				throw new InvalidOperationException("streamMiddlewareTypeConfigMapping.getValue()");
+
+			streamMiddlewareBuilderExtensions.from(streamMiddlewareTypeConfigMapping.getValue(), streamMiddlewareTypeConfigMapping.getKey());
+		}
+
+		streamMiddlewareDelegate = streamMiddlewareBuilder.build();
+
+		// ----- END REFACTOR -----
+
+		failFastOnlyWhen(streamMiddlewareDelegate == null, "streamProcess == null");
+
+		stream = new StreamImpl(records);
+		stream = streamMiddlewareDelegate.invoke(this, configuration, stream);
+
+		return stream;
 	}
 }
