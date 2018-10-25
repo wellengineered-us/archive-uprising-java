@@ -51,7 +51,7 @@
 			"DestinationConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.LinedTextualDestinationConnector",
 				"ComponentSpecificConfiguration": {
-					"TextualFilePath": "_out_\\sample.txt",
+					"TextualFilePath": "d:\\_out_\\sample.txt",
 					"TextualConfiguration": {
 						"TextualHeaderFieldConfigurations": [
 						]

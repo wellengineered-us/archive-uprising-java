@@ -13,6 +13,7 @@ import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrat
 import com.syncprem.uprising.pipeline.abstractions.configuration.HostConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.runtime.Host;
 
+import javax.swing.*;
 import java.io.File;
 
 import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.__check;
@@ -20,18 +21,36 @@ import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyW
 
 public final class HostUtils
 {
-	public static void bootstrapHost(String sourceFilePath) throws Exception
+	public static void bootstrapHost(String sourcePath) throws Exception
 	{
+		final boolean ENABLE_GUI = true;
 		Host host;
 		HostConfiguration hostConfiguration;
 		Iterable<Message> messages;
 
-		if (sourceFilePath == null)
-			throw new ArgumentNullException("sourceFilePath");
+		if (sourcePath == null)
+			throw new ArgumentNullException("sourcePath");
 
-		sourceFilePath = new File(sourceFilePath).getAbsolutePath();
+		final File _sourcePath = new File(sourcePath);
 
-		hostConfiguration = new JsonSerializationStrategyImpl().deserializeObjectFromFile(HostConfiguration.class, sourceFilePath);
+		sourcePath = _sourcePath.getAbsolutePath();
+
+		if (ENABLE_GUI && _sourcePath.isDirectory())
+		{
+			final JFileChooser chooser = new JFileChooser();
+			chooser.setDialogTitle("Open host configuration file...");
+			chooser.setCurrentDirectory(_sourcePath);
+			final int result = chooser.showOpenDialog(null);
+
+			if(result != JFileChooser.APPROVE_OPTION)
+				return;
+
+			sourcePath = chooser.getSelectedFile().getAbsolutePath();
+		}
+
+		System.out.println(sourcePath);
+
+		hostConfiguration = new JsonSerializationStrategyImpl().deserializeObjectFromFile(HostConfiguration.class, sourcePath);
 
 		messages = hostConfiguration.validate("Host");
 
