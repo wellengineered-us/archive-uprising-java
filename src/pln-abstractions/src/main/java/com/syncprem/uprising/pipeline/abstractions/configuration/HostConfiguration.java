@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -12,6 +12,7 @@ import com.syncprem.uprising.pipeline.abstractions.runtime.Host;
 import java.lang.module.ModuleDescriptor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class HostConfiguration extends ComponentConfiguration
 {
@@ -30,7 +31,11 @@ public class HostConfiguration extends ComponentConfiguration
 
 	private final ConfigurationObjectCollectionImpl<PipelineConfiguration> pipelineConfigurations;
 	private String configurationVersion;
+	private TimeUnit dispatchIdleTimeUnit;
+	private Long dispatchIdleTimeValue;
 	private Boolean enableDispatchLoop;
+	private TimeUnit gracefulShutdownTimeUnit;
+	private Long gracefulShutdownTimeValue;
 	private String hostClassName;
 
 	public String getConfigurationVersion()
@@ -41,6 +46,46 @@ public class HostConfiguration extends ComponentConfiguration
 	public void setConfigurationVersion(String configurationVersion)
 	{
 		this.configurationVersion = configurationVersion;
+	}
+
+	public TimeUnit getDispatchIdleTimeUnit()
+	{
+		return this.dispatchIdleTimeUnit;
+	}
+
+	public void setDispatchIdleTimeUnit(TimeUnit dispatchIdleTimeUnit)
+	{
+		this.dispatchIdleTimeUnit = dispatchIdleTimeUnit;
+	}
+
+	public Long getDispatchIdleTimeValue()
+	{
+		return this.dispatchIdleTimeValue;
+	}
+
+	public void setDispatchIdleTimeValue(Long dispatchIdleTimeValue)
+	{
+		this.dispatchIdleTimeValue = dispatchIdleTimeValue;
+	}
+
+	public TimeUnit getGracefulShutdownTimeUnit()
+	{
+		return this.gracefulShutdownTimeUnit;
+	}
+
+	public void setGracefulShutdownTimeUnit(TimeUnit gracefulShutdownTimeUnit)
+	{
+		this.gracefulShutdownTimeUnit = gracefulShutdownTimeUnit;
+	}
+
+	public Long getGracefulShutdownTimeValue()
+	{
+		return this.gracefulShutdownTimeValue;
+	}
+
+	public void setGracefulShutdownTimeValue(Long gracefulShutdownTimeValue)
+	{
+		this.gracefulShutdownTimeValue = gracefulShutdownTimeValue;
 	}
 
 	public Class<? extends Host> getHostClass()

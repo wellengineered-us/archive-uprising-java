@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -16,8 +16,8 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<java.version>1.10</java.version>
-		<jdkLevel>1.10</jdkLevel>
+		<java.version>1.11</java.version>
+		<jdkLevel>1.11</jdkLevel>
 		<revision>0.1.0-SNAPSHOT</revision>
 	</properties>
 
@@ -27,7 +27,7 @@
 	</organization>
 	<url>http://www.syncprem.com/uprising/</url>
 	<description>
-		A micro-scalable streaming data synchronization and syndication framework.
+		A serverless syndication platform designed to operate at commodity appliance scale (e.g. Raspberry Pi) with full fidelity over cloud-native serverless compute containers (e.g. AWS Lambda)..
 	</description>
 
 	<issueManagement>

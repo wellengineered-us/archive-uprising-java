@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 {
@@ -15,8 +15,8 @@
 			"SourceConfiguration": {
 				"ComponentClassName": "com.syncprem.uprising.pipeline.core.connectors.NullSourceConnector",
 				"ComponentSpecificConfiguration": {
-					"MaxRandomRecordCount": 10000,
-					"MaxRandomFieldCount": 100,
+					"MaxRecordCount": 10000,
+					"MaxFieldCount": 100,
 					"FieldNameFormat": "MyField_%s"
 				}
 			},

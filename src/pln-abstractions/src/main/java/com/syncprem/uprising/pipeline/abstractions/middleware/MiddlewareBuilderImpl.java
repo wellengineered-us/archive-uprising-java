@@ -1,28 +1,25 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.abstractions.middleware;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
-import com.syncprem.uprising.infrastructure.polyfills.Utils;
-import com.syncprem.uprising.pipeline.abstractions.Component;
-import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentConfiguration;
+import com.syncprem.uprising.infrastructure.configuration.ConfigurationObject;
+import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MiddlewareBuilderImpl<TComponent extends Component, TConfiguration extends ComponentConfiguration> implements MiddlewareBuilder<TComponent>, MiddlewareBuilderExtensions<TComponent, TConfiguration>
+public final class MiddlewareBuilderImpl<TData, TComponent extends Creatable & Disposable, TConfiguration extends ConfigurationObject> implements MiddlewareBuilder<TData, TComponent>, MiddlewareBuilderExtensions<TData, TComponent, TConfiguration>
 {
 	public MiddlewareBuilderImpl()
 	{
 		this(new ArrayList<>());
 	}
 
-	public MiddlewareBuilderImpl(List<MiddlewareChainDelegate<MiddlewareDelegate<TComponent>, MiddlewareDelegate<TComponent>>> components)
+	public MiddlewareBuilderImpl(List<MiddlewareChainDelegate<MiddlewareDelegate<TData, TComponent>, MiddlewareDelegate<TData, TComponent>>> components)
 	{
 		if (components == null)
 			throw new ArgumentNullException("components");
@@ -30,23 +27,23 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 		this.components = components;
 	}
 
-	private final List<MiddlewareChainDelegate<MiddlewareDelegate<TComponent>, MiddlewareDelegate<TComponent>>> components;
+	private final List<MiddlewareChainDelegate<MiddlewareDelegate<TData, TComponent>, MiddlewareDelegate<TData, TComponent>>> components;
 
-	private List<MiddlewareChainDelegate<MiddlewareDelegate<TComponent>, MiddlewareDelegate<TComponent>>> getComponents()
+	private List<MiddlewareChainDelegate<MiddlewareDelegate<TData, TComponent>, MiddlewareDelegate<TData, TComponent>>> getComponents()
 	{
 		return this.components;
 	}
 
 	@Override
-	public MiddlewareDelegate<TComponent> build() throws Exception
+	public MiddlewareDelegate<TData, TComponent> build() throws SyncPremException
 	{
-		MiddlewareDelegate<TComponent> transform = (context, configuration, target) -> target; // simply return original target unmodified
+		MiddlewareDelegate<TData, TComponent> transform = (data, target) -> target; // simply return original target unmodified
 
 		// REVERSE LIST - LIFO order
 		for (int i = this.getComponents().size() - 1; i >= 0; i--)
 		{
-			final MiddlewareChainDelegate<MiddlewareDelegate<TComponent>, MiddlewareDelegate<TComponent>> component = this.getComponents().get(i);
-			final MiddlewareDelegate<TComponent> _transform = transform;
+			final MiddlewareChainDelegate<MiddlewareDelegate<TData, TComponent>, MiddlewareDelegate<TData, TComponent>> component = this.getComponents().get(i);
+			final MiddlewareDelegate<TData, TComponent> _transform = transform;
 
 			if (component == null)
 				continue;
@@ -58,7 +55,7 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 	}
 
 	@Override
-	public MiddlewareBuilder<TComponent> from(Class<? extends Middleware<TComponent, TConfiguration>> middlewareClass, TConfiguration middlewareConfiguration) throws Exception
+	public MiddlewareBuilder<TData, TComponent> from(Class<? extends Middleware<TData, TComponent, TConfiguration>> middlewareClass, TConfiguration middlewareConfiguration) throws SyncPremException
 	{
 		if (middlewareClass == null)
 			throw new ArgumentNullException("middlewareClass");
@@ -68,15 +65,12 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 
 		return this.use(next ->
 		{
-			return (context, configuration, target) ->
+			return (data, target) ->
 			{
 				TComponent newTarget;
 
-				if (context == null)
-					throw new InvalidOperationException("context");
-
-				if (configuration == null)
-					throw new InvalidOperationException("configuration");
+				if (data == null)
+					throw new InvalidOperationException("data");
 
 				if (target == null)
 					throw new InvalidOperationException("target");
@@ -87,7 +81,7 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 				if (middlewareConfiguration == null)
 					throw new InvalidOperationException("middlewareConfiguration");
 
-				try (Middleware<TComponent, TConfiguration> middleware = Utils.newObjectFromClass(middlewareClass))
+				try (Middleware<TData, TComponent, TConfiguration> middleware = Utils.newObjectFromClass(middlewareClass))
 				{
 					if (middleware == null)
 						throw new InvalidOperationException("middleware");
@@ -95,7 +89,7 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 					middleware.setConfiguration(middlewareConfiguration);
 					middleware.create();
 
-					newTarget = middleware.process(context, configuration, target, next);
+					newTarget = middleware.process(data, target, next);
 
 					return newTarget;
 				}
@@ -108,7 +102,7 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 	}
 
 	@Override
-	public MiddlewareBuilderImpl<TComponent, TConfiguration> use(MiddlewareChainDelegate<MiddlewareDelegate<TComponent>, MiddlewareDelegate<TComponent>> middleware)
+	public MiddlewareBuilderImpl<TData, TComponent, TConfiguration> use(MiddlewareChainDelegate<MiddlewareDelegate<TData, TComponent>, MiddlewareDelegate<TData, TComponent>> middleware)
 	{
 		if (middleware == null)
 			throw new ArgumentNullException("middleware");
@@ -118,23 +112,19 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 	}
 
 	@Override
-	public MiddlewareBuilderImpl<TComponent, TConfiguration> with(Middleware<TComponent, TConfiguration> middleware) throws Exception
+	public MiddlewareBuilderImpl<TData, TComponent, TConfiguration> with(Middleware<TData, TComponent, TConfiguration> middleware) throws SyncPremException
 	{
 		if (middleware == null)
 			throw new ArgumentNullException("middleware");
 
 		return this.use(next ->
 		{
-			return (context, configuration, target) ->
+			return (data, target) ->
 			{
 				TComponent newTarget;
-				boolean wasCreated;
 
-				if (context == null)
-					throw new InvalidOperationException("context");
-
-				if (configuration == null)
-					throw new InvalidOperationException("configuration");
+				if (data == null)
+					throw new InvalidOperationException("data");
 
 				if (target == null)
 					throw new InvalidOperationException("target");
@@ -147,7 +137,7 @@ public final class MiddlewareBuilderImpl<TComponent extends Component, TConfigur
 					if (!middleware.isCreated() || middleware.isDisposed())
 						;
 
-					newTarget = middleware.process(context, configuration, target, next);
+					newTarget = middleware.process(data, target, next);
 
 					return newTarget;
 				}

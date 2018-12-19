@@ -1,11 +1,12 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.infrastructure.polyfills.Tuple;
 import com.syncprem.uprising.pipeline.abstractions.AbstractSpecConfComponent;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
@@ -24,15 +25,12 @@ public abstract class AbstractStreamMiddleware<TComponentSpecificConfiguration e
 	}
 
 	@Override
-	public final Stream process(Context context, RecordConfiguration configuration, Stream target, MiddlewareDelegate<Stream> next) throws SyncPremException
+	public final Stream process(Tuple.Tuple2<Context, RecordConfiguration> data, Stream target, MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Stream> next) throws SyncPremException
 	{
 		Stream newTarget;
 
-		if (context == null)
-			throw new ArgumentNullException("context");
-
-		if (configuration == null)
-			throw new ArgumentNullException("configuration");
+		if (data == null)
+			throw new ArgumentNullException("data");
 
 		if (target == null)
 			throw new ArgumentNullException("target");
@@ -45,7 +43,7 @@ public abstract class AbstractStreamMiddleware<TComponentSpecificConfiguration e
 
 		try
 		{
-			newTarget = this.processInternal(context, configuration, target, next);
+			newTarget = this.processInternal(data, target, next);
 		}
 		catch (Exception ex)
 		{
@@ -55,5 +53,5 @@ public abstract class AbstractStreamMiddleware<TComponentSpecificConfiguration e
 		return newTarget;
 	}
 
-	protected abstract Stream processInternal(Context context, RecordConfiguration configuration, Stream target, MiddlewareDelegate<Stream> next) throws Exception;
+	protected abstract Stream processInternal(Tuple.Tuple2<Context, RecordConfiguration> data, Stream target, MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Stream> next) throws Exception;
 }

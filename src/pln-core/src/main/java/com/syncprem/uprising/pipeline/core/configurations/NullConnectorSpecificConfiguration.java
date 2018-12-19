@@ -1,10 +1,11 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.core.configurations;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.syncprem.uprising.infrastructure.polyfills.Message;
 import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.polyfills.Severity;
@@ -21,8 +22,9 @@ public class NullConnectorSpecificConfiguration extends ComponentSpecificConfigu
 	}
 
 	private String fieldNameFormat;
-	private Long maxRandomFieldCount;
-	private Long maxRandomRecordCount;
+	private Long maxFieldCount;
+	private Long maxRecordCount;
+	private Boolean useRandom;
 
 	public String getFieldNameFormat()
 	{
@@ -34,24 +36,35 @@ public class NullConnectorSpecificConfiguration extends ComponentSpecificConfigu
 		this.fieldNameFormat = fieldNameFormat;
 	}
 
-	public Long getMaxRandomFieldCount()
+	public Long getMaxFieldCount()
 	{
-		return this.maxRandomFieldCount;
+		return this.maxFieldCount;
 	}
 
-	public void setMaxRandomFieldCount(Long maxRandomFieldCount)
+	public void setMaxFieldCount(Long maxFieldCount)
 	{
-		this.maxRandomFieldCount = maxRandomFieldCount;
+		this.maxFieldCount = maxFieldCount;
 	}
 
-	public Long getMaxRandomRecordCount()
+	public Long getMaxRecordCount()
 	{
-		return this.maxRandomRecordCount;
+		return this.maxRecordCount;
 	}
 
-	public void setMaxRandomRecordCount(Long maxRandomRecordCount)
+	public void setMaxRecordCount(Long maxRecordCount)
 	{
-		this.maxRandomRecordCount = maxRandomRecordCount;
+		this.maxRecordCount = maxRecordCount;
+	}
+
+	public void setRandom(Boolean useRandom)
+	{
+		this.useRandom = useRandom;
+	}
+
+	@JsonProperty(value = "UseRandom")
+	public Boolean useRandom()
+	{
+		return this.useRandom;
 	}
 
 	@Override
@@ -64,14 +77,14 @@ public class NullConnectorSpecificConfiguration extends ComponentSpecificConfigu
 		if (Utils.isNullOrEmptyString(this.getFieldNameFormat()))
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector field name format is required.", context), Severity.ERROR));
 
-		if (this.getMaxRandomRecordCount() == null)
+		if (this.getMaxRecordCount() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector random maximum record count is required.", context), Severity.ERROR));
-		else if (this.getMaxRandomRecordCount() <= 0L)
+		else if (this.getMaxRecordCount() <= 0L)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector random maximum record count must be greater than zero.", context), Severity.ERROR));
 
-		if (this.getMaxRandomFieldCount() == null)
+		if (this.getMaxFieldCount() == null)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector random maximum field count is required.", context), Severity.ERROR));
-		else if (this.getMaxRandomFieldCount() <= 0L)
+		else if (this.getMaxFieldCount() <= 0L)
 			messages.add(new MessageImpl(Utils.EMPTY_STRING, String.format("%s connector random maximum field count must be greater than zero.", context), Severity.ERROR));
 
 		return messages;

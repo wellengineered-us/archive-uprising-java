@@ -21,18 +21,18 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="inf-configuration" target="1.10" />
-      <module name="inf-polyfills" target="1.10" />
-      <module name="inf-serialization" target="1.10" />
-      <module name="pln-abstractions" target="1.10" />
-      <module name="pln-core" target="1.10" />
-      <module name="pln-hostcli" target="1.10" />
-      <module name="sio-datamasking" target="1.10" />
-      <module name="sio-primitives" target="1.10" />
-      <module name="sio-proxywrappers" target="1.10" />
-      <module name="sio-relational" target="1.10" />
-      <module name="sio-restful" target="1.10" />
-      <module name="sio-textual" target="1.10" />
+      <module name="inf-configuration" target="1.11" />
+      <module name="inf-polyfills" target="1.11" />
+      <module name="inf-serialization" target="1.11" />
+      <module name="pln-abstractions" target="1.11" />
+      <module name="pln-core" target="1.11" />
+      <module name="pln-hostcli" target="1.11" />
+      <module name="sio-datamasking" target="1.11" />
+      <module name="sio-primitives" target="1.11" />
+      <module name="sio-proxywrappers" target="1.11" />
+      <module name="sio-relational" target="1.11" />
+      <module name="sio-restful" target="1.11" />
+      <module name="sio-textual" target="1.11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

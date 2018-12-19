@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -40,7 +40,7 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 
 		schemaBuilder.addField(Utils.EMPTY_STRING, UUID.class, false, true, null);
 
-		for (long fieldIndex = 0; fieldIndex < (long) this.getSpecification().getMaxRandomFieldCount(); fieldIndex++)
+		for (long fieldIndex = 0; fieldIndex < (long) this.getSpecification().getMaxFieldCount(); fieldIndex++)
 		{
 			final String fieldName = String.format(this.getSpecification().getFieldNameFormat(), fieldIndex);
 
@@ -70,7 +70,12 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 		failFastOnlyWhen(schema.getFields() == null, "schema.getFields() == null");
 
 		final int fieldCount = schema.getFields().size();
-		final long recordCount = getRandom().nextInt((int) (long) this.getSpecification().getMaxRandomRecordCount());
+
+		failFastOnlyWhen(fieldCount != this.getSpecification().getMaxFieldCount() + 1, "fieldCount != this.getSpecification().getMaxFieldCount() + 1");
+
+		final long recordCount = Utils.getValueOrDefault(this.getSpecification().useRandom(), true) ?
+				getRandom().nextInt((int) (long) this.getSpecification().getMaxRecordCount()) :
+				this.getSpecification().getMaxRecordCount();
 
 		fields = new Field[fieldCount];
 		schema.getFields().values().toArray(fields);

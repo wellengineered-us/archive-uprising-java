@@ -1,14 +1,11 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.core.runtime;
 
-import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
-import com.syncprem.uprising.infrastructure.polyfills.LifecycleIterator;
-import com.syncprem.uprising.infrastructure.polyfills.Utils;
+import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.UntypedComponentConfiguration;
@@ -16,8 +13,8 @@ import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilder;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderExtensions;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareBuilderImpl;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareDelegate;
-import com.syncprem.uprising.pipeline.abstractions.stage.processor.RecordMiddleware;
 import com.syncprem.uprising.pipeline.abstractions.runtime.*;
+import com.syncprem.uprising.pipeline.abstractions.stage.processor.RecordMiddleware;
 import com.syncprem.uprising.pipeline.abstractions.stage.processor.StreamMiddleware;
 import com.syncprem.uprising.pipeline.core.processors.NullRecordMiddleware;
 import com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware;
@@ -47,10 +44,10 @@ public final class ContextImpl extends AbstractContext
 
 		// ----- START REFACTOR -----
 
-		MiddlewareDelegate<Record> recordMiddlewareDelegate;
-		MiddlewareBuilderImpl<Record, UntypedComponentConfiguration> recordMiddlewareBuilderImpl;
-		MiddlewareBuilder<Record> recordMiddlewareBuilder;
-		MiddlewareBuilderExtensions<Record, UntypedComponentConfiguration> recordMiddlewareBuilderExtensions;
+		MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Record> recordMiddlewareDelegate;
+		MiddlewareBuilderImpl<Tuple.Tuple2<Context, RecordConfiguration>, Record, UntypedComponentConfiguration> recordMiddlewareBuilderImpl;
+		MiddlewareBuilder<Tuple.Tuple2<Context, RecordConfiguration>, Record> recordMiddlewareBuilder;
+		MiddlewareBuilderExtensions<Tuple.Tuple2<Context, RecordConfiguration>, Record, UntypedComponentConfiguration> recordMiddlewareBuilderExtensions;
 
 		Map<UntypedComponentConfiguration, Class<? extends RecordMiddleware<? extends ComponentSpecificConfiguration>>> recordMiddlewareTypeConfigMappings;
 
@@ -94,10 +91,10 @@ public final class ContextImpl extends AbstractContext
 			// lambda expressions
 			recordMiddlewareBuilder.use(next ->
 			{
-				return (_context, _configuration, _record) ->
+				return (_data, _record) ->
 				{
 					if (next != null)
-						return next.invoke(_context, _configuration, _record);
+						return next.invoke(_data, _record);
 					else
 						return _record;
 				};
@@ -131,7 +128,7 @@ public final class ContextImpl extends AbstractContext
 				throw new ArgumentNullException("item");
 
 			item.setIndex(index);
-			item = recordMiddlewareDelegate.invoke(this, configuration, item);
+			item = recordMiddlewareDelegate.invoke(new Tuple.Tuple2<>(this, configuration), item);
 
 			return item;
 		}, (punctuateModulo, sourceLabel, itemIndex, isCompleted, rollingTiming) ->
@@ -194,10 +191,10 @@ public final class ContextImpl extends AbstractContext
 
 		// ----- START REFACTOR -----
 
-		MiddlewareDelegate<Stream> streamMiddlewareDelegate;
-		MiddlewareBuilderImpl<Stream, UntypedComponentConfiguration> streamMiddlewareBuilderImpl;
-		MiddlewareBuilder<Stream> streamMiddlewareBuilder;
-		MiddlewareBuilderExtensions<Stream, UntypedComponentConfiguration> streamMiddlewareBuilderExtensions;
+		MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Stream> streamMiddlewareDelegate;
+		MiddlewareBuilderImpl<Tuple.Tuple2<Context, RecordConfiguration>, Stream, UntypedComponentConfiguration> streamMiddlewareBuilderImpl;
+		MiddlewareBuilder<Tuple.Tuple2<Context, RecordConfiguration>, Stream> streamMiddlewareBuilder;
+		MiddlewareBuilderExtensions<Tuple.Tuple2<Context, RecordConfiguration>, Stream, UntypedComponentConfiguration> streamMiddlewareBuilderExtensions;
 
 		Map<UntypedComponentConfiguration, Class<? extends StreamMiddleware<? extends ComponentSpecificConfiguration>>> streamMiddlewareTypeConfigMappings;
 
@@ -241,10 +238,10 @@ public final class ContextImpl extends AbstractContext
 			// lambda expressions
 			streamMiddlewareBuilder.use(next ->
 			{
-				return (_context, _configuration, _stream) ->
+				return (_data, _stream) ->
 				{
 					if (next != null)
-						return next.invoke(_context, _configuration, _stream);
+						return next.invoke(_data, _stream);
 					else
 						return _stream;
 				};
@@ -273,7 +270,7 @@ public final class ContextImpl extends AbstractContext
 		failFastOnlyWhen(streamMiddlewareDelegate == null, "streamProcess == null");
 
 		stream = new StreamImpl(records);
-		stream = streamMiddlewareDelegate.invoke(this, configuration, stream);
+		stream = streamMiddlewareDelegate.invoke(new Tuple.Tuple2<>(this, configuration), stream);
 
 		return stream;
 	}

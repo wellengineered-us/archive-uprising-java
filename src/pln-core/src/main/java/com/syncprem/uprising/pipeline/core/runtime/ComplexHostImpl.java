@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -16,8 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
-import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
 public final class ComplexHostImpl extends SimpleHostImpl
 {
@@ -64,7 +62,7 @@ public final class ComplexHostImpl extends SimpleHostImpl
 
 		try
 		{
-			executePipeline(pipelineFactory, pipelineClass, pipelineConfiguration);
+			createExecuteThenDisposePipeline(pipelineFactory, pipelineClass, pipelineConfiguration);
 		}
 		catch (Exception ex)
 		{
@@ -76,11 +74,37 @@ public final class ComplexHostImpl extends SimpleHostImpl
 		}
 	}
 
+	private static boolean shutdownAndAwaitTermination(ExecutorService pool, final TimeUnit timeUnit, final long timeValue)
+	{
+		pool.shutdown(); // Disable new tasks from being submitted
+		try
+		{
+			// Wait a while for existing tasks to terminate
+			if (!pool.awaitTermination(timeValue, timeUnit))
+			{
+				pool.shutdownNow(); // Cancel currently executing tasks
+				// Wait a while for tasks to respond to being cancelled
+				if (!pool.awaitTermination(timeValue, timeUnit))
+					return false;
+			}
+		}
+		catch (InterruptedException ie)
+		{
+			// (Re-)Cancel if current thread also interrupted
+			pool.shutdownNow();
+
+			// preserve interrupt status
+			Thread.currentThread().interrupt();
+
+			return false;
+		}
+
+		return true;
+	}
+
 	@Override
 	protected void create(boolean creating) throws Exception
 	{
-		int size;
-
 		if (this.isCreated())
 			return;
 
@@ -88,7 +112,7 @@ public final class ComplexHostImpl extends SimpleHostImpl
 
 		if (creating)
 		{
-			size = this.getConfiguration().getPipelineConfigurations().size();
+			final int size = this.getConfiguration().getPipelineConfigurations().size();
 
 			System.out.println(String.format("run_host: thread pool/semaphore permit size = %s", size));
 
@@ -107,7 +131,7 @@ public final class ComplexHostImpl extends SimpleHostImpl
 
 		if (disposing)
 		{
-			// do nothing
+			//this.shutdownAndAwaitTermination(this.getThreadPool());
 		}
 	}
 
@@ -120,23 +144,23 @@ public final class ComplexHostImpl extends SimpleHostImpl
 		if (pipelineConfiguration == null)
 			throw new ArgumentNullException("pipelineConfiguration");
 
-		if (!this.getSemaphore().tryAcquire(0L, TimeUnit.SECONDS))
-			failFastOnlyWhen(true, Utils.EMPTY_STRING);
-
 		this.getThreadPool().execute(() -> executePipelineOnceAndRelease(this.getSemaphore(), this, pipelineClass, pipelineConfiguration));
 	}
 
 	@Override
-	protected void gracefulShutdown(boolean disposing)
+	protected boolean gracefulShutdown(boolean disposing)
 	{
 		boolean success;
 
-		super.gracefulShutdown(disposing);
+		success = super.gracefulShutdown(disposing);
 
-		// TODO how to handle false?
-		success = this.tryAwaitCompletion();
+		if (success)
+			success = this.tryAwaitCompletion();
 
-		System.out.println(String.format("tryAwaitCompletion: success = %s, disposing = %s", success, disposing));
+		// if success return false, then the process exits with work in process...oops!
+
+		System.out.println(String.format("gracefulShutdown(complex): success = %s, disposing = %s", success, disposing));
+		return success;
 	}
 
 	@Override
@@ -147,81 +171,51 @@ public final class ComplexHostImpl extends SimpleHostImpl
 		this.getSemaphore().release();
 	}
 
-	@Override
-	protected void maybeDispatchIdle() throws Exception
-	{
-		System.out.println("dispatch_loop: idle...");
-		Thread.sleep(10000);
-	}
-
-	@Override
-	protected void runInternal() throws Exception
-	{
-		// do nothing
-		super.runInternal();
-	}
-
-	@Override
-	protected boolean shouldRunDispatchLoop()
-	{
-		// do nothing
-		return super.shouldRunDispatchLoop();
-	}
-
-	private void shutdownAndAwaitTermination(ExecutorService pool)
-	{
-		pool.shutdown(); // Disable new tasks from being submitted
-		try
-		{
-			// Wait a while for existing tasks to terminate
-			if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-			{
-				pool.shutdownNow(); // Cancel currently executing tasks
-				// Wait a while for tasks to respond to being cancelled
-				if (!pool.awaitTermination(60, TimeUnit.SECONDS))
-					System.err.println("Pool did not terminate");
-			}
-		}
-		catch (InterruptedException ie)
-		{
-			// (Re-)Cancel if current thread also interrupted
-			pool.shutdownNow();
-			// Preserve interrupt status
-			Thread.currentThread().interrupt();
-		}
-	}
-
 	private boolean tryAwaitCompletion()
 	{
-		int size;
-		final long timeout = 30;
-		final TimeUnit timeUnit = TimeUnit.SECONDS;
+		final TimeUnit timeUnit = Utils.getValueOrDefault(this.getConfiguration().getGracefulShutdownTimeUnit(), TimeUnit.SECONDS);
+		final long timeValue = Utils.getValueOrDefault(this.getConfiguration().getGracefulShutdownTimeValue(), 30L);
 
-		boolean success;
+		boolean success = false;
 
-		size = this.getConfiguration().getPipelineConfigurations().size();
+		final int size = this.getConfiguration().getPipelineConfigurations().size();
 
 		try
 		{
-			this.getThreadPool().shutdown();
+			// decay by half approach...
+			for (long i = timeValue; i > 0L; i = i / 2)
+			{
+				System.out.println(String.format("gracefulShutdown(simple): timeUnit = %s, timeValue = %s, i = %s", timeUnit, timeValue, i));
 
-			success = this.getSemaphore().tryAcquire(size, timeout, timeUnit); // TODO how to handle false?
+				success = shutdownAndAwaitTermination(this.getThreadPool(), timeUnit, timeValue);
 
-			if (!success)
-				return success; // TODO how to handle false?
+				System.out.println(String.format("tryAwaitCompletion/shutdownAndAwaitTermination: success = %s", success));
 
-			this.getSemaphore().release(size);
-			System.out.println(String.format("Semaphore::tryAcquire: success = %s (%s)", success, this.getSemaphore().availablePermits()));
+				if (!success)
+					continue;
 
-			success = this.getThreadPool().awaitTermination(timeout, timeUnit); // TODO how to handle false?
+				success = this.getSemaphore().tryAcquire(size, timeValue, timeUnit);
 
-			System.out.println(String.format("ThreadPool::awaitTermination: success = %s", success));
+				System.out.println(String.format("getSemaphore/tryAcquire: success = %s (%s#)", success, size));
+
+				if (success)
+				{
+					this.getSemaphore().release(size);
+					break;
+				}
+			}
+
+			// if success return false, then the process exits with work in process...oops!
 		}
 		catch (InterruptedException iex)
 		{
+			// preserve interrupt status
+			Thread.currentThread().interrupt();
+
 			success = false;
 		}
 
+		System.out.println(String.format("tryAwaitCompletion: success = %s", success));
 		return success;
 	}
 }

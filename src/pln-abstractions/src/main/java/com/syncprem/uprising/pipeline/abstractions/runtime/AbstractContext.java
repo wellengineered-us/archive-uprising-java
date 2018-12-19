@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -33,6 +33,7 @@ public abstract class AbstractContext extends AbstractComponent implements Conte
 		this.globalState = globalState;
 		this.localState = localState;
 	}
+
 	private final Map<String, Object> globalState;
 	private final Map<Component, Map<String, Object>> localState;
 	private PipelineConfiguration configuration;

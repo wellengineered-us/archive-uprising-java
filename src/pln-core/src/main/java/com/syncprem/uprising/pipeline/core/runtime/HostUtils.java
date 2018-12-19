@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -42,7 +42,7 @@ public final class HostUtils
 			chooser.setCurrentDirectory(_sourcePath);
 			final int result = chooser.showOpenDialog(null);
 
-			if(result != JFileChooser.APPROVE_OPTION)
+			if (result != JFileChooser.APPROVE_OPTION)
 				return;
 
 			sourcePath = chooser.getSelectedFile().getAbsolutePath();

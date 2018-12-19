@@ -1,11 +1,12 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.abstractions.stage.processor;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.infrastructure.polyfills.Tuple;
 import com.syncprem.uprising.pipeline.abstractions.AbstractSpecConfComponent;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
@@ -24,15 +25,12 @@ public abstract class AbstractRecordMiddleware<TComponentSpecificConfiguration e
 	}
 
 	@Override
-	public final Record process(Context context, RecordConfiguration configuration, Record target, MiddlewareDelegate<Record> next) throws SyncPremException
+	public final Record process(Tuple.Tuple2<Context, RecordConfiguration> data, Record target, MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Record> next) throws SyncPremException
 	{
 		Record newTarget;
 
-		if (context == null)
-			throw new ArgumentNullException("context");
-
-		if (configuration == null)
-			throw new ArgumentNullException("configuration");
+		if (data == null)
+			throw new ArgumentNullException("data");
 
 		if (target == null)
 			throw new ArgumentNullException("target");
@@ -45,7 +43,7 @@ public abstract class AbstractRecordMiddleware<TComponentSpecificConfiguration e
 
 		try
 		{
-			newTarget = this.processInternal(context, configuration, target, next);
+			newTarget = this.processInternal(data, target, next);
 		}
 		catch (Exception ex)
 		{
@@ -55,5 +53,5 @@ public abstract class AbstractRecordMiddleware<TComponentSpecificConfiguration e
 		return newTarget;
 	}
 
-	protected abstract Record processInternal(Context context, RecordConfiguration configuration, Record target, MiddlewareDelegate<Record> next) throws Exception;
+	protected abstract Record processInternal(Tuple.Tuple2<Context, RecordConfiguration> data, Record target, MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Record> next) throws Exception;
 }

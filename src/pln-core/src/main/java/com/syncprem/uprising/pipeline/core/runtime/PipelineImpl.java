@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -7,6 +7,7 @@ package com.syncprem.uprising.pipeline.core.runtime;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
 import com.syncprem.uprising.infrastructure.polyfills.InvalidOperationException;
+import com.syncprem.uprising.infrastructure.polyfills.Tuple;
 import com.syncprem.uprising.infrastructure.polyfills.Utils;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.PipelineConfiguration;
@@ -119,10 +120,10 @@ public final class PipelineImpl extends AbstractPipeline
 
 					// ----- START REFACTOR -----
 
-					MiddlewareDelegate<Channel> channelMiddlewareDelegate;
-					MiddlewareBuilderImpl<Channel, UntypedComponentConfiguration> channelMiddlewareBuilderImpl;
-					MiddlewareBuilder<Channel> channelMiddlewareBuilder;
-					MiddlewareBuilderExtensions<Channel, UntypedComponentConfiguration> channelMiddlewareBuilderExtensions;
+					MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Channel> channelMiddlewareDelegate;
+					MiddlewareBuilderImpl<Tuple.Tuple2<Context, RecordConfiguration>, Channel, UntypedComponentConfiguration> channelMiddlewareBuilderImpl;
+					MiddlewareBuilder<Tuple.Tuple2<Context, RecordConfiguration>, Channel> channelMiddlewareBuilder;
+					MiddlewareBuilderExtensions<Tuple.Tuple2<Context, RecordConfiguration>, Channel, UntypedComponentConfiguration> channelMiddlewareBuilderExtensions;
 
 					configuration = this.getConfiguration().getRecordConfiguration();
 
@@ -150,10 +151,10 @@ public final class PipelineImpl extends AbstractPipeline
 						// lambda expressions
 						channelMiddlewareBuilder.use(next ->
 						{
-							return (_context, _configuration, _channel) ->
+							return (_data, _channel) ->
 							{
 								if (next != null)
-									return next.invoke(_context, _configuration, _channel);
+									return next.invoke(_data, _channel);
 								else
 									return _channel;
 							};
@@ -185,7 +186,7 @@ public final class PipelineImpl extends AbstractPipeline
 
 					try (Channel _channel = channel) // disposal outer-most channel
 					{
-						channel = channelMiddlewareDelegate.invoke(context, configuration, channel);
+						channel = channelMiddlewareDelegate.invoke(new Tuple.Tuple2<>(context, configuration), channel);
 
 						destinationConnector.consume(context, configuration, channel);
 					}

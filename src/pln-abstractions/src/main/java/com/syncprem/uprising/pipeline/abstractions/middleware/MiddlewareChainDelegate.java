@@ -1,14 +1,16 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.abstractions.middleware;
 
+import com.syncprem.uprising.streamingio.primitives.SyncPremException;
+
 @FunctionalInterface
-public interface MiddlewareChainDelegate<T, R>
+public interface MiddlewareChainDelegate<TInput, TOutput>
 {
-	R invoke(T input) throws Exception;
+	TOutput invoke(TInput input) throws SyncPremException;
 }
 
 

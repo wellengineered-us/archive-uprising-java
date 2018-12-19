@@ -1,16 +1,18 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.abstractions.middleware;
 
-import com.syncprem.uprising.pipeline.abstractions.Component;
-import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentConfiguration;
+import com.syncprem.uprising.infrastructure.configuration.ConfigurationObject;
+import com.syncprem.uprising.infrastructure.polyfills.Creatable;
+import com.syncprem.uprising.infrastructure.polyfills.Disposable;
+import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public interface MiddlewareBuilderExtensions<TComponent extends Component, TConfiguration extends ComponentConfiguration>
+public interface MiddlewareBuilderExtensions<TData, TComponent extends Creatable & Disposable, TConfiguration extends ConfigurationObject>
 {
-	MiddlewareBuilder<TComponent> from(Class<? extends Middleware<TComponent, TConfiguration>> middlewareClass, TConfiguration middlewareConfiguration) throws Exception;
+	MiddlewareBuilder<TData, TComponent> from(Class<? extends Middleware<TData, TComponent, TConfiguration>> middlewareClass, TConfiguration middlewareConfiguration) throws SyncPremException;
 
-	MiddlewareBuilder<TComponent> with(Middleware<TComponent, TConfiguration> middleware) throws Exception;
+	MiddlewareBuilder<TData, TComponent> with(Middleware<TData, TComponent, TConfiguration> middleware) throws SyncPremException;
 }

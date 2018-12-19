@@ -1,11 +1,12 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.core.processors;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
+import com.syncprem.uprising.infrastructure.polyfills.Tuple;
 import com.syncprem.uprising.pipeline.abstractions.configuration.ComponentSpecificConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
 import com.syncprem.uprising.pipeline.abstractions.middleware.MiddlewareClosure;
@@ -21,28 +22,25 @@ public class NullChannelMiddleware extends AbstractChannelMiddleware<ComponentSp
 	{
 	}
 
-	public static MiddlewareDelegate<Channel> nullChannelMiddlewareMethod(MiddlewareDelegate<Channel> next)
+	public static MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Channel> nullChannelMiddlewareMethod(MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Channel> next)
 	{
-		MiddlewareDelegate<Channel> retval;
+		MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Channel> retval;
 
 		retval = MiddlewareClosure.getMiddlewareChain(NullChannelMiddleware::nullChannelMiddlewareMethod, next);
 
 		return retval;
 	}
 
-	private static Channel nullChannelMiddlewareMethod(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
+	private static Channel nullChannelMiddlewareMethod(Tuple.Tuple2<Context, RecordConfiguration> data, Channel channel, MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Channel> next) throws SyncPremException
 	{
-		if (context == null)
-			throw new ArgumentNullException("context");
-
-		if (configuration == null)
-			throw new ArgumentNullException("configuration");
+		if (data == null)
+			throw new ArgumentNullException("data");
 
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
 		if (next != null)
-			channel = next.invoke(context, configuration, channel);
+			channel = next.invoke(data, channel);
 
 		return channel;
 	}
@@ -74,19 +72,16 @@ public class NullChannelMiddleware extends AbstractChannelMiddleware<ComponentSp
 	}
 
 	@Override
-	protected Channel processInternal(Context context, RecordConfiguration configuration, Channel channel, MiddlewareDelegate<Channel> next) throws SyncPremException
+	protected Channel processInternal(Tuple.Tuple2<Context, RecordConfiguration> data, Channel channel, MiddlewareDelegate<Tuple.Tuple2<Context, RecordConfiguration>, Channel> next) throws SyncPremException
 	{
-		if (context == null)
-			throw new ArgumentNullException("context");
-
-		if (configuration == null)
-			throw new ArgumentNullException("configuration");
+		if (data == null)
+			throw new ArgumentNullException("data");
 
 		if (channel == null)
 			throw new ArgumentNullException("channel");
 
 		if (next != null)
-			channel = next.invoke(context, configuration, channel);
+			channel = next.invoke(data, channel);
 
 		return channel;
 	}

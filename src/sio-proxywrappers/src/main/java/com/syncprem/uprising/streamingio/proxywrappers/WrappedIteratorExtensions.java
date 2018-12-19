@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public final class WrappedIteratorExtensions
 {
-	private static final int DEFAULT_PROCESSING_CALLBACK_PUNCTUATE_MODULO = 100000;
+	private static final int DEFAULT_PROCESSING_CALLBACK_PUNCTUATE_MODULO = 10000;
 
 	public static <T> long forceIteration(Iterator<T> iterator) throws Exception
 	{

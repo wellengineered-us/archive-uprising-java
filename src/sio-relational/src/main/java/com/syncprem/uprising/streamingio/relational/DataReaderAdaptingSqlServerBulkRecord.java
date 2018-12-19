@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -122,6 +122,42 @@ public final class DataReaderAdaptingSqlServerBulkRecord extends AbstractLifecyc
 	}
 
 	@Override
+	public void setTimeWithTimezoneFormat(String s)
+	{
+
+	}
+
+	@Override
+	public void setTimeWithTimezoneFormat(DateTimeFormatter dateTimeFormatter)
+	{
+
+	}
+
+	@Override
+	public void setTimestampWithTimezoneFormat(String s)
+	{
+
+	}
+
+	@Override
+	public void setTimestampWithTimezoneFormat(DateTimeFormatter dateTimeFormatter)
+	{
+
+	}
+
+	@Override
+	public void addColumnMetadata(int i, String s, int i1, int i2, int i3, DateTimeFormatter dateTimeFormatter) throws SQLServerException
+	{
+
+	}
+
+	@Override
+	public void addColumnMetadata(int i, String s, int i1, int i2, int i3) throws SQLServerException
+	{
+
+	}
+
+	@Override
 	protected void create(boolean creating) throws Exception
 	{
 
@@ -156,6 +192,12 @@ public final class DataReaderAdaptingSqlServerBulkRecord extends AbstractLifecyc
 			}
 		}
 
+		return null;
+	}
+
+	@Override
+	public DateTimeFormatter getColumnDateTimeFormatter(int i)
+	{
 		return null;
 	}
 
@@ -255,47 +297,5 @@ public final class DataReaderAdaptingSqlServerBulkRecord extends AbstractLifecyc
 		{
 			throw new FailFastException("Error on next(): ", ex);
 		}
-	}
-
-	@Override
-	public void addColumnMetadata(int i, String s, int i1, int i2, int i3, DateTimeFormatter dateTimeFormatter) throws SQLServerException
-	{
-
-	}
-
-	@Override
-	public void addColumnMetadata(int i, String s, int i1, int i2, int i3) throws SQLServerException
-	{
-
-	}
-
-	@Override
-	public void setTimestampWithTimezoneFormat(String s)
-	{
-
-	}
-
-	@Override
-	public void setTimestampWithTimezoneFormat(DateTimeFormatter dateTimeFormatter)
-	{
-
-	}
-
-	@Override
-	public void setTimeWithTimezoneFormat(String s)
-	{
-
-	}
-
-	@Override
-	public void setTimeWithTimezoneFormat(DateTimeFormatter dateTimeFormatter)
-	{
-
-	}
-
-	@Override
-	public DateTimeFormatter getColumnDateTimeFormatter(int i)
-	{
-		return null;
 	}
 }

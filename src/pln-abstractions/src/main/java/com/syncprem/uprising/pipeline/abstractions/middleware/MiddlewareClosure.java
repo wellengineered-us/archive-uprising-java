@@ -1,19 +1,18 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
 package com.syncprem.uprising.pipeline.abstractions.middleware;
 
 import com.syncprem.uprising.infrastructure.polyfills.ArgumentNullException;
-import com.syncprem.uprising.pipeline.abstractions.Component;
-import com.syncprem.uprising.pipeline.abstractions.configuration.RecordConfiguration;
-import com.syncprem.uprising.pipeline.abstractions.runtime.Context;
+import com.syncprem.uprising.infrastructure.polyfills.Creatable;
+import com.syncprem.uprising.infrastructure.polyfills.Disposable;
 import com.syncprem.uprising.streamingio.primitives.SyncPremException;
 
-public final class MiddlewareClosure<TComponent extends Component>
+public final class MiddlewareClosure<TData, TComponent extends Creatable & Disposable>
 {
-	private MiddlewareClosure(MiddlewareToNextDelegate<TComponent> processToNext, MiddlewareDelegate<TComponent> next)
+	private MiddlewareClosure(MiddlewareToNextDelegate<TData, TComponent> processToNext, MiddlewareDelegate<TData, TComponent> next)
 	{
 		if (processToNext == null)
 			throw new ArgumentNullException("processToNext");
@@ -25,20 +24,20 @@ public final class MiddlewareClosure<TComponent extends Component>
 		this.next = next;
 	}
 
-	private final MiddlewareDelegate<TComponent> next;
-	private final MiddlewareToNextDelegate<TComponent> processToNext;
+	private final MiddlewareDelegate<TData, TComponent> next;
+	private final MiddlewareToNextDelegate<TData, TComponent> processToNext;
 
-	private MiddlewareDelegate<TComponent> getNext()
+	private MiddlewareDelegate<TData, TComponent> getNext()
 	{
 		return this.next;
 	}
 
-	private MiddlewareToNextDelegate<TComponent> getProcessToNext()
+	private MiddlewareToNextDelegate<TData, TComponent> getProcessToNext()
 	{
 		return this.processToNext;
 	}
 
-	public static <TComponent extends Component> MiddlewareDelegate<TComponent> getMiddlewareChain(MiddlewareToNextDelegate<TComponent> processToNext, MiddlewareDelegate<TComponent> next)
+	public static <TData, TComponent extends Creatable & Disposable> MiddlewareDelegate<TData, TComponent> getMiddlewareChain(MiddlewareToNextDelegate<TData, TComponent> processToNext, MiddlewareDelegate<TData, TComponent> next)
 	{
 		if (processToNext == null)
 			throw new ArgumentNullException("processToNext");
@@ -49,8 +48,8 @@ public final class MiddlewareClosure<TComponent extends Component>
 		return new MiddlewareClosure<>(processToNext, next)::transform;
 	}
 
-	private TComponent transform(Context context, RecordConfiguration configuration, TComponent target) throws SyncPremException
+	private TComponent transform(TData data, TComponent target) throws SyncPremException
 	{
-		return this.getProcessToNext().invoke(context, configuration, target, this.getNext());
+		return this.getProcessToNext().invoke(data, target, this.getNext());
 	}
 }

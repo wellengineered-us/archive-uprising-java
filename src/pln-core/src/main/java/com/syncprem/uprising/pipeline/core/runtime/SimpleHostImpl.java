@@ -1,5 +1,5 @@
 /*
-	Copyright ©2017-2018 SyncPrem
+	Copyright ©2017-2019 SyncPrem, all rights reserved.
 	Distributed under the MIT license: https://opensource.org/licenses/MIT
 */
 
@@ -23,20 +23,23 @@ public class SimpleHostImpl extends AbstractHost
 	public SimpleHostImpl()
 	{
 	}
+
+	protected final int ONE = 1;
+	protected final int ZERO = 0;
 	private final CancellationToken cancellationToken = new AtomicCancellationTokenImpl();
-	private final Semaphore mainThreadSemaphore = new Semaphore(1);
+	private final Semaphore mainThreadSemaphore = new Semaphore(ONE);
 
 	protected final CancellationToken getCancellationToken()
 	{
 		return this.cancellationToken;
 	}
 
-	protected Semaphore getMainThreadSemaphore()
+	protected final Semaphore getMainThreadSemaphore()
 	{
 		return this.mainThreadSemaphore;
 	}
 
-	protected static void executePipeline(PipelineFactory pipelineFactory, Class<? extends Pipeline> pipelineClass, PipelineConfiguration pipelineConfiguration) throws Exception
+	protected static Pipeline createExecuteThenDisposePipeline(PipelineFactory pipelineFactory, Class<? extends Pipeline> pipelineClass, PipelineConfiguration pipelineConfiguration) throws Exception
 	{
 		Pipeline pipeline;
 
@@ -64,6 +67,8 @@ public class SimpleHostImpl extends AbstractHost
 			{
 				pipeline.create();
 				pipeline.execute(context);
+
+				return pipeline; // return the reference but it will be disposed...
 			}
 		}
 	}
@@ -110,9 +115,6 @@ public class SimpleHostImpl extends AbstractHost
 		if (clazz == null)
 			throw new ArgumentNullException("clazz");
 
-		/*if (clazz == null)
-			pipeline = new PipelineImpl(); // fallback
-		else*/
 		pipeline = Utils.newObjectFromClass(clazz);
 
 		return pipeline;
@@ -140,12 +142,9 @@ public class SimpleHostImpl extends AbstractHost
 		if (pipelineConfiguration == null)
 			throw new ArgumentNullException("pipelineConfiguration");
 
-		if (!this.getMainThreadSemaphore().tryAcquire(0L, TimeUnit.SECONDS))
-			failFastOnlyWhen(true, Utils.EMPTY_STRING);
-
 		try
 		{
-			executePipeline(this, pipelineClass, pipelineConfiguration);
+			createExecuteThenDisposePipeline(this, pipelineClass, pipelineConfiguration);
 		}
 		finally
 		{
@@ -153,11 +152,11 @@ public class SimpleHostImpl extends AbstractHost
 		}
 	}
 
-	protected void gracefulShutdown(boolean disposing)
+	protected boolean gracefulShutdown(boolean disposing)
 	{
-		final int size = 1;
-		final long timeout = 5;
-		final TimeUnit timeUnit = TimeUnit.SECONDS;
+		final TimeUnit timeUnit = Utils.getValueOrDefault(this.getConfiguration().getGracefulShutdownTimeUnit(), TimeUnit.SECONDS);
+		final long timeValue = Utils.getValueOrDefault(this.getConfiguration().getGracefulShutdownTimeValue(), 30L);
+
 		boolean success = false;
 
 		failFastOnlyWhen(!this.getCancellationToken().canBeCanceled(), "!this.getCancellationToken().canBeCanceled()");
@@ -166,19 +165,34 @@ public class SimpleHostImpl extends AbstractHost
 
 		try
 		{
-			success = this.getMainThreadSemaphore().tryAcquire(size, timeout, timeUnit); // TODO how to handle false?
+			// decay by half approach...
+			for (long i = timeValue; i > 0L; i = i / 2)
+			{
+				System.out.println(String.format("gracefulShutdown(simple): timeUnit = %s, timeValue = %s, i = %s", timeUnit, timeValue, i));
+
+				success = this.getMainThreadSemaphore().tryAcquire(ONE, i, timeUnit);
+
+				System.out.println(String.format("getMainThreadSemaphore/tryAcquire: success = %s (%s#)", success, ONE));
+
+				if (success)
+				{
+					this.getMainThreadSemaphore().release();
+					break;
+				}
+			}
+
+			// if success return false, then the process exits with work in process...oops!
 		}
 		catch (InterruptedException iex)
 		{
-			// do nothing
-		}
-		finally
-		{
-			if (success)
-				this.getMainThreadSemaphore().release();
+			// preserve interrupt status
+			Thread.currentThread().interrupt();
+
+			success = false;
 		}
 
-		System.out.println(String.format("tryAwaitCompletion: success = %s, disposing = %s", success, disposing));
+		System.out.println(String.format("gracefulShutdown: success = %s, disposing = %s", success, disposing));
+		return success;
 	}
 
 	protected void maybeDispatchAfter()
@@ -196,10 +210,13 @@ public class SimpleHostImpl extends AbstractHost
 		System.out.println("dispatch_loop: begin");
 	}
 
-	protected void maybeDispatchIdle() throws Exception
+	protected final void maybeDispatchIdle() throws Exception
 	{
+		final TimeUnit timeUnit = Utils.getValueOrDefault(this.getConfiguration().getDispatchIdleTimeUnit(), TimeUnit.SECONDS);
+		final long timeValue = Utils.getValueOrDefault(this.getConfiguration().getDispatchIdleTimeValue(), 10L);
+
 		System.out.println("dispatch_loop: idle...");
-		Thread.sleep(2500);
+		timeUnit.sleep(timeValue);
 	}
 
 	@Override
@@ -212,7 +229,7 @@ public class SimpleHostImpl extends AbstractHost
 	}
 
 	@Override
-	protected void runInternal() throws Exception
+	protected final void runInternal() throws Exception
 	{
 		long loopIndex = -1L;
 
@@ -241,6 +258,14 @@ public class SimpleHostImpl extends AbstractHost
 				failFastOnlyWhen(pipelineClass == null, "pipelineClass == null");
 
 				System.out.println("dispatch_loop: execute...");
+
+				// should always be zero/unit does not matter
+				final TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+				final long timeValue = ZERO;
+
+				if (!this.getMainThreadSemaphore().tryAcquire(timeValue, timeUnit))
+					failFastOnlyWhen(true, Utils.EMPTY_STRING);
+
 				this.executePipelineOnce(pipelineClass, pipelineConfiguration);
 			}
 
@@ -251,7 +276,7 @@ public class SimpleHostImpl extends AbstractHost
 		while (this.shouldRunDispatchLoop());
 	}
 
-	protected boolean shouldRunDispatchLoop()
+	protected final boolean shouldRunDispatchLoop()
 	{
 		return this.getConfiguration().enableDispatchLoop() &&
 				!this.getCancellationToken().isCancellationRequested();
