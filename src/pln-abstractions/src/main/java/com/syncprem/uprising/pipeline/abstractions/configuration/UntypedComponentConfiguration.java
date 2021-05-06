@@ -9,16 +9,13 @@ import com.syncprem.uprising.infrastructure.polyfills.*;
 import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl;
 import com.syncprem.uprising.pipeline.abstractions.SpecConfComponent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UntypedComponentConfiguration extends ComponentConfiguration
 {
 	public UntypedComponentConfiguration()
 	{
-		this(new HashMap<>(), ComponentSpecificConfiguration.class);
+		this(new LinkedHashMap<>(), ComponentSpecificConfiguration.class);
 	}
 
 	public UntypedComponentConfiguration(Map<String, Object> componentSpecificConfiguration, Class<? extends ComponentSpecificConfiguration> untypedComponentSpecificConfigurationClass)

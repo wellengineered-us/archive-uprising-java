@@ -49,7 +49,7 @@ public enum CommandBehavior
 		this.value = value;
 	}
 
-	private Integer value;
+	private final Integer value;
 
 	public boolean hasFlag(CommandBehavior flag)
 	{

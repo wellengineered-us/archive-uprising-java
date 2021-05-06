@@ -17,5 +17,5 @@ public enum ParameterDirection
 		this.value = value;
 	}
 
-	private Integer value;
+	private final Integer value;
 }

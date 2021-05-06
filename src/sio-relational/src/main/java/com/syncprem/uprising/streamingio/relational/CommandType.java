@@ -17,5 +17,5 @@ public enum CommandType
 		this.value = value;
 	}
 
-	private Integer value;
+	private final Integer value;
 }

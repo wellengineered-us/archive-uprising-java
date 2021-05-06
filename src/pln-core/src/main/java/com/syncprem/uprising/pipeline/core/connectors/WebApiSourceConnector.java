@@ -21,10 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
 
@@ -189,7 +186,7 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 		}
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 
@@ -220,7 +217,7 @@ public final class WebApiSourceConnector extends AbstractSourceConnector<WebApiC
 			throw new ArgumentNullException("configuration");
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 

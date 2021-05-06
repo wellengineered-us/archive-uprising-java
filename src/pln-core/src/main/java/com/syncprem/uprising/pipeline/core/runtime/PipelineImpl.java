@@ -26,6 +26,7 @@ import com.syncprem.uprising.pipeline.abstractions.stage.processor.ChannelMiddle
 import com.syncprem.uprising.pipeline.core.processors.NullChannelMiddleware;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
@@ -73,7 +74,7 @@ public final class PipelineImpl extends AbstractPipeline
 
 		sourceConnectorClass = this.getConfiguration().getSourceConfiguration().getComponentClass();
 		destinationConnectorClass = this.getConfiguration().getDestinationConfiguration().getComponentClass();
-		channelMiddlewareTypeConfigMappings = new HashMap<>();
+		channelMiddlewareTypeConfigMappings = new LinkedHashMap<>();
 
 		for (UntypedComponentConfiguration middlewareConfiguration : this.getConfiguration().getMiddlewareConfigurations())
 		{

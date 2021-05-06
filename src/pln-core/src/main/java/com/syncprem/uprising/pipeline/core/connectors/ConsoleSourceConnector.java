@@ -18,10 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.syncprem.uprising.infrastructure.polyfills.LeakDetector.*;
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
@@ -235,7 +232,7 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<Compon
 		}
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 
@@ -267,7 +264,7 @@ public final class ConsoleSourceConnector extends AbstractSourceConnector<Compon
 			throw new ArgumentNullException("configuration");
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 

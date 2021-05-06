@@ -190,7 +190,7 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 			throw new ArgumentNullException("configuration");
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 
@@ -221,7 +221,7 @@ public final class NullSourceConnector extends AbstractSourceConnector<NullConne
 			throw new ArgumentNullException("configuration");
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 

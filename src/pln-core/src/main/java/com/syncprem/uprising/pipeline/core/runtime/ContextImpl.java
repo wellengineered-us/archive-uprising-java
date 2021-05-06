@@ -21,10 +21,7 @@ import com.syncprem.uprising.pipeline.core.processors.NullStreamMiddleware;
 import com.syncprem.uprising.streamingio.primitives.*;
 import com.syncprem.uprising.streamingio.proxywrappers.WrappedIteratorExtensions;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.*;
 
@@ -56,7 +53,7 @@ public final class ContextImpl extends AbstractContext
 		recordMiddlewareBuilder = recordMiddlewareBuilderImpl;
 		recordMiddlewareBuilderExtensions = recordMiddlewareBuilderImpl;
 
-		recordMiddlewareTypeConfigMappings = new HashMap<>();
+		recordMiddlewareTypeConfigMappings = new LinkedHashMap<>();
 
 		for (UntypedComponentConfiguration recordMiddlewareConfiguration : this.getConfiguration().getMiddlewareConfigurations())
 		{
@@ -203,7 +200,7 @@ public final class ContextImpl extends AbstractContext
 		streamMiddlewareBuilder = streamMiddlewareBuilderImpl;
 		streamMiddlewareBuilderExtensions = streamMiddlewareBuilderImpl;
 
-		streamMiddlewareTypeConfigMappings = new HashMap<>();
+		streamMiddlewareTypeConfigMappings = new LinkedHashMap<>();
 
 		for (UntypedComponentConfiguration streamMiddlewareConfiguration : this.getConfiguration().getMiddlewareConfigurations())
 		{

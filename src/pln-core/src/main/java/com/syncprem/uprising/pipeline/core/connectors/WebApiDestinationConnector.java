@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.syncprem.uprising.infrastructure.polyfills.Utils.failFastOnlyWhen;
@@ -198,7 +199,7 @@ public final class WebApiDestinationConnector extends AbstractDestinationConnect
 		}
 
 		if (!context.getLocalState().containsKey(this))
-			context.getLocalState().put(this, (componentState = new HashMap<>()));
+			context.getLocalState().put(this, (componentState = new LinkedHashMap<>()));
 		else
 			componentState = context.getLocalState().get(this);
 

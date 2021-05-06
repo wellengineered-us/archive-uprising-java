@@ -11,16 +11,13 @@ import com.syncprem.uprising.infrastructure.polyfills.Message;
 import com.syncprem.uprising.infrastructure.polyfills.MessageImpl;
 import com.syncprem.uprising.infrastructure.serialization.JsonSerializationStrategyImpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TypedComponentConfiguration<TComponentSpecificConfiguration extends ComponentSpecificConfiguration> extends UntypedComponentConfiguration
 {
 	public TypedComponentConfiguration(UntypedComponentConfiguration componentConfiguration, Class<? extends TComponentSpecificConfiguration> typedComponentSpecificConfigurationClass)
 	{
-		this(new HashMap<>(), componentConfiguration, typedComponentSpecificConfigurationClass);
+		this(new LinkedHashMap<>(), componentConfiguration, typedComponentSpecificConfigurationClass);
 	}
 
 	public TypedComponentConfiguration(Map<String, Object> componentSpecificConfiguration, UntypedComponentConfiguration componentConfiguration, Class<? extends TComponentSpecificConfiguration> typedComponentSpecificConfigurationClass)

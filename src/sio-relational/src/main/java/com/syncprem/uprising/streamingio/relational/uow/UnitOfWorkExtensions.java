@@ -22,7 +22,7 @@ public final class UnitOfWorkExtensions
 		if (unitOfWork == null)
 			throw new ArgumentNullException("unitOfWork");
 
-		column = LazyHolder.getInstance().createColumn(columnSource, getValueOrDefault(columnType, JDBCType.JAVA_OBJECT), getValueOrDefault(columnSize, 0), getValueOrDefault(columnPrecision, (byte) 0), getValueOrDefault(columnScale, (byte) 0), getValueOrDefault(columnNullable, true), columnName);
+		column = LazyHolder.get().createColumn(columnSource, getValueOrDefault(columnType, JDBCType.JAVA_OBJECT), getValueOrDefault(columnSize, 0), getValueOrDefault(columnPrecision, (byte) 0), getValueOrDefault(columnScale, (byte) 0), getValueOrDefault(columnNullable, true), columnName);
 
 		return column;
 	}
@@ -34,7 +34,7 @@ public final class UnitOfWorkExtensions
 		if (unitOfWork == null)
 			throw new ArgumentNullException("unitOfWork");
 
-		parameter = LazyHolder.getInstance().createParameter(columnSource, getValueOrDefault(parameterDirection, ParameterDirection.IN), getValueOrDefault(parameterType, JDBCType.JAVA_OBJECT), getValueOrDefault(parameterSize, 0), getValueOrDefault(parameterPrecision, (byte) 0), getValueOrDefault(parameterScale, (byte) 0), getValueOrDefault(parameterNullable, true), parameterName, parameterValue);
+		parameter = LazyHolder.get().createParameter(columnSource, getValueOrDefault(parameterDirection, ParameterDirection.IN), getValueOrDefault(parameterType, JDBCType.JAVA_OBJECT), getValueOrDefault(parameterSize, 0), getValueOrDefault(parameterPrecision, (byte) 0), getValueOrDefault(parameterScale, (byte) 0), getValueOrDefault(parameterNullable, true), parameterName, parameterValue);
 
 		return parameter;
 	}
@@ -46,7 +46,7 @@ public final class UnitOfWorkExtensions
 		if (unitOfWork == null)
 			throw new ArgumentNullException("unitOfWork");
 
-		records = LazyHolder.getInstance().executeRecords(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters, rowsAffectedCallback);
+		records = LazyHolder.get().executeRecords(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters, rowsAffectedCallback);
 
 		return records;
 	}
@@ -58,7 +58,7 @@ public final class UnitOfWorkExtensions
 		if (unitOfWork == null)
 			throw new ArgumentNullException("unitOfWork");
 
-		results = LazyHolder.getInstance().executeResults(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters);
+		results = LazyHolder.get().executeResults(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters);
 
 		return results;
 	}
@@ -70,7 +70,7 @@ public final class UnitOfWorkExtensions
 		if (unitOfWork == null)
 			throw new ArgumentNullException("unitOfWork");
 
-		records = LazyHolder.getInstance().executeSchemaRecords(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters, rowsAffectedCallback);
+		records = LazyHolder.get().executeSchemaRecords(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters, rowsAffectedCallback);
 
 		return records;
 	}
@@ -82,18 +82,25 @@ public final class UnitOfWorkExtensions
 		if (unitOfWork == null)
 			throw new ArgumentNullException("unitOfWork");
 
-		results = LazyHolder.getInstance().executeSchemaResults(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters);
+		results = LazyHolder.get().executeSchemaResults(unitOfWork.getConnection(), unitOfWork.getSavepoint(), getValueOrDefault(commandType, CommandType.TEXT), commandText, commandParameters);
 
 		return results;
 	}
-
+	
+	/**
+	 * https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+	 */
 	private static class LazyHolder
 	{
-		private static final JdbcStreamingFascade instance = new JdbcStreamingFascadeImpl();
-
-		public static JdbcStreamingFascade getInstance()
+		static
 		{
-			return instance;
+		}
+
+		private static final JdbcStreamingFascade __ = new JdbcStreamingFascadeImpl();
+
+		public static JdbcStreamingFascade get()
+		{
+			return __;
 		}
 	}
 }

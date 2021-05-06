@@ -45,6 +45,7 @@ public class KeyValueViewImpl implements KeyValueView
 					continue;
 
 				fieldName = field.getFieldName();
+
 				if (!originalPayload.containsKey(fieldName))
 					originalPayload.put(fieldName, (fieldValue = null));
 				else
